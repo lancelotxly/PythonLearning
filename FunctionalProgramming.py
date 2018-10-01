@@ -138,8 +138,8 @@ decorator: 1. no para input
 partial function: pre input the para into *arg or **kwargs
                   functools.partial(func, para, para = value)
 '''
-import functools
-max10 = functools.partial(max, 10)
-maximum = max10(2,6,7)
-print(maximum)
+# import functools
+# max10 = functools.partial(max, 10)
+# maximum = max10(2,6,7)
+# print(maximum)
 
