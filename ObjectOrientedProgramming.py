@@ -72,31 +72,57 @@ inheritance and polymorphism:
                                  Claim the type of father class, and use its functions may perform different on the children classes.
                                  even the class isn't a child of father, if only it has the function, it could perform polymorphism.
 '''
-class Student():
-    def __init__(self,name,age):
-        self.name = name
-        self.age = age
+# class Student():
+#     def __init__(self,name,age):
+#         self.name = name
+#         self.age = age
+#
+#     def printInf(self):
+#         print('this is %s, %d years old' % (self.name, self.age))
+#
+# class Boy(Student):
+#     def __init__(self,hometown):
+#         self.hometown = hometown
+#
+#     def printInf(self):
+#         print('his hometown is %s' % (self.hometown))
+#
+# class girl():
+#     def printInf(self):
+#         print('Cindy comes from Zhangzhou, Fujian')
+#
+# def printInf(a):
+#     a.printInf()
+#
+# s = Student('Cindy',18)
+# b = Boy('Chongqing')
+# g = girl()
+# printInf(s)
+# printInf(b)
+# printInf(g)
 
-    def printInf(self):
-        print('this is %s, %d years old' % (self.name, self.age))
-
-class Boy(Student):
-    def __init__(self,hometown):
-        self.hometown = hometown
-
-    def printInf(self):
-        print('his hometown is %s' % (self.hometown))
-
-class girl():
-    def printInf(self):
-        print('Cindy comes from Zhangzhou, Fujian')
-
-def printInf(a):
-    a.printInf()
-
-s = Student('Cindy',18)
-b = Boy('Chongqing')
-g = girl()
-printInf(s)
-printInf(b)
-printInf(g)
+'''
+multiple inheritance: MixIn
+                      principle: decide a main inheritance threading, and mixin other properties
+'''
+# class Animal():
+#     pass
+#
+# # the main inheritance threading
+# class Mammal(Animal):
+#     pass
+#
+# class Bird(Animal):
+#     pass
+#
+# # define perporties
+# class Runable():
+#     pass
+# class Flyable():
+#     pass
+#
+# # Mixin properties
+# class Dog(Mammal,Runable):
+#     pass
+# class Parrot(Bird, Flyable):
+#     pass
