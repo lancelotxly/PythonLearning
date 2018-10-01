@@ -1,0 +1,1959 @@
+Python输入/输出： print(,end=''), input() #输入自动转为字符串，可强制转换
+基本数据类型：int float str bool None #空值
+字符编码：将字符转换为机器码，读取或存储文件时通常用UTF-8转换符号<-->机器码(01010101)
+        Unicode 2个字节表示一个字符
+        ASCII  1个字节表示一个字符
+        UTF-8 可变长编码，英文字母1个字节；汉字3个字节；数字1-6个字节
+
+Python收发字节流：Python的字符串类型是str，在内存中以Unicode表示，一个字符对应若干个字节。
+  1.发：如果要在网络上传输，或者保存到磁盘上，就需要把str变为以字节为单位的bytes,
+          x=b'ABC'
+       以Unicode表示的str通过encode()方法可以编码为指定的bytes，
+         'ABC'.encode('utf-8')
+  2.收：如果我们从网络或磁盘上读取了字节流，那么读到的数据就是bytes。要把bytes变为str，decode()方法
+           b'ABC'.decode('utf-8')
+
+格式化：%
+    'hi,%s, you have %d' % ('Cindy',1000);
+   占位符： %d  整数
+          %f  浮点数
+          %s  字符串
+          %x  十六进制整数
+
+   'hi, {0}, i have miss you {1:.2f}'.format('Cindy',365);
+
+循环：
+     for x in ...:
+          每个元素代入变量x，然后执行缩进块的语句
+          range(n,m,i) 依次生成[n,m)步长为i的随机数， list(range())可以生成整个随机序列
+
+     while:
+     break:
+     continue:
+
+
+元素：int float str list tuple dict set bool
+list:
+       len(l)    长度
+       l[i],l[-i]     访问指定位置元素
+       l.append(元素)     末尾添加元素
+       l.insert(i,元素)   指定位置插入元素
+       l.pop();          弹出末尾元素
+       l.extend(list,tuple,set)  拆包，合并
+
+       list(tuple);  将tuple转为List
+tuple:
+       一旦初始化不能修改, 只能读不能写或删除
+       len(tuple)  读
+
+dict:
+       d={key1:value1, key2:value2,.....}
+            key必须是不可变对象：字符串、整数等都是不可变的，因此，可以放心地作为key。
+                              而list是可变的，就不能作为key
+       d[key1]     访问指定键值对
+       d.get(key)   没有返回None
+       pop(key)        删除键值对
+       d[key_new]=value_new  新增键值对
+       for key,value in d.items()    访问所有键值对
+
+       dict(**kwarg)  # dict(a=1,b=2,c=3)
+       dict(iterable) # dict([('a',1),('b',2),('c',3)]);
+set:
+      s=set([1,2,3]);
+          一组key的集合，但不存储value。由于key不能重复，所以，在set中，没有重复的key
+      s.add(key)  添加
+      s.remove(key)  删除
+      s1 & s2 集合交集
+      s1 | s2 集合并集
+
+
+函数：
+     调用函数时，如果参数个数不对，抛出TypeError
+     Python的函数返回多值其实就是返回一个tuple
+
+     函数参数：
+              function(位置参数，默认参数，可变参数，关键字参数)
+                   位置参数：普通参数，调用时必须有
+                   默认参数：降低了函数调用的难度
+                           默认参数必须指向不变对象, 数值，str
+                   可变参数：在参数前面加了一个*号, 将随后接收到的普通参数装入一个tuple
+                           可变参数既可以直接传入：func(1, 2, 3)，又可以先组装list或tuple，再通过*args传入：func(*(1, 2, 3))
+                   关键字参数： 在参数前面加了两个*号， 将随后接收到的含有参数名的参数装入一个dict
+                           关键字参数既可以直接传入：func(a=1, b=2)，又可以先组装dict，再通过**kw传入：func(**{'a': 1, 'b': 2})
+
+高级特性：
+         切片：
+               list/tuple[n:m:i]  [n,m)步长为i， n<0时为倒数
+               list_new=list[n:m:i]  复制元素
+
+         iterable对象:list,tuple,set,str,generator,带yield的generator function
+         迭代：
+                 for x in iterable对象
+                 判断iterable:
+                              from collection import Iterable;
+                              isinstance(name,Iterable);
+
+
+         列表生成式：
+                 L=[function(x) for x in iterable对象]
+
+         生成器：generator
+               g=(function(x) for x in iterable对象)
+                        生成器保存的是算法，调用时才生成值；列表生成式会生成保存所有的值
+                        调用一次： next(g)
+                        多次调用： for x in g
+               generator的另一种方法。如果一个函数定义中包含yield关键字，那么这个函数就不再是一个普通函数，而是一个generator
+                 如：
+                    def fib(max):
+                        n, a, b = 0, 0, 1
+                        while n < max:
+                             yield b
+                             a, b = b, a + b
+                             n = n + 1
+                        return 'done'
+               generator在每次调用生成器时next(fib())执行，到yield中断，下次调用时从中断处继续执行
+                  如：
+                      for x in fib(6):
+               生成器只能遍历一次
+
+
+         迭代器：Iterator：生成器，range()  #list(Iterator)可将所有元素生成存入list中
+               可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator
+               生成器都是Iterator，但list、dict、str虽然是Iterable对象，却不是Iterator
+                      Python的Iterator对象表示的是一个数据流，Iterator对象可以被next()函数调用并不断返回下一个数据，直到没有数据时抛出StopIteration错误。
+                      可以把这个数据流看做是一个有序序列，但我们却不能提前知道序列的长度，只能不断通过next()函数实现按需计算下一个数据，所以Iterator的计算是惰
+                      性的，只有在需要返回下一个数据时它才会计算
+               可用iter()函数将Iterable变为Iterator
+               for循环本质上就是通过不断调用next()函数实现的
+                    for x in iterable对象<---->这里实质上将Iterable对象转化为了Iterator，并在每次迭代时调用了next()函数
+
+
+函数式编程：
+         通过把大段代码拆成函数，通过一层一层的函数调用，就可以把复杂任务分解成简单的任务，这种分解可以称之为面向过程的程序设计
+         函数式编程就是一种抽象程度很高的编程范式
+             任意一个函数，只要输入是确定的，输出就是确定的，这种纯函数我们称之为没有副作用。
+             而允许使用变量的程序设计语言，由于函数内部的变量状态不确定，同样的输入，可能得到不同的输出，因此，这种函数是有副作用的
+         函数式编程的一个特点就是，允许把函数本身作为参数传入另一个函数，还允许返回一个函数
+
+         高阶函数：
+                 1.变量可以指向函数
+                      x=abs;   #这里x指向abs(),因此x()与abs()等效
+                 2.函数名本身也是变量
+                      abs=10;  #这里abs不再指向原函数，abs()失效
+                 3.高阶函数，一个函数接收另外的函数作为传入参数
+                     def add(x,y,f):
+                        return f(x)+f(y);
+                     add(-5,6,abs); #这里相当于abs(-5)+abs(6)
+
+         都是异地操作
+         map:
+             def f(x):
+                pass;
+             Iterator=map(f,Iterable)  #一定是一个函数，一个是Iterable，map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回
+
+         reduce:
+             from functools import reduce;
+             reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)
+         >>
+           from functools import reduce
+           DIGITS={'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9};
+           def str2int(s):
+                def fn(x,y):
+                  return x*10+y;
+                def char2num(s):
+                  return DIGITS[s];
+                return reduce(fn,map(char2num,s));  # str2int()返回一个reduce的闭包，闭包可以调用str2int()定义的函数
+
+         filter:
+             与map类似，不同的是filter()返回bool，并根据返回的True/False，决定保留/删除该元素, 返回一个Iterator
+
+         sorted:
+             异地排序
+             sorted(Iterable,key=f) #先对Iterable的元素按f处理存入名为key的list中，再排序
+             sorted(Iterable,key=f,reverse=True) #反向排序
+
+         闭包：返回一个函数。函数内部的函数不想立即执行，而是在后面的函数中执行
+              返回的内部函数可以调用外部函数的参数和局部变量，其中外部函数参数保存在args中，内部函数通过引用args调用外部函数参数
+              返回的函数没有立即执行，直到调用时f()才执行
+              当我们调用外部函数时，每次调用都会返回一个新的函数，即使传入相同的参数
+
+              返回函数不要引用任何循环变量，或者后续会发生变化的变量
+         思想： 面向过程的思想，str2int-->reduce--> fn
+                                              --> char2num
+                              对于一个函数需要许多子功能才能完成，可将该函数作为一个闭包返回，再在闭包内定义所需的子功能。
+
+
+         匿名函数：lambda x: x*x
+                 只能有一个表达式，且返回值就是表达式的结果
+                 也可把函数赋值给一个变量
+                 或作为函数返回值
+
+         装饰器：在代码运行期间动态的增加函数的功能
+               1. 无传入参数
+               一个decorator，可以接受一个函数作为参数，并返回一个函数
+               def decorator(f):
+                   @functool.wraps(f)         #将原始函数f()的__name__属性复制到wrapper()中
+                   def wrapper(*args,**kw):
+                        装饰部分,新增的功能
+                        return f(*args,**kw)；  # 执行原来函数的功能
+                   return wrapper;
+
+               @decorator
+               def f():
+                   pass;
+
+               f();  #  相当于执行了f=decorator(f);
+                                  f();           装饰器返回一个闭包wrapper-->f-->f()执行
+
+               2. 有传入参数
+               import functools
+               def function(paras):
+                    def decorator(f):
+                        @functools.wraps(f);    #将原始函数f()的__name__属性复制到wrapper()中
+                        def wrapper(*args,**kw):
+                                装饰部分，新增功能；
+                                reuturn f(*args,**kw):    #执行原来功能
+                         return wrapper;
+                    return decorator;
+
+               @function(paras)
+               def f():
+                   pass;
+
+               f();      #相当于执行了 f=function(paras)(f);
+                                     f();          先执行funcion(paras)返回decorator函数-->decorator(f)-->返回一个闭包wrapper-->f-->f()执行
+                                                   要想调用decorator()外部的输入参数，就必须返回decorator()的闭包，然后在调用decorator()时，返回wrapper的闭包
+                                                   wrapper的闭包只能访问decorator()内部的参数，要想访问decorator()外部参数，也就是外部输入参数时，必须将decorator()也返回一个闭包，通过decorator的闭包访问外部参数
+
+               函数对象有一个__name__属性，可以拿到函数的名字
+               装饰器返回的闭包，需要将原始函数的__name__属性复制给返回的闭包
+
+         偏函数：一个函数的某些参数给固定住（也就是设置默认值），返回一个新的函数，调用这个新函数会更简单
+               import functools;
+               func_new=functools.partial(func,para,para=value)
+               # 相当于把参数事先存入原来函数的*args,**kw中，后面新函数调用时可以不用管这些参量的配置了
+               如：
+                       max2=functools.partial(max,10);
+                       max2(5,6,7);
+                       >> 10
+                       #  相当于 args=(10,5,6,7);
+                                max(*args);
+
+
+模块化：使用模块还可以避免函数名和变量名冲突。相同名字的函数和变量完全可以分别存在不同的模块中  module.function
+      为了避免模块名冲突，Python又引入了按目录来组织模块的方法，称为包（Package）   package.module.function
+      __init__.py这个文件是必须存在的，否则，Python就把这个目录当成普通目录，而不是一个包
+
+      # -*- coding: utf-8 -*-
+      __author__='xzq'
+
+      __variable/function: 私有变量/函数 只允许该类访问
+      _variable/function: 只允许该类和其子类访问
+
+class Student():
+    _Name='xiao'
+    def __init__(self,name,age):
+        self.__name = name;
+        self.__age = age;
+
+    def printNameAge(self):
+        print('i am %s, %d years old' % (Student.__Name, self.__age))
+
+    @property
+    def Name(self):
+        return self.__name;
+    @property
+    def Age(self):
+        return self.__age;
+
+    @Name.setter
+    def Name(self,name):
+        self.__name = name;
+
+    @Age.setter
+    def Age(self,age):
+        self.__age = age;
+
+class Child(Student):
+    def __init__(self):
+        pass;
+
+    def printName(self):
+        print('%s' % Student._Name);  # 只能访问父类的_Name, 不能访问__Name
+
+c = Child();
+c.printName();
+
+      __variable__/__function__: 特殊变量/特殊函数
+
+
+面向对象编程：
+           面向对象：对象作为程序的基本单元，一个对象包含了数据和操作数据的函数
+                   把计算机程序视为一组对象的集合，而每个对象都可以接收其他对象发过来的消息，并处理这些消息，计算机程序的执行就是一系列消息在各个对象之间传递
+           面向过程：把计算机程序视为一系列的命令集合，即一组函数的顺序执行。
+                   为了简化程序设计，面向过程把函数继续切分为子函数，即把大块函数通过切割成小块函数来降低系统的复杂度。
+
+             例如： 假设我们要处理学生的成绩表
+                  面向过程： 1. 表示一个学生的成绩
+                           2. 处理学生成绩可以通过函数实现
+                        思考的是程序的执行流程
+                  面向过程： 1. Student这种数据类型应该被视为一个对象
+                           2. 这个对象拥有name和score这两个属性（Property）
+                           3. 如果要打印一个学生的成绩，首先必须创建出这个学生对应的对象
+                           4. 然后，给对象发一个print_score()消息，对象发消息实际上就是调用对象的方法
+                           5. 最后让对象自己把自己的数据打印出来
+
+           类和实例：
+                    class ClassName(obejct):
+                    类是抽象的模板
+                    实例是根据类创建出来的一个个具体的“对象”，每个对象都拥有相同的方法，但各自的数据可能不同
+
+                    添加/修改属性：   instance.属性名=属性值
+                                        __private除外：访问私有成员，增加内部方法
+
+                    构造器： def __init__(self,*args,**kw):
+                                self.属性名=值
+                            # 在__init__方法内部，就可以把各种属性绑定到self，因为self就指向创建的实例本身
+
+
+                    数据封装:  实例本身就拥有这些数据，要访问这些数据，就没有必要从外面的函数去访问，
+                             可以直接在Student类的内部定义访问数据的函数，这样，就把“数据”给封装起来了
+
+           继承和多态：
+                     当我们定义一个class的时候，我们实际上就定义了一种数据类型
+                     一个实例的数据类型是某个子类，那它的数据类型也可以被看做是父类。但是，反过来就不行
+                     多态：
+                          对于一个变量(实例)，我们只需要知道它的父类型，就可以放心使用其方法，而具体的方法调用是由运行时该对象的确切类型决定
+                          调用方只管调用，不管细节
+
+                     对于Python这样的动态语言来说，则不一定需要传入父类型或者其对应的子类型。我们只需要保证传入的对象有一个需要的调用方法就可以了
+                     动态语言的鸭子类型特点决定了继承不像静态语言那样是必须的
+
+                     Python继承时，可不用调用父类的__init__(), 这样做的话只继承了：父类的方法
+                                                                          属于类的成员变量，成员方法
+                                  如需要父类的成员变量，再调用其__init__()方法
+                  >> class Parent():
+                         def __init__(self,name):
+                            self.name = name;
+
+                         def PrintParent(self):
+                            print('this is a parent:');
+
+                     class Child(Parent):
+                         def __init__(self,age):
+                            self.age = age;
+
+                         def PrintAge(self):
+                            print('I am %s years old' % self.age );
+
+                     p = Parent('Cindy')
+                     p.PrintParent();
+                     c = Child(18);
+                     c.PrintParent()
+
+           获取对象信息： int float str bool  list tuple dict set class(自定义)
+                       type(对象);     # 获取类型
+                       isinstance(对象，类型)   # 比较类型
+                       dir(对象);           # 获取对象所有属性和方法，返回一个list
+                                             __len__等为特殊方法，如需要得自己实现
+                                                      特殊方法的调用， len(对象) 是紧跟着类的
+                       hasattr(obj,'属性/方法')   # 有属性x吗？
+                       setattr(obj,'属性/方法'，值/函数名)  # 添加属性
+                       getattr(obj,'属性/方法')  # 获取属性
+
+           类属性和类方法：
+                       类属性： 定义在成员变量字段的，
+                       类方法： @classmethod
+                       为所有实例共有，也可通过类名直接调用
+
+
+面向对象高级编程：
+             绑定属性和方法：
+                         实例绑定属性：
+                                   s=Student();
+                                   s.age=25;
+                         实例绑定方法：
+                                   1. def set_age(self,age):
+                                           self.age=age;
+
+                                      s.set_age=set_age;
+                                      s.set_age(self,25); # 调用
+
+                                   2. from types import MethodType
+                                      s.set_age=MethodType(set_age,s);  #方法名，对象名
+                                      s.set_age(25);   # 调用
+                         一个实例绑定的方法，对另一个实例是不起作用的
+
+                         类绑定方法：
+                                  Student.set_age=set_age;
+                                  s.set_age(25);  # 实例化在绑定之前，绑定后，该实例也具有这个方法
+
+                         __slots__: 限制实例绑定的属性和方法
+                                    class Student():
+                                       __slots__=('name','age','set_age');
+                                    实例只能绑定限定的属性和方法，
+                                    且只能限制当前类的实例，
+                                    子类实例允许定义的属性就是自身的__slots__加上父类的__slots__
+
+                         @property:
+                                  绑定属性时，不要把属性直接暴露出去
+                                  通过set(), get()函数和__private来设定属性，把set()和get()方法给出去
+                                  定义私有成员变量：
+                                               class Student():
+                                                     __Name='xiao'
+                                                     def __init__(self,name,age):
+                                                        self.__name = name;
+                                                        self.__age = age;
+
+                                  @property     # 把一个方法变成属性调用  s.Name
+                                  def Name(self):
+                                       return  self._value
+                                                 #  前后要一致！！！！！！！！！！
+                                  @Name.setter   # 把一个setter方法变成属性赋值  s.Name=value;
+                                  def Name(self,value):
+                                        self._value = value
+
+                                  定义只读属性，只定义getter方法，不定义setter方法就是一个只读属性
+
+             多重继承：
+                    class Animal():
+                          pass;
+
+                    # 大类
+                    class Mammal(Animal):
+                            pass;
+                    class Bird(Animal):
+                            pass;
+
+                    #各种动物
+                    class Dog(Mammal):
+                           pass;
+                    class Cat(Mammal):
+                           pass;
+
+                    class Parrot(Bird):
+                           pass;
+                    class Ostrich(Bird):
+                           pass;
+
+                    #新功能
+                    class Runnable():
+                         def run(self):
+                             pass;
+
+                    class Flyable():
+                         def fly(self):
+                             pass;
+
+                    对需要新功能的动物采用多继承
+                    class Dog(Mammal, Runnable):
+                              pass;
+
+                    设计类的继承关系时，通常，主线都是单一继承下来的,但是，如果需要“混入”额外的功能，通过多重继承就可以实现
+                    MixIn的目的就是给一个类增加多个功能，这样，在设计类的时候，我们优先考虑通过多重继承来组合多个MixIn的功能，而不是设计多层次的复杂的继承关系
+                    只要选择组合不同的类的功能，就可以快速构造出所需的子类
+
+
+             定制类： 特殊属性和特殊方法
+                    __slots__=('name','set_age')  限制实例绑定的属性和方法
+                    __len__()   为了能让class作用于len()函数
+                    __str__()   定义print(Student())输出的字符串，__str__()返回用户看到的字符串
+                    __repr__()  定义Student()直接显示的字符串，__repr__()是为调试服务的
+                    __iter__()  将Iterable对象变为Iterator,
+                    __next__()  定义迭代器中如何取得下一个值
+                                一个类想被用于for ... in循环，必须实现一个__iter__()方法，该方法返回一个迭代对象, iterator要传入__next__(iterator)供next()调用取得值
+                                for循环就会不断调用该迭代对象的__next__(iterator)方法拿到循环的下一个值，
+                                直到遇到StopIteration错误时退出循环
+                                如：
+                                     class Fib():
+                                          def __init__(self):
+                                              self.a,self.b=0,1;
+
+                                          def __iter__(self):
+                                              return self;       #实现__iter__(), 返回一个用于迭代的对象，这里就是self
+
+                                          def __next__(self):
+                                              self.a,self.b=self.b,self.a+self.b;   # 定义取得下一个值的方法
+                                              if self.a>1000:
+                                                   raise StopIteration();          遇到StopIteration结束
+                                              return self.a     # 取得下一个值
+
+                    __getitem__() 定义class[i] 取元素的方法
+                                # 定制list[i], 输入为普通参数
+                                  def __getitem__(self,n):
+                                      a,b=1,1
+                                      for x in range(n):
+                                           a,b=b,a+b
+                                      return a;
+                                列表切片，列表切片从负数开始都在__getitem__()中定义
+                                dict的查表也在__getiterm__()中进行
+                    __setitem__() 定义class[i]的赋值方法
+                    __delitem__() 定义del class[i]的删除方法
+                    因此要将自定义的数据类型(类)具有原生数据类型的特点，还有很多工作要做
+
+                    __getattr__() 定义如何获取属性,只有在没有找到属性的情况下，才调用__getattr__，已有的属性，比如name，不会在__getattr__中查找
+                    __setattr__() 定义如何设置属性
+                            # 定制dict, 输入为键值对
+                            class Dict(dict):
+                              def __init__(self,**kw):
+                                 super().__init__(**kw);   #继承dict的定义方法： super().__ini__()继承父类的构造器
+
+                              def __getattr__(self, item):  # 定义取得属性的方法
+                                 try:
+                                    return self[item];     # 当输入项正常时，返回指定键值对
+                                 except KeyError:
+                                    raise AttributeError(r"'Dict' object has no attribute '%s'" % item); #当无该输入时，返回属性错误
+
+                              def __setattr__(self, key, value):  #定义设置键值对的方法
+                                    self[key]=value;
+                                 # 当没有所需属性时，动态的返回一个属性
+                                  def __getattr__(self,attr):
+                                       if attr=='age':
+                                          return 25;
+                                       raise AttributeError("Student object has no attribute: %s" % attr);
+                                  实际上可以把一个类的所有属性和方法调用全部动态化处理了，不需要任何特殊手段
+                                  作用就是，可以针对完全动态的情况作调用
+                    __call__() 定义一个作用于实例本身的方法，不需要instace.method()
+                               class Student():
+                                    def __init__(self,name):
+                                          self.name=name;
+                                    def __call__(self):
+                                          print('My name is %s' % self.name);
+
+                               s=Student('xzq');
+                               s();  # 不需要 s.methd();
+                               实例进行直接调用就好比对一个函数进行调用一样
+                               判断一个对象是否能被调用，能被调用的对象就是一个Callable对象: 函数和实现了__call__()的类实例
+                               callable(对象或函数) # 判断是否能调用
+
+             枚举类：用于定义常量，
+                   普通的定义方式： JAN=1 # 类型为int，且仍然是变量
+                   枚举类：  定义一个class类型，每一个常量都是其唯一的实例
+                           from enum import Enum
+                           Month=Enum('Month',('JAN','FEB')) # Enum('类名'，(实例名))
+                           Month.JAN #常量
+                           Month.JAN.value # 常量值 value自动赋给成员，从1开始
+                                             可从Enum继承，定义自己的赋值方式
+
+             使用元类：
+                    动态语言和静态语言最大的不同，就是函数和类的定义，不是编译时定义的，而是运行时动态创建的
+                    from hello import Hello
+                    type(Hello)    # <class 'type'>
+                    h=Hello();
+                    type(h)     # <class 'hello.Hello'>
+                    class的定义是运行时动态创建的，而创建class的方法就是使用type()函数
+                    type()函数既可以返回一个对象的类型，又可以创建出新的类型，比如，我们可以通过type()函数创建出Hello类，而无需通过class Hello(object)
+                    如：
+                       Hello=type('Hello',(object,),dict(function=f));
+                             # type('类名'，(父类1，父类2)，dict(内部函数=外部函数))
+                       正常情况下，我们都用class Xxx...来定义类，但是，type()函数也允许我们动态创建出类来
+
+                    metaclass: 元类
+                               metaclass创建类，类创建实例
+
+
+
+错误、调试和测试：
+             错误处理：
+                    try:
+                         code1;
+                    expcept  Exception as e:
+                         code2;
+                    except  VauleError as e:
+                         code2.1;
+                    finally:
+                         code3;
+                    code4;
+                    当我们认为code1中的代码可能出错时，用try来执行这段代码，如果出错code1中的后续代码不会执行
+                    直接跳到except中的code2，
+                    执行完code2，如果有finally，则一定会执行finally中的code3
+                    最后执行code4
+
+                    可以定义多个异常的处理情况
+                    所有的异常都是class， 当捕获了父类型的异常，其子类型也一网打尽了
+                    如： except ValueError as e:
+                              code1;
+                        except UnicodeError as e:
+                              code2;
+                        第二个异常UnicodeError是ValueError的子类，因此永远都捕获不到
+                    Exception
+                         +--StopIteration
+                         +--ArithmeticError
+                            +---FloatingPointErro
+                            +---OverflowError
+                            +---ZeroDivisionError
+                         ...
+
+                    捕获错误可以跨越多层调用,在较高层可以捕获到低层的异常
+                    如果错误没有被捕获，它就会一直往上抛，最后被Python解释器捕获，打印一个错误信息，然后程序退出
+                    向上抛出异常的过程，就是将异常存入调用栈中
+                    logging模块可以非常容易地记录错误信息,把错误堆栈打印出来，然后分析错误原因，同时，让程序继续执行下去
+                         except Exception as e:
+                                logging.exception(e);
+
+                    抛出错误：
+                           错误就是一个class, 捕获到一个错误就是捕获到该class的一个实例
+                           因此我们自己定义的类，通过继承已有的异常，也可以抛出处理异常
+                           class OurException(Exception):
+                                pass;
+                           try:
+                               code1;
+                               raise OurException();
+                               code2;
+                           except OurException as e:
+                               code3;
+                           finally:
+                               code4;
+
+                           代码执行顺序，code1->code2->code3->code4
+
+                           try:
+                               code1;
+                           except ValueError as e:
+                               code2;
+                               raise Exception;
+                           当前捕获函数无法处理该异常时，可以继续往上层抛出异常，并且可以转换异常类型
+
+              调试：Debug, 分步执行
+
+
+              单元测试： 用来对一个模块、一个函数或者一个类来进行正确性检验的测试工作
+                       当函数代码做了修改，只需要再跑一遍单元测试：
+                                         如果通过，说明我们的修改不会对函数原有的行为造成影响
+                                         如果测试不通过，说明我们的修改与原有行为不一致，要么修改代码，要么修改测试。
+
+                       如： 测试 Dict()类，具有类似dict()的特性
+                           class Dict(dict):
+                              def __init__(self,**kw):
+                                 super().__init__(**kw);   #继承dict的定义方法： super().__ini__()继承父类的构造器
+
+                              def __getattr__(self, item):  # 定义取得属性的方法
+                                 try:
+                                    return self[item];     # 当输入项正常时，返回指定键值对
+                                 except KeyError:
+                                    raise AttributeError(r"'Dict' object has no attribute '%s'" % item); #当无该输入时，返回属性错误
+
+                              def __setattr__(self, key, value):  #定义设置键值对的方法
+                                    self[key]=value;
+
+                           测试代码：
+                           import unittest;       # 单元测试包
+                           '''
+                           单元测试主要是验证你编写的单元属性，方法是否正确
+                           通过调用unittest.TestCase的断言方法： assertEqual() 判断输出是否是我们所希望的
+                           对每一项测试项目都需要编写一个 test_xxx()方法， 不以test开头的方法不被认为是测试方法
+
+                           '''
+                           from mydict import Dict;    # 需要测试的类
+
+                           class TestDict(unittest.TestCase):       # 编写单元测试时，需要编写一个测试类，从unittest.TestCase中继承
+                               def test_init(self):              # 测试初始化
+                                    d = Dict(a=1,b='test')
+                                    self.assertEqual(d.a,1);      # 判断 d.attr是否是输入的value
+                                    self.assertEqual(d.b,'test');
+                                    self.assertEqual(isinstance(d,dict));        # 判断 d是否是dict类型
+
+                               def test_key(self):           # 测试能否通过key-value调用
+                                    d=Dict();
+                                    d['key']='value'
+                                    self.assertEqual(d['key'],'value');   #判断 d['key']是否等于 'value'
+
+                               def test_attr(self):         # 测试能否通过属性添加键值对
+                                    d=Dict();
+                                    d.key='value';
+                                    self.assertEqual('key' in d);
+                                    self.assertEqual(d['key'],'value');
+
+                               def test_keyerror(self):      # 测试keyerror
+                                    d=Dict();
+                                    with self.assertEqual(KeyError):    # 测试通过不存在的key调用，是否会报错keyerror
+                                        value=d['empty'];
+
+                               def test_attrerror(self):     # 测试attrerror
+                                    d=Dict();
+                                    with self.assertEqual(AttributeError):  #测试通过不存在的属性调用，是否会报错attrerror
+                                    value=d.empty;
+
+                               if __name__=='__main':                   # 运行单元测试
+                                    unittest.main()
+
+
+
+
+IO编程： 程序和运行时数据是在内存中驻留，由CPU这个超快的计算核心来执行,涉及到数据交换的地方，通常是磁盘、网络等，就需要IO接口
+        程序完成IO操作会有Input和Output两个数据流, Stream（流）是一个很重要的概念，可以把流想象成一个水管，数据就是水管里的水，但是只能单向流动
+                Input Stream就是数据从外面（磁盘、网络）-->内存，
+                Output Stream就是数据从内存-->外面
+        在IO编程中，就存在速度严重不匹配的问题: CPU运算速度快，磁盘的读取慢
+        -->两种IO方式：
+                    同步IO：CPU等着，也就是程序暂停执行后续代码，等数据写入磁盘，再接着往下执行
+                    异步IO：CPU不等待，只是告诉磁盘，然后继续执行后续代码
+           异步IO的效率高，但复杂度高，如回调，轮询
+        操作IO的能力都是由操作系统提供的
+
+
+        文件读写：读写文件就是请求操作系统打开一个文件对象
+                通过操作系统提供的接口从这个文件对象中读取数据（读文件），或者把数据写入这个文件对象（写文件）
+                读文件：
+                     with open('/filename.格式'，'r') as f:
+                           1. f.read();  #全部读
+                           2. for line in f.readline():  #逐行读
+                     '''
+                        try:
+                           f = open('/filename.格式'，'r');
+                           f. read();
+
+                        finally:
+                            f.close();
+                     '''
+
+                     file-like Object: open()函数返回一个带有read()方法的对象，叫file-like Obejct
+                                       这里除了file，还可以是内存的字节流StringIO，网络流BytesIO等，实现了read()方法的数据流
+                     读二进制文件：
+                               f = open('filename.格式'，'rb');
+                     读取非UTF-8编码的文本文件：
+                               f = open('filename.格式'，'r', encoding='utg-8/gbk',errors='ignore')
+
+                写文件：与读文件类似
+                       f = open('filename.格式'，'w/wb', encoding='utf-8/gbk', errors='ignore');
+
+
+
+        StringIO: 向内存中读写str
+                  from io import StringIO
+                  f = StringIO('')      #可初始化         f.readline()  #可每行读取
+                                                        f.read();
+                  f.write('')   #写入                    f.getvalue()
+
+
+
+        BytesIO: 向内存中读写二进制数据
+                 from io import BytesIO
+                 f = BytesIO(b'');                f.read();
+                                                  f.readline();
+                 f.write(b'')
+                 f.write(''.encode('utf-8'))
+                 f.getvalue()
+
+
+
+        操作文件和目录：
+               import os
+               os.environ.get('PATH') #环境变量
+
+               os.path.abspath('.') #当前绝对路径
+               os.path.join('/User/xzq','testdir')  #连接path一定要这样做
+               os.path.split('/path')   #将path分离成两部分，存入tuple，后一部分是最后的文件
+               os.path.splitext('filename.txt')  #进一步分离文件，可得到文件扩展名和文件格式
+               以上对路径操作，不要求文件真实存在
+
+               os.mkdir('/path') #创建一个目录
+               os.rmdir('/path') #删除一个目录
+
+               os.rename('test.txt','new_name.txt') #文件重命名
+               os.remove('test.py') #删除文件
+               import shutil
+               shutil.copyfile('test.txt','test2.txt') #复制文件
+
+               [x for x in os.listdir('.') if os.path.isdir(x)]  #列出当前目录下的所有目录
+               [x for x in os.listdir('.') if os.path.isfile(x) and os.path.splitext(x)[1]=='.py'] #列出所有的.py文件
+
+
+        序列化： 程序运行中将所有的变量都存储在内存里，当程序结束时回收内存
+                序列化，将所需的变量存储到磁盘上，用于传输
+
+                pickle: 只能用于Python，并且可能不同版本的Python彼此都不兼容，因此，只能用Pickle保存那些不重要的数据
+                        import pickle  #只支持二进制读写， 对象<-->Bytes
+                        d={'name':'xzq','age':'24'}     # 可以是任意对象
+                        class Student():
+                              name='xzq';
+                              age=24;
+                        d1=Student();
+                        with open('test.txt','wb') as f:      # 序列化，存入
+                              pickle.dump(d1,f);
+
+                        with open('test.txt','rb') as f:      # 反序列化
+                              d1=pickle.load(f);              # 存入什么，取出什么，这里存入的是一个类的实例，所以取出也是一个实例
+                              print(d1.name+' '+str(d1.age));
+
+                json:  JSON表示的对象就是标准的JavaScript语言的对象,JSON表示出来就是一个字符串,JSON编码是UTF-8
+                       import json
+                       d= dict(name='xzq',age=20);        # 一般list,dict, tuple
+                       with open('jsontest.json','w') as f:
+                              json.dump(d, f);
+
+                       with open('jsontest.json','r') as f:
+                              d = json.load(f);    # 一般读入会返回一个list或者dict
+                       print(d)
+
+
+                       特定对象json化，为default=传入对象转dict的方法,传入的方法一定是callable的，即外部的函数
+                                              或者传入转list的方法
+                       import json
+                       class Studen():
+                             name='xzq';
+                             age=25;
+
+                       def student2dict(s):
+                           return {'name':s.name, 'age':s.age};
+                       '''
+                       def student2list(s):
+                           return [('name',s.name),('age',s.age)]                # 对象转list,(tuple在读取时会自动转list的)
+                       '''
+
+                       d = Student();
+                       with open('jsontest.json','w'):
+                             json.dump(d, f, default=student2dict);
+
+                       with open('jsontest.json','r'):
+                            d = json.dump(f);
+
+
+
+
+进程和线程： 一个任务就是一个进程（Process）
+          进程还不止同时干一件事，在一个进程内部，要同时干多件事，就需要同时运行多个“子任务”，我们把进程内的这些“子任务”称为线程（Thread）
+          由于每个进程至少要干一件事，所以，一个进程至少有一个线程
+          线程是最小的执行单元，而进程由至少一个线程组成
+          多任务的实现有3种方式： 多进程模式，每个进程虽然只有一个线程，但多个进程可以一块执行多个任务
+                              多线程模式，一个进程内启动多个线程，这样，多个线程也可以一块执行多个任务
+                              多进程+多线程模式
+
+          创建进程线程都是操作系统来进行，因此要调用操作系统接口os
+
+          多进程：
+               from multiprocessing import Process   # multiprocessing模块提供了一个Process类来代表一个进程对象
+               import os
+
+               # 定义子进程要执行的函数
+               def run_proc(name):
+                   print('Run child process %s (%s)' %(name,os.getpid()));      # os.getpid() 获取进程ID， os.getppid()获取父进程ID
+
+               if __name__=='__main__':
+               print('Parent process %s' % os.getpid());   # 每一个程序都有一个父进程
+               p=Process(target=run_proc,args=('test',))   # 生成一个进程对象，target=进程执行的方法，args=(,)参数
+               print('Child process will start');
+               p.start();       # 启动子进程
+               p.join();        # 结束子进程时，后续代码继续执行
+               print('Child process end')
+
+
+               进程池
+               from multiprocessing import Pool
+               import time, random, os
+
+               def long_time_task(name):
+                   print('Run task %s (%s)' % (name,os.getpid()));
+                   start=time.time()        # 返回当前时间
+                   time.sleep(random.random()*3);
+                   end=time.time();
+                   print('Task %s run %0.2f seconds' % (name,(end-start)));
+
+               if __name__=='__main__':
+                   print('Parent process %s' % os.getpid());
+                   p = Pool(4);
+                   for i in range(5):           # 这里申请了4个进程，但我们要创建5个进程，因此要等其中一个进程结束后，才能创建第5个进程
+                       p.apply_async(long_time_taks, args=(i,));  # 异步创建，创建过程中可执行后续代码
+                   print('Waiting for all subprocess done...');
+                   p.close();   #  对Pool对象调用join()方法会等待所有子进程执行完毕，调用join()之前必须先调用close()，调用close()之后就不能继续添加新的Process了
+                   p.join();
+                   print('All subprocesses done.')
+
+
+
+               启动控制子进程
+               import subprocess
+               print('$ nslookup www.python.org')
+               r=subprocess.call(['nslookup','www.python.org']);  # subprocess.call()进程执行命令
+               print('Exit code:',r)
+
+
+               进程间通信： Queue, Pipes
+                          Python的multiprocessing模块包装了底层的机制，提供了Queue、Pipes等多种方式来交换数据
+                          父进程所有Python对象都必须通过pickle序列化再传到子进程去
+
+                          from multiprocessing import Process,Queue
+                          import os,time,random
+
+                          def write(q):
+                              print('Process to write: %s' % os.getpid());
+                              for value in ['A','B','C']:
+                                  print('Put %s to queue..' % value);
+                                  q.put(value);
+                                  time.sleep(random.random());
+
+                          def read(q):
+                              print('Process to read: %s' % os.getpid());
+                              while True:
+                                 value=q.get(True)
+                                 print('Get %s from queue' % value);
+
+
+
+                          if __name__=='__main__':
+                             q=Queue();
+                             pw=Process(target=write,args=(q,));
+                             pr=Process(target=read,args=(q,));
+
+                             pw.start();
+                             pr.start();
+                             pw.join();
+                             pr.terminate();
+
+
+          多线程：
+               启动一个线程就是把一个函数传入并创建Thread实例，然后调用start()开始执行
+               import time, threading
+
+               def loop():
+                 print('thread %s is running...' % threading.current_thread().name);
+                 n = 0;
+                 while n<5:
+                      n=n+1;
+                      print('thread %s >> %s' % (threading.current_thread().name,n))
+                      time.sleep(1);
+
+                 print('thread %s ended' % threading.current_thread().name);
+
+               print('thread %s is running...' % threading.current_thread().name);
+               t=threading.Thread(target=loop,name='LoopThread');
+               t.start();
+               t.join();
+               print('Thread %s ended' % threading.current_thread().name)
+               由于任何进程默认就会启动一个线程，我们把该线程称为主线程，主线程又可以启动新的线程，Python的threading模块有个current_thread()函数，它永远返回当前线程的实例。主线程实例的名字叫MainThread，子线程的名字在创建时指定，我们用LoopThread命名子线程。
+               名字仅仅在打印时用来显示，完全没有其他意义，如果不起名字Python就自动给线程命名为Thread-1，Thread-2……
+
+
+               Lock:  多进程中，同一个变量，各自有一份拷贝存在于每个进程中，互不影响，而多线程中，所有变量都由所有线程共享，所以，任何一个变量都可以被任何一个线程修改
+                              import time, threading
+
+                              # 假定这是你的银行存款:
+                              balance = 0
+                              lock=threading.Lock();       # 创建锁的对象
+
+                              def change_it(n):
+                              # 先存后取，结果应该为0:
+                                  global balance
+                                  balance = balance + n
+                                  balance = balance - n
+
+                              def run_thread(n):
+                                  for i in range(100000):
+                                         lock.acquire();    # 由于锁只有一个，无论多少线程，同一时刻最多只有一个线程持有该锁
+                                         try:
+                                             change_it(n);
+                                         finally:           # 获得锁的线程用完后一定要释放锁，否则那些苦苦等待锁的线程将永远等待下去，成为死线程
+                                             lock.release();
+
+                              t1 = threading.Thread(target=run_thread, args=(5,))
+                              t2 = threading.Thread(target=run_thread, args=(8,))
+                              t1.start()
+                              t2.start()
+                              t1.join()
+                              t2.join()
+                              print(balance)
+                              当多个线程同时执行lock.acquire()时，只有一个线程能成功地获取锁，然后继续执行代码，其他线程就继续等待直到获得锁为止
+
+               Python中，可以使用多线程，但不要指望能有效利用多核
+                        Python的线程虽然是真正的线程，但解释器执行代码时，有一个GIL锁：Global Interpreter Lock，任何Python线程执行前，必须先获得GIL锁，
+                        然后，每执行100条字节码，解释器就自动释放GIL锁，让别的线程有机会执行
+
+
+          ThreadLocal: 一个线程使用自己的局部变量比使用全局变量好，因为局部变量只有线程自己能看见，不会影响其他线程，而全局变量的修改必须加锁。
+                       用一个全局dict存放所有的Student对象，然后以thread自身作为key获得线程对应的Student对象
+                       import threading
+
+                       class Student():
+                           def __init__(self):
+                               self.name=name;
+
+                       global_dict={}    # 创建一个全局dict，用于存放每个thread的变量，以每个thread.current_thread()作为键
+
+                       def process_thread(name):
+                            std = Student(name);             # 这里每一个线程执行该函数时，都会生成一个std对象，所以传入的每个线程的变量不一样，每个线程是对自己的局部变量访问，而不是对全局变量访问
+                            global_dict[threading.current_thread()]=std;      # 生成一个线程与传入变量的键值对，线程的变量是要靠外部传入的
+                            process_stduent();
+
+                       def process_student():
+                           std = global_dict[threading.current_thread()];          # 这里由于是一个全局的dict，因此process_student()可以访问到
+                           print('Hello %s (in %s)' % (std.name,threading.current_thread().name));
+
+                       t1=threading.Thread(target=process_thread,args=('Cindy',),name='Thread-A');   # 创建线程的过程，就是为每一个线程指明要执行的函数
+                       t2=threading.Thread(target=process_thread,args=('xzq',),name='Thread-A');
+                       t1.start();
+                       t2.start();
+                       t1.join();
+                       t2.join();
+
+
+                       ThreadLocal,用thread.local()方法创建一个ThreadLocal对象，将所要传入线程的变量，传入该对象的属性中
+                                   相当于将存入键值对，和按键值对查找变量的过程，交给ThreadLocal来做
+                                   ThreadLocal最常用的地方就是为每个线程绑定一个数据库连接，HTTP请求，用户身份信息等，这样一个线程的所有调用到的处理函数都可以非常方便地访问这些资源
+                                   import threading
+
+                                   class Student():
+                                     def __init__(self):
+                                           self.name=name;
+
+                                   local_school=thearding.local();           # 创建全局的ThreadLocal对象
+
+                                   def process_thread(name):
+                                       std = Student(name);
+                                       local_school.student = std;           # 相当于 global_dict[threading.current_thread()]=std
+                                       process_student();
+
+                                   def process_student():
+                                       std = local_school.student;           # 相当于 std = global_dict[threading.current_thread()];
+                                       print('Hello, %s (in %s)' % (std.name, threading.current_thread().name));
+
+
+
+          进程 vs 线程：
+                       Master-Worker模式：Master负责分配任务，Worker负责执行任务
+                       多进程模式最大的优点就是稳定性高，因为一个子进程崩溃了，不会影响主进程和其他子进程
+                       多线程模式致命的缺点就是任何一个线程挂掉都可能直接造成整个进程崩溃，因为所有线程共享进程的内存，Windows上，如果一个线程执行的代码出了问题，操作系统会强制结束整个进程。
+
+                       线程切换： 1.先保存当前执行的现场环境（CPU寄存器状态、内存页等
+                                2.把新任务的执行环境准备好（恢复上次的寄存器状态，切换内存页等
+                                3.开始执行
+
+                       多任务类型：任务分为计算密集型和IO密集型
+                                 计算密集型任务的特点是要进行大量的计算，消耗CPU资源，Python这样的脚本语言运行效率很低，完全不适合计算密集型任务。对于计算密集型任务，最好用C语言编写
+
+                                 IO密集型，涉及到网络、磁盘IO的任务都是IO密集型任务，这类任务的特点是CPU消耗很少，任务的大部分时间都在等待IO操作完成，大部分任务都是IO密集型任务，比如Web应用
+                                 IO密集型任务执行期间，99%的时间都花在IO上，花在CPU上的时间很少
+                                 对于IO密集型任务，最合适的语言就是开发效率最高（代码量最少）的语言
+
+                       异步IO：
+                             充分利用操作系统提供的异步IO支持，就可以用单进程单线程模型来执行多任务，这种全新的模型称为事件驱动模型，
+                             Nginx就是支持异步IO的Web服务器，它在单核CPU上采用单进程模型就可以高效地支持多任务
+
+                             对应到Python语言，单线程的异步编程模型称为协程，有了协程的支持，就可以基于事件驱动编写高效的多任务程序
+
+
+
+
+
+正则表达式：  用于匹配字符串
+            用一种描述性的语言来给字符串定义一个规则，凡是符合规则的字符串，我们就认为它“匹配”了
+            正则表达式也是用字符串表示
+            \d 匹配一个数字     '00\d'可以匹配'007'，但无法匹配'00A'
+            \w 匹配一个字母或数字  '\w\w\d'可以匹配'py3'
+            .  匹配任意字符       'py.'可以匹配'pyc'、'pyo'、'py!'
+            \s 匹配空格
+
+            对于以上匹配可以加描述，{*} 匹配变长字符
+                               {+} 匹配至少一个字符
+                               {？} 匹配一个或0个字符
+                               {n} 匹配n个字符
+                               {n,m} 匹配n~m个字符
+                 如： \d{3}\s+\d{3,8}
+                      \d{3}表示匹配3个数字，例如'010'
+                      \s+表示至少有一个空格，例如匹配' '，' '
+                      \d{3,8}表示3-8个数字，例如'1234567'
+
+                 '010-12345'   '\d{3}\-\d{5}'  # 对于特殊符号'-',用转义'\-'
+
+
+
+            精准匹配：[]表示范围
+                    [0-9a-zA-Z\_]可以匹配一个数字、字母或者下划线
+                    [0-9a-zA-Z\_]+可以匹配至少由一个数字、字母或者下划线组成的字符串，比如'a100'，'0_Z'，'Py3000'等等
+                    [a-zA-Z\_][0-9a-zA-Z\_]*可以匹配由字母或下划线开头，后接任意个由一个数字、字母或者下划线组成的字符串，也就是Python合法的变量
+                    [a-zA-Z\_][0-9a-zA-Z\_]{0, 19}更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）
+
+                    A|B可以匹配A或B，所以(P|p)ython可以匹配'Python'或者'python'
+                    ^表示行的开头，^\d表示必须以数字开头
+                    $表示行的结束，\d$表示必须以数字结束
+
+
+            Python提供re模块，包含所有正则表达式的功能
+                  正则表达式以r开头   s=r'ABC\-001'   # 不用考虑转义
+
+                  import re
+                  s = r'\d{3}-\d{8}'
+
+                  判断是否匹配
+                  re.match(s,'010-12345');   # match()匹配成功返回一个Match对象，否则返回None
+
+
+                  如果用户输入了一组标签，下次记得用正则表达式来把不规范的输入转化成正确的数组
+                  s1 = r'[\s\,]+'    #以空格或者','切分,至少一个
+                  re.split(s1, 'a, b, c ,,,,,,,,,d')   # 以s1正则表达式切分字符串
+
+
+                  分组提取字符串
+                  s3 = r'^(\d{3})-(\d{3,8})$'
+                  m =re.match(s3, '010-12345');   # 通过返回的Match对象，调用其group()方法，获取分组
+                  m.group(0);  #原始字符串
+                  m.group(1);  #以正则化分组的，第一部分
+                  m.group(2);  #以正则化分组的，第二部分
+                  m.groups();  #以正则化分组的所有分组，不包括原始字符串
+
+                  t = '19:05:45'
+                  m = re.match(r'^(0[0-9]|1[0-9]|2[0-3]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])\:(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|[0-9])$', t)
+                  print(m.groups());  # ('19','05','45')
+
+                  正则匹配默认是贪婪匹配，也就是匹配尽可能多的字符
+                  re.match(r'^(\d+)(0*)$', '102300').groups()   # ('102300', '')
+                  加个?就可以让\d+采用非贪婪匹配
+                  re.match(r'^(\d+?)(0*)$', '102300').groups()  # ('1023', '00')
+
+            当我们在Python中使用正则表达式时，re模块内部会干两件事情:
+                 1. 编译正则表达式，如果正则表达式的字符串本身不合法，会报错
+                 2. 用编译后的正则表达式去匹配字符串
+
+            如果一个正则表达式要重复使用几千次，出于效率的考虑，我们可以预编译该正则表达式
+            re_telephone = re.compile(r'^(\d{3})-(\d{3,8})$')  # 预编译
+            re_telephone.match('010-12345').groups()       # 匹配
+
+
+
+
+
+
+常用的内建模块:  batteries included
+              datetime: 处理时间和日期的模块
+                        from datetime import datetime
+                        now = datetime.now()  #获取当前时间  2018-09-06 12:45:08.4675
+                        date = datetime(2018,9,8,12,0,0)     #指定时间  2018-09-08 12:00
+
+                        # 对象方法
+                        date.timestamp()   # 转化为timestamp,计算机时间   1970-1-1 00:00:00 UTC+0:00= 0
+                        如果要存储datetime，最佳方法是将其转换为timestamp再存储，因为timestamp的值与时区完全无关
+
+                        now.strftime('%a %b %d %H:%M')       # 标准时间转为指定格式字符串  %a周(Mon,Thu..) %b月(May,Jun..) %d日 %H时 %M分 %S秒
+                                                                                      %Y年 %m月(1,2,...)
+
+                        # 类方法
+                        datetime.fromtimestamp(t) # timestamp转为本地时间
+                        datetime.utcfromtimestamp(t) # timestamp转为UTC时间
+                        datetime.strptime('2018年09月08日 12:00', '%Y年%m月%d日 %H:%M')  # 字符串转时间， strptime(1,2) 2按1的格式提取信息，输出标准时间格式
+                                                                                        2018-09-08 12:00:00
+
+                        datetime加减
+                        from datetime import datetime,timedelta
+                        now+timedelta(days=10,hours=10)  # 只能加减days和hours
+
+                        本地时间转UTC时间
+                        from datetime import datetime, timedelta, timezone
+                        now = datetime.now();  # 默认时区信息为 tzinfo=None
+                        utc_8 = timezone(timedelta(hours=8))  #设置utc时区根据事实, timezone.utc为UTC+0:00
+                        now.replace(tzinfo=utc_8)
+
+                        时区转化
+                        utc=datetime.utcnow().replace(tzinfo=timezone.utc) 设置基准UTC
+                        bj = utc.astimezone(timezone(timedelta(hours=8)))   # astimezone() 转化时区
+
+
+
+
+              collection:
+                        nametuple:   创建自定义tuple,用于封装数据，通过属性访问数据
+                                     from collections import nametuple
+                                     Point = nametuple('Point',['x','y']);
+                                     p = Point(1,2);
+                                     p.x  # 1
+                                     p.y  # 2
+
+                        deque:   双向列表，用于高效率实现插入和删除操作
+                                 from collections import deque
+                                 q = deque([1,'a']);
+                                 方法跟list差不多:
+                                               len(p)    长度
+                                               p[i],p[-i]     访问指定位置元素
+                                               p.append(元素)     末尾添加元素
+                                               p.insert(i,元素)   指定位置插入元素
+                                               p.pop();          弹出末尾元素
+                                               p.extend(list,tuple,set)  拆包，合并
+                                 多了反向添加和删除的方法: p.appendleft()
+                                                      p.popleft()
+
+                        defaultdict:   当dict的键值对不存在时，返回设定值
+                                       from collections import defaultdict
+                                       dd = defaultdict(lambda:'NiL');
+                                       其他与dict一样：
+                                                    dd[key1]     访问指定键值对
+                                                    dd.get(key)   没有返回defaultdict
+                                                    dd.pop(key)        删除键值对
+                                                    dd[key_new]=value_new  新增键值对
+                                                    for key,value in dd.items()    访问所有键值对
+
+
+
+                        OrderedDict: OrderedDict的Key会按照插入的顺序排列
+                                     from collections import OrderedDict
+                                     od = OrderedDict([('a',1),('b',2)]);
+
+
+                        Counter: 统计字符出现次数
+                                 from collections import Counter
+                                 c = Conter();
+                                 for ch in 'programming':
+                                    c[ch]=c[ch]+1;
+
+                                 #Counter()实际是dict的一个子类，
+
+
+
+              ** base64: 一种二进制<-->字符串的编码方法，类似于utf-8等
+                                1.创建一个包含64个字符的数组：
+                                  ['A','B',...,'0','1',...,'/']
+                                2.以3Byte二进制(3x8=24bit)为一组<--->4组x6bit,每组按编号2^6查找数组，表示为4个字符串
+                                3. 对于剩余不足3Byte的, \x00string补0，转为字符串按=表示
+                                Base64适用于小段内容的编码，比如数字证书签名、Cookie的内容等
+
+                                import base64
+                                a=base64.b64encode(b'binary\x00string')
+                                base64.b64decode(a);
+
+                                base64.urlsafe_b64encode(b'')
+                                base64.urlsafe_b64decode('')  # url safe
+
+
+              ** struct: 解决bytes和其他二进制数据类型的转换
+
+
+
+              hashlib:  摘要算法
+                                      通过一个函数f()，把任意长度的数据data转换为一个长度固定的数据串digest（通常用16进制的字符串表示） digest=f(data)
+                                      对data的改动，会导致digest的不同
+                                      import hashlib
+                                      md5 = hashlib.md5();
+                                      md5.update('123cww4'.encode('utf-8'));  #要先将其转为二进制才能hash
+                                                                              # 每次使用update都会存在实例中，通过hexdiges()调用
+                                      md5.hexdigest()
+                                      # MD5是最常见的摘要算法，速度很快，生成结果是固定的128 bit字节，通常用一个32位的16进制字符串表示
+                                        SHA1的结果是160 bit字节，通常用一个40位的16进制字符串表示
+
+                                  摘要算法应用:
+                                            用户登录的网站: 正确的保存口令的方式是不存储用户的明文口令，而是存储用户口令的摘要
+
+
+              itertools:  用于操作迭代对象的函数库
+                             无限迭代器
+                                 count();
+                                   natuals = itertools.count(1);
+                                   for n in natuals:           # 创造一个无限迭代器，从1开始计数
+
+                                 cycle();
+                                   cs = itertools.cycle('ABC');
+                                   for n in cs:               # 创造一个无限循环序列
+
+                                 repeat();
+                                   ns = itertools.repeat('A',3)
+                                   for n in ns:           # 创造一个重复序列，可指定重复次数
+
+                                 对于这三类方法创造的都是 无限重复iterable对象，通过for..in将其变为iterator
+                                 若要结束迭代，要么是结束for循环，要么用takewhile()方法
+                                 natuals = itertools.count(1);
+                                 ns = itertools.takewhile(lambda x: x <= 10, natuals)  #这里将无限iterable对象natuals, 转为了有约束条件的iterable对象ns
+
+                             迭代器操作函数：
+                                 chain();
+                                      ns = itertools.chain(iterable_1,iterable_2) #将两个iterable对象组合成一个新的iterable对象
+
+                                 groupby();
+                                     for key, group in itertools.groupby(iterable,lambda x: f(x))
+                                           # 将iterable对象分组，取每组第一个元素作为key，并返回一个iterable的group
+                                             可对iterable对象的每个元素，进行lambda function操作
+
+
+              contextlib:
+                      上下文管理
+                                   要求调用with语句的类，必须实现__enter__和__exit__方法
+                                   class Query():
+                                       def __init__(self,name):
+                                           self.name = name;
+
+                                       def __enter__(self):
+                                           print('Begin');
+                                           return self;
+
+                                       def __exit__(self, exc_type,exc_value,traceback):
+                                           if exc_type:        # 如果执行类型有错，则
+                                                print('Error');
+                                           else:
+                                                print('End');
+
+                                       def query(self):
+                                           print('Query info about %s' % self.name)
+
+                                   with Query('Cindy') as q:
+                                        q.query();
+                                   # 执行时，先执行__enter__(); 再执行q.query(); 最后执行__exit__()关闭Query()
+
+
+                              @contextmanager
+                                   这个decorator接收一个generator，用yield语句把with... as var 把变量输出出去
+
+                                   from contextlib import contextmanager
+                                   class Query():
+                                       def __init__(self,name):
+                                               self.name = name;
+
+                                       def query(self):
+                                            print('Query info about %s' % self.name);
+
+                                   @contextmanager
+                                   def create_query(name):
+                                        print('Begin');
+                                        q = Query(name);
+                                        yield q;
+                                        print('End');
+
+                                   with create_query('Cindy') as q:
+                                        q.query();
+
+                                   # 执行时， 先执行 yield之前的语句(将创建类的过程写入yield之前)， 再执行 with中的语句， 最后执行yield后的语句
+                                                  |                                                |                 |
+                                             __enter__()                                     执行with中的语句      __exit__()
+                                      很多时候，我们希望在某段代码执行前后自动执行特定代码，也可以用@contextmanager实现
+                                      @contextmanager
+                                      def tag(name):
+                                          print('<%s>' % name);
+                                          yield
+                                          print('</%s>' % name);
+
+                                      with tag('h1'):
+                                          print('hello world');
+
+
+                             @closing
+                                    如果一个对象没有实现上下文，我们就不能把它用于with语句。这个时候，可以用closing()来把该对象变为上下文对象
+                                    from contextlib import closing
+                                    from urllib.request import urlopen
+
+                                    with closing(urlopen('https://www.python.org')) as page:
+                                    for line in page:
+                                          print(line)
+
+                                    # @closing源码
+                                    @contextmanager
+                                    def closing(obj):
+                                         try:
+                                           yield obj
+                                         finally:
+                                           obj.close()
+
+
+
+
+              urllib:
+                    Get:
+                        抓取URL内容，也就是发送一个GET请求到指定的页面，然后返回HTTP的响应
+                        from urllib import request
+                        from context import closing
+                        with closing(request.urlopen('https://api.douban.com/v2/book/2129650')) as f:
+                             data = f.read();                                  # 获取HTTP主体信息
+                             print('Status:', f.status, f.reason)              # 获取HTTP状态等
+                             for key, value in f.getheaders():                 # 获取HTTP头部信息
+                                  print('%s: %s' % (key, value));
+                             print('Data', data.decode('utf-8'))
+
+                        模拟浏览器发出请求(这里我们是请求的发起端，需要设置请求的url和头部信息)
+                        from urllib import request
+                        # 建立请求
+                        req = reques.Request('http://www.douban.com')
+                        req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+
+                        # 等待响应，抓起数据
+                        with reques.urlopen(req) as f:
+                             print('Status:', f.status, f.reason);
+                             for k, v in f.getheaders():
+                                  print('%s: %s' % (k,v));
+                             print('Data:', f.read().decode('utf-8'));
+
+
+
+                    Post: 如果要以POST发送一个请求，只需要把参数data以bytes形式传入
+                          模拟微博登陆，并下载url
+                          from urllib import request, parse
+
+                          print('Login to weibo.cn..');
+                          email = input('Email/Telephone: ');
+                          passwd = input('Password: ');
+                          login_data = parse.urlencode([            # 按url格式编码要POST的数据
+                              ('username', email),
+                              ('password', passwd),
+                              ('entry', 'mweibo'),
+                              ('client_id', ''),
+                              ('ec', ''),
+                              ('pagerefer', 'https://passport.weibo.cn/signin/welcome?entry=mweibo&r=http%3A%2F%2Fm.weibo.cn%2F')
+                          ])
+
+                          req = request.Request('https://passport.weibo.cn/sso/login');
+                          req.add_header('Origin', 'https://passport.weibo.cn');
+
+                          # User-Agent头就是用来标识浏览器
+                          req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+                          req.add_header('Referer', 'https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F')
+
+                          with request.urlopen(req, data = login_data.encode('utf-8')) as f:    # load数据
+                                 print('Satus: ', f.status, f.reason);
+                                 for k, v in f.getheaders():
+                                 print('%s: %s' % (k,v));
+                                 print('Data:', f.read().decode('utf-8'));
+
+
+              xml:
+                  操作XML有两种方法：DOM和SAX。
+                  DOM会把整个XML读入内存，解析为树，因此占用内存大，解析慢，优点是可以任意遍历树的节点。
+                  SAX是流模式，边读边解析，占用内存小，解析快，缺点是我们需要自己处理事件
+                  正常情况下，优先考虑SAX，因为DOM实在太占内存
+
+                  当SAX解析器读到一个节点时
+                  <a href="/">python</a>
+                  会产生3个事件：
+                     1.start_element事件，在读取<a href="/">时；
+                     2.char_data事件，在读取python时；
+                     3.end_element事件，在读取</a>时
+
+                  from xml.parsers.expat import ParserCreate
+
+                  class DefaultSaxHandler(object):          # 自定义解释函数
+                     def start_element(self, name, attrs):
+                        print('sax:start_element: %s, attrs: %s' % (name, str(attrs)))
+
+                     def end_element(self, name):
+                        print('sax:end_element: %s' % name)
+
+                     def char_data(self, text):
+                        print('sax:char_data: %s' % text)
+
+                  xml = r'''<?xml version="1.0"?>
+                  <ol>
+                      <li><a href="/python">Python</a></li>
+                      <li><a href="/ruby">Ruby</a></li>
+                  </ol>
+                  '''
+
+                  handler = DefaultSaxHandler()
+                  parser = ParserCreate()                # 用ParserCreate()创建一个解释器
+                  parser.StartElementHandler = handler.start_element       # 将自定义的解释函数赋值给解释器
+                  parser.EndElementHandler = handler.end_element
+                  parser.CharacterDataHandler = handler.char_data
+                  parser.Parse(xml)                      # 解释xml文件
+
+              html:如果我们要编写一个搜索引擎，第一步是用爬虫把目标网站的页面抓下来，第二步就是解析该HTML页面，看看里面的内容到底是新闻、图片还是视频
+                   解析html : htmlparser
+
+                   from html.parser import HTMLParser
+                   from html.entities import name2codepoint
+
+                   class MyHTMLParser(HTMLParser):      # 通过对HTMLParser继承，重写方法，可以自定义解析
+                       def handle_starttag(self,tag,attrs):
+                           print('<%s>' % tag);
+
+                       def handle_endtag(self,tag):
+                           print('</%s>' % tag);
+
+                       def handle_startendtag(self, tag, attrs):
+                           print('<%/s>' % tag);
+
+                       ...
+
+                   parser = MyHTMLParser();
+                   parser.feed(html);        # 传入HTML文件进行解析
+
+
+
+常用库：
+       PIL：Python Imaging Library，已经是Python平台事实上的图像处理标准库
+       requests: 处理URL资源
+               GET:  import requests
+                     r = requests.get('http://www.douban.com/')
+                     r.status_code;
+                     r.text
+                     r.headers
+
+       chardet: 用它来检测编码
+       psutil:  获取系统信息(CPU信息, 内存信息, 磁盘信息, 网络信息, 进程信息)
+
+
+virtualenv:
+          所有第三方的包都会被pip安装到Python3的site-packages目录下
+          virtualenv就是用来为一个应用创建一套“隔离”的Python运行环境
+
+          原理很简单，就是把系统Python复制一份到virtualenv的环境，用命令source venv/bin/activate进入一个virtualenv环境时，
+          virtualenv会修改相关环境变量，让命令python和pip均指向当前的virtualenv环境
+
+
+
+
+GUI界面:
+         Tkinter: 自带的GUI库
+                Frame派生一个Application类，这是所有Widget的父容器
+                在GUI中，每个Button、Label、输入框等，都是一个Widget。Frame则是可以容纳其他Widget的Widget，所有的Widget组合起来就是一棵树
+
+
+网络编程：两个进程之间的通信
+        TCP/IP:
+               IP: IP协议负责把数据从一台计算机通过网络发送到另一台计算机。数据被分割成一小块一小块，然后通过IP包发送出去
+                   路由器负责决定如何把一个IP包转发出去
+                   IP包的特点是按块发送，途径多个路由，但不保证能到达，也不保证顺序到达
+
+               TCP: TCP协议负责在两台计算机之间建立可靠连接，保证数据包按顺序到达
+                    TCP通过三次握手建立连接，然后，对每个IP包编号，确保对方按顺序收到，如果包丢掉了，就自动重发
+                    TCP报文除了包含要传输的数据外，还包含源IP地址和目标IP地址，源端口和目标端口(端口号用来区分不同的网络程序)
+
+               许多常用的更高级的协议都是建立在TCP协议基础上的，比如用于浏览器的HTTP协议、发送邮件的SMTP协议等。
+
+
+        TCP编程：## 所有在网络中传输的信息都必须是byte
+               Socket是网络编程的一个抽象概念。通常我们用一个Socket表示“打开了一个网络链接”
+               打开一个Socket需要知道目标计算机：IP地址
+                                           端口号
+                                           协议类型
+
+               客户端：socket是基于TCP/IP的，连接是双向的；而Web应用是基于HTTP的，必须由客户端先发出申请，服务器端才会响应
+                     1. 创建socket对象， 指定TCP/IP类型
+                        s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                     2. 建立连接， 指定服务器地址和端口
+                        s.connect(('url',80))  # 连接到指定服务器，指定端口。 connect(tuplpe) 只能传入一个tuple
+                                               # Web服务(80), SMTP(25), FTP(21), 1024(为互联网接口)以后的可以随意调用
+
+                     3. TCP连接创建的是双向通道，双方都可以同时给对方发数据。但是谁先发谁后发，怎么协调，要根据具体的协议来决定
+                        HTTP协议规定客户端必须先发请求给服务器，服务器收到后才发数据给客户端
+                        s.send()  s.recv(max)
+
+                     4. 通信结束断开连接
+                        s.close()
+
+               服务器端：
+                     1. 绑定一个IP和端口提供给客户端，并一直监听
+                        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        s.bind(('127.0.0.1',9999))   # 0.0.0.0为服务器的所有地址
+                                                       127.0.0.1 为本机地址(客户端只有在本机运行时才能连接)
+                        s.listen(5)  # 开始监听，最大接入线程为5
+                        print('Wait for connection...')
+
+                     2. 等待客户端接入
+                        while True:
+                              sock, adrr = s.accept();   # 接收一个connection, 返回接收的socket和对应的地址addr
+                              # 为每个连接创建一个独立线程来处理, 这里我们只有一个客户端接入，所以我们只创建了一个线程
+                              t = threading.Thread(target=tcplink, args=(sock, adrr));
+                              t.start();
+
+                        # 定义处理socket的函数
+                          def tcplink(sock,addr):
+                              print('Accept new connection from %s: %s' % addr);
+                              sock.send(b'Welcome');
+                              while True:
+                                  data = sock.recv(1024)
+                                  time.sleep(1)
+                                  if not data or data.decode('utf-8') == 'exit':
+                                      break;
+                                  sock.send(('Hello, %s' % data.decode('utf-8')).encode('utf-8'));
+                              s.close()
+                              print('Connection from %s:%s closed' % addr)
+
+        UDP：TCP是建立可靠连接，并且通信双方都可以以流的形式发送数据SOCK_STREAM。
+             UDP则是面向无连接的协议SOCK_DGRAM, 用户数据报
+             使用UDP协议时，不需要建立连接，只需要知道对方的IP地址和端口号，就可以直接发数据包
+
+             服务器端：不需要连接每次发送指定，地址和端口
+                    import socket
+
+                    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    # 绑定端口:
+                    s.bind(('127.0.0.1', 9999))
+
+                    print('Bind UDP on 9999...')
+                    while True:
+                    # 接收数据:
+                         data, addr = s.recvfrom(1024)
+                         print('Received from %s:%s.' % addr)
+                         s.sendto(b'Hello, %s!' % data, addr)
+
+             客户端：
+                    import socket
+
+                    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    for data in [b'Michael', b'Tracy', b'Sarah']:
+                        # 发送数据:
+                        s.sendto(data, ('127.0.0.1', 9999))
+                        # 接收数据:
+                        print(s.recv(1024).decode('utf-8'))
+                    s.close()
+
+
+电子邮件：
+        电子邮件发送过程：
+          me@163.com--->friend@sina.com
+          发件人-->me MUA-->网易MTA-->新浪MTA-->目的MDA<--friend MUA<--收件人
+                  |___SMTP____|___SMTP__|       |_POP or IMAP_|
+
+
+           MUA(Mail User Agent)
+           MTA(Mail Tansfer Agent)
+           MDA(Mail Delivery Agent)
+
+
+        SMTP发送邮件：
+             SMTP是发送邮件的协议，Python内置对SMTP的支持，可以发送纯文本邮件、HTML邮件以及带附件的邮件
+             Python对SMTP支持有smtplib和email两个模块，email负责构造邮件，smtplib负责发送邮件
+
+        1. 发送普通邮件
+
+             from email.header import Header    # Header编码
+             from email.mime.text import MIMEText
+             from email.utils import parseaddr, formataddr
+
+             import smtplib
+             # 1. 构建邮件
+             def _format_addr(s):   # 编写了一个函数_format_addr()来格式化一个邮件地址。
+                 name, addr = parseaddr(s)
+                 return formataddr((Header(name, 'utf-8').encode(), addr)) # 注意不能简单地传入name <addr@example.com>，因为如果包含中文，需要通过Header对象进行编码
+
+             msg = MIMEText('hello, send by Python...', 'plain', 'utf-8')  #'plain'表示纯文本, ‘html'为HTML文件
+
+             # 发件人、收件人等信息并不是通过SMTP协议发给MTA，而是包含在发给MTA的文本中的，所以，我们必须把From、To和Subject添加到MIMEText
+             msg['From'] = _format_addr('Python爱好者 <%s>' % from_addr)
+             msg['To'] = _format_addr('管理员 <%s>' % to_addr)
+             msg['Subject'] = Header('来自SMTP的问候……', 'utf-8').encode()
+
+
+             # 2. 创建MTA对象
+             # 输入Email地址和口令:
+             from_addr = input('From: ')
+             password = input('Password: ')
+             # 输入收件人地址:
+             to_addr = input('To: ')
+             # 输入SMTP服务器地址:
+             smtp_server = input('SMTP server: ')
+             smtp_port = input('SMTP port: ')
+
+             server = smtplib.SMTP(smtp_server, smtp_port) # SMTP默认端口为25
+             server.set_debuglevel(1) # set_debuglevel(1)就可以打印出和SMTP服务器交互的所有信息
+             server.login(from_addr, password)  # login()方法用来登录SMTP服务器
+
+             # 3. 发送邮件
+             server.sendmail(from_addr, [to_addr], msg.as_string()) # sendmail()方法就是发邮件，由于可以一次发给多个人，所以传入一个list;
+                                                                    #  邮件正文是一个str，as_string()把MIMEText对象变成str
+             server.quit()
+
+        2.发送带附件邮件
+        构造一个MIMEMultipart对象代表邮件本身，然后往里面加上一个MIMEText作为邮件正文，再继续往里面加上表示附件的MIMEBase对象
+            from email.mime.multipart import MIMEMultipart
+            from email.mime.base import MIMEBase
+            from email import encoders
+        #1 构造邮件
+             # 邮件对象:
+             msg = MIMEMultipart()
+             msg['From'] = _format_addr('Python爱好者 <%s>' % from_addr)
+             msg['To'] = _format_addr('管理员 <%s>' % to_addr)
+             msg['Subject'] = Header('来自SMTP的问候……', 'utf-8').encode()
+
+             # 邮件正文是MIMEText:
+             msg.attach(MIMEText('send with file...', 'plain', 'utf-8'))
+
+             # 添加附件就是加上一个MIMEBase，从本地读取一个图片:
+             with open('/Users/michael/Downloads/test.png', 'rb') as f:
+                # 设置附件的MIME和文件名，这里是png类型:
+                mime = MIMEBase('image', 'png', filename='test.png')
+
+                # 加上必要的头信息:
+                mime.add_header('Content-Disposition', 'attachment', filename='test.png')
+                mime.add_header('Content-ID', '<0>')
+                mime.add_header('X-Attachment-Id', '0')
+
+                # 把附件的内容读进来:
+                mime.set_payload(f.read())
+
+                # 用Base64编码:
+                encoders.encode_base64(mime)
+
+                # 添加到MIMEMultipart:
+                msg.attach(mime)
+
+        # 2. 创建MTA对象
+             # 输入Email地址和口令:
+             from_addr = input('From: ')
+             password = input('Password: ')
+             # 输入收件人地址:
+             to_addr = input('To: ')
+             # 输入SMTP服务器地址:
+             smtp_server = input('SMTP server: ')
+             smtp_port = input('SMTP port: ')
+
+             server = smtplib.SMTP(smtp_server, smtp_port) # SMTP默认端口为25
+             server.set_debuglevel(1) # set_debuglevel(1)就可以打印出和SMTP服务器交互的所有信息
+             server.login(from_addr, password)  # login()方法用来登录SMTP服务器
+
+             server.sendmail(from_addr, [to_addr], msg.as_string()) # sendmail()方法就是发邮件，由于可以一次发给多个人，所以传入一个list;
+                                                                    #  邮件正文是一个str，as_string()把MIMEText对象变成str
+             server.quit()
+
+        3. 发送带图片的邮件
+           要把图片嵌入到邮件正文中，我们只需按照发送附件的方式，先把邮件作为附件添加进去，然后，在HTML中通过引用src="cid:0"就可以把附件作为图片嵌入了
+
+        4. 加密STMP
+           使用标准的25端口连接SMTP服务器时，使用的是明文传输，发送邮件的整个过程可能会被窃听。
+           要更安全地发送邮件，可以加密SMTP会话，实际上就是先创建SSL安全连接，然后再使用SMTP协议发送邮件
+           smtp_server = 'smtp.gmail.com'
+           smtp_port = 587
+           server = smtplib.SMTP(smtp_server, smtp_port)
+           server.starttls()    # 只需要在创建SMTP对象后，立刻调用starttls()方法，就创建了安全连接
+           # 剩下的代码和前面的一模一样:
+           server.set_debuglevel(1)
+
+        造一个邮件对象就是一个Messag对象，如果构造一个MIMEText对象，就表示一个文本邮件对象，如果构造一个MIMEImage对象，就表示一个作为附件的图片，要把多个对象组合起来，就用MIMEMultipart对象，而MIMEBase可以表示任何对象
+        Message
+        +- MIMEBase
+           +- MIMEMultipart
+           +- MIMENonMultipart
+              +- MIMEMessage
+              +- MIMEText
+              +- MIMEImage
+
+
+
+
+        POP收取邮件：
+               收取邮件就是编写一个MUA作为客户端，从MDA把邮件获取到用户的电脑或者手机上。收取邮件最常用的协议是POP协议，目前版本号是3，俗称POP3
+               Python内置一个poplib模块，实现了POP3协议，可以直接用来收邮件
+               注意到POP3协议收取的不是一个已经可以阅读的邮件本身，而是邮件的原始文本，这和SMTP协议很像，SMTP发送的也是经过编码后的一大段文本
+               要把POP3收取的文本变成可以阅读的邮件，还需要用email模块提供的各种类来解析原始文本，变成可阅读的邮件对象。
+
+               所以，收取邮件分两步：
+                  1. 用poplib把邮件的原始文本下载到本地；
+                     import poplib
+                     from PIL.ImageFile import Parser
+
+                     #1. 通过POP3连接到服务器
+                     email = input('Email: ')
+                     password = input('Password: ')
+                     pop3_server = input('POP3 server: ')
+                     server = poplib.POP3(pop3_server)
+                     server.set_debuglevel(1)
+                     print(server.getwelcome().decode('utf-8'))
+                     # 身份认证:
+                     server.user(email)
+                     server.pass_(password)
+
+
+                     #2. 查看邮件
+                     # stat()返回邮件数量和占用空间:
+                     print('Messages: %s. Size: %s' % server.stat())
+                     # list()返回所有邮件的编号:
+                     resp, mails, octets = server.list()
+                     # 可以查看返回的列表类似[b'1 82923', b'2 2184', ...]
+                     print(mails)
+
+                     #3. 下载邮件
+                     # 获取最新一封邮件, 注意索引号从1开始:
+                     index = len(mails)
+                     resp, lines, octets = server.retr(index)
+
+                     # lines存储了邮件的原始文本的每一行,
+                     # 可以获得整个邮件的原始文本:
+                     msg_content = b'\r\n'.join(lines).decode('utf-8')
+
+               2. 用email解析原始文本，还原为邮件对象
+
+                     msg = Parser().parsestr(msg_content)
+
+                     # 可以根据邮件索引号直接从服务器删除邮件:
+                     # server.dele(index)
+                     # 关闭连接:
+                     server.quit()
+
+数据库:
+     无数据库的存储，不能做快速查询。只有把数据全部读到内存中，才能自己进行遍历
+     数据库(Database): 是一种专门用于集中存储和查询的软件。
+                      能够方便程序保存和读取数据，能直接通过数据库语句查询到指定数据。
+     数据库的类型： 网状，层次状，关系型数据库(目前主流)
+
+     关系型数据库:
+                基础: 基于表的一对多关系
+                目前有的关系型数据库:   Oracle; SQLServer(微软); DB2(IBM)
+                                    Mysql; sqlite(嵌入式数据库，适合移动应用)
+
+                Sqlite:
+                       SQLite是一种嵌入式数据库，它的数据库就是一个文件。由于SQLite本身是C写的，而且体积很小，所以，经常被集成到各种应用程序中
+                       1. 表是数据库中存放关系数据的集合，一个数据库里面通常都包含多个表
+                       2. 表和表之间通过外键关联
+                       3. 要操作关系数据库，首先需要连接到数据库，一个数据库连接称为Connection
+                       4. 连接到数据库后，需要打开游标，称之为Cursor，通过Cursor执行SQL语句
+
+                       import sqlite3
+                       # 连接到SQLite数据库
+                       # 数据库文件是test.db
+                       # 如果文件不存在，会自动在当前目录创建:
+
+                       conn = sqlite3.connect('test.db')
+
+                       cursor = conn.cursor()
+                       # cursor.execute('sql语句')
+                       cursor.execute('create table user (id varchar(20) primary key, name varchar(20))')
+                       cursor.execute('insert into user (id, name) values (\'1\', \'Michael\')')
+
+                       # 通过rowcount获得插入的行数:
+                       print( cursor.rowcount)
+
+                       cursor.execute('select * from user where id=?', ('1',))
+
+                       # 执行结果由rowcount返回影响的行数，就可以拿到执行结果
+                       values = cursor.fetchall()
+                       print(values);
+                       cursor.close()
+                       conn.commit()
+                       conn.close()
+
+                       # 确保出错的情况下也关闭掉Connection对象和Cursor对象
+                         try:...except:...finally:...
+
+
+
+
+
+
+Web开发：
+       软件的开发过程：
+                  大型机: 软件使用者通过“哑终端”登陆到大型机上去运行软件
+                  C/S模式(大型软件): 软件主要运行在桌面上，而数据库这样的软件运行在服务器端
+                  B/S模式(Web app): 客户端只需要浏览器，应用程序的逻辑和数据都存储在服务器端。
+                                   浏览器只需要请求服务器，获取Web页面，并把Web页面展示给用户即可
+
+                                   1.静态Web页面: 要修改Web页面的内容，就需要再次编辑HTML源文件。服务器无法获取用户信息，没有用户交互
+                                   2.CGI： 通过CGI(Common GateWay Interface)接口，完成用户表单提交
+                                   3.ASP/JSP/PHP： 将服务器脚本嵌入HTML，用于在服务器端动态地生成HTML文件
+                                   4.MVC模式： 为了解决直接用脚本语言嵌入HTML导致的可维护性差的问题，Web应用也引入了Model-View-Controller的模式，来简化Web开发。
+                                              ASP发展为ASP.Net，JSP和PHP也有一大堆MVC框架
+       HTTP协议： 应用层协议，基于TCP/IP
+
+                 Http流程： 基于HTTP Request和HTTP Response
+                          1. 浏览器--HTTP Request-->服务器
+                          2. 服务器根据请求生成相应的HTTP Response
+                          3. 服务器--HTTP Response-->浏览器
+                             * 一个HTTP请求只处理一个资源: HTML,图片，或者视频
+                               如果浏览器还需要继续向服务器请求其他资源，比如图片，就再次发出HTTP请求。
+                               因此可以将资源分散到各个服务器上，减轻每个服务器的压力
+
+                 HTTP Request: GET(仅请求资源), POST(会附带用户数据)
+                               #GET:
+                                    Request Headers:
+                                              GET /url HTTP/1.1      # / 表示首页， www.sina.com/url
+                                              Host: www.sina.com     # 域名
+                                              head: value
+                                              ...
+
+                               #POST:
+                                    Request Headers:
+                                             POST /url HTTP/1.1
+                                             Host: www.sina.com
+                                             head: value
+                                             ...
+                                    Body:
+                                         data
+
+                 HTTP Response:
+                         Response Headers:
+                                         HTTP/1.1 响应码   # 响应码： 200(成功响应) 3xx(重定向) 4xx(客户端请求出错) 5xx(服务器端出错)
+                                         Content-type: text/html  # 响应类型: html,图片,或视频
+                                         ...
+
+                         Body:
+                              响应内容(如HTML源码)
+
+
+
+       WSGI(Web Server Gateway Interface): 接受HTTP请求、解析HTTP请求、发送HTTP响应
+                  主要是： 1.创建服务器，主要是为浏览器访问特定的host:port，指定其对于的处理函数application
+                         2. application对于各种Request,生成Response(start_response()+return body)
+
+
+                         # 定义服务器处理Request的函数
+                         def application(environ,start_response):     #输入Request和生成头部的函数
+                               path = environ('PATH_INFO')      # 可按键值对的方法在Request中提取需要的信息
+
+                               start_response('200 0k',[('Content-Type','text/html')]) # 生成Response Header: '响应类型', [('head','value'),]
+
+                               body='<h1>Hello %s</h1>' % (path[1:] or 'web')  # 生成Response body
+
+                               return [body.encode('utf-8')]       # 返回Response body, 二进制，按list返回
+
+                         #  定义服务器
+                         from wsgiref.simple_server import make_server
+                         from hello import application
+
+                         httpd = make_server('host',port,application)  # 创建服务器，主要是为浏览器访问特定的host:port，指定其对于的处理函数application
+                         httpd.server_forever()   # 启动服务器，监听请求
+
+
+       Web框架： 帮忙连接url和视图函数
+               from flask import Flask, request
+
+               app = Flask(__name__)
+
+               @app.route('/',methods=['GET','POST'])  #指定url, port, methods.  '/' 为主页
+               def home():                            # 为该url指定处理函数(视图函数)
+                   body = '<h1>home</h1>'
+                   return body                        # 这里可直接返回字符串，flask自动帮转
+
+               @app.route('/signin',methods=['GET'])
+               def sigin_form():
+                   body = '''<form action='/signin' method='post'>    # /signin:GET 和 /signin: POST是两种不同的url
+                   <p><input type='text' name='username'></p>
+                   <p><input type='password' name='password'></p>
+                   <p><button type='submit'>Signin</button></p>
+                   </form>'''
+
+                   return body
+
+               if __name__ == '__main__':
+                   app.run('host',port)  # 运行服务器，指定host和port
+
+       模块技术：
+              模块: 简单来说就是包含 变量 和 控制结构 的html文件(必须放在与app.py同级的templates目录里面，否则无法渲染)
+
+                   Web框架类似，Python的模板也有很多种, 不同的模板具有不同的控制结构和表达式
+                   jinja2: 它提供了控制结构，表达式和继承
+                      控制结构 {% %}:  {% if  condition1 %}
+                                     {% elif condition2 %}
+                                     {% else %}
+                                     {% endif %}
+
+                                     {% for i in list %}
+                                     {% endfor %}
+
+                                     {% for key, value in dict.iteritems() %}
+                                     {% endfor %}
+
+                      变量取值 {{ variable }}
+
+              渲染: 模板文件在经过动态赋值后，生成需要的html文件，返回给用户
+                   render_template('view.html', variable = value)
+
+
+              MVC模式:
+                     Model: 负责将Controller中提取的信息打包传给View
+                     View:  模板
+                     Controller: 控制器，负责处理URL的函数
+
+                     eg:
+                       from flask import Flask, request, render_template
+
+                       app = Flask(__name__)
+
+                       @app.route('/',methods=['GET','POST'])
+                       def home():
+                           return render_template('home.html')
+
+                       @app.route('/signin',methods=['GET'])
+                       def signin_form():
+                           return render_template('form.html')
+
+                       @app.route('/signin', methods=['POST'])
+                       def signin():                      # 这里signin()为一个控制器
+                           username = request.form['username']
+                           password = request.form['password']
+
+                           if username == 'xzq' and password == 'Cindy':
+                              return render_template('signin_ok.html', username = username)     # signin_ok.html为模板， username = username为传入其中的Model
+                           return render_template('form.html', message = 'Bad username or password', username = username)
+
+                       if __name__ == '__main__':
+                            app.run()
