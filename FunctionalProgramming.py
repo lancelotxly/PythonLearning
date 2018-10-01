@@ -90,5 +90,56 @@ anonymous function:  lambda x: f(x)
 #     print(x)
 
 '''
+decorator: 1. no para input
+           def decorator(f):
+               @functools.wraps(f)
+               def wrapper(*args,**kwargs):
+                    decoration part
+                    return f(*args, **kwargs)
+               return wrapper
+               
+           2. use the outer para of decorator
+           def function(para):
+               def decorator(f):
+                   @functools.wraps(f)
+                   def wrapper(*args, **kwargs):
+                       decoration part
+                       return f(*args,**kwargs)
+                   return wrapper
+               return decorator
+'''
+# import functools
+# def decorator(f):
+#     @functools.wraps(f)
+#     def wrapper(*args,**kwargs):
+#         print('call %s' % f.__name__)
+#         return f(*args,**kwargs)
+#     return wrapper
+# @decorator
+# def now():
+#     print('2018-10-01')
+# a = now()
+
+# import functools
+# def Commit(text):
+#     def decorator(f):
+#         @functools.wraps(f)
+#         def wrapper(*args,**kwargs):
+#             print('%s call %s' % (text, f.__name__))
+#             return f(*args,**kwargs)
+#         return wrapper
+#     return decorator
+# @Commit('execute')
+# def love():
+#     print('Xzq loves Cindy')
+# love()
 
 '''
+partial function: pre input the para into *arg or **kwargs
+                  functools.partial(func, para, para = value)
+'''
+import functools
+max10 = functools.partial(max, 10)
+maximum = max10(2,6,7)
+print(maximum)
+
