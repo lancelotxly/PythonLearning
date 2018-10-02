@@ -1,5 +1,5 @@
 '''
-Object oriented programming: module, class and instance, inheritance and polymorphism, multiple inheritance
+Object oriented programming: module, class and instance, encapsulation,  inheritance and polymorphism, multiple inheritance
 '''
 '''
 modules: packages
@@ -57,6 +57,38 @@ class and instance:
 # classNumber = Boy.ClassNumber
 # gradeNumber = Boy.GradeNumber
 # b._printStudentInf()
+
+
+'''
+encapsulation: don't reveal attrs, design attrs through private attr and only expose set() and get() to outer for settting or getting attrs
+               @property   @attr.setter
+'''
+# class Student():
+#     def __init__(self,name,age):
+#         self.__name = name
+#         self.__age = age
+#
+#     @property
+#     def Name(self):
+#         return self.__name
+#     @property
+#     def Age(self):
+#         return self.__age
+#
+#     @Name.setter
+#     def Name(self,name):
+#         self.__name = name
+#     @Age.setter
+#     def Age(self,age):
+#         self.__age = age
+#
+# s = Student('xzq',18)
+# print(s.Name, s.Age)
+# s.Name = 'Cindy'
+# s.Age = 18
+# print(s.Name,s.Age)
+
+
 
 '''
 inheritance and polymorphism:

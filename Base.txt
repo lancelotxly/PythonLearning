@@ -377,7 +377,7 @@ c.printName();
                                            self.age=age;
 
                                       s.set_age=set_age;
-                                      s.set_age(self,25); # 调用
+                                      s.set_age(s,25); # 调用
 
                                    2. from types import MethodType
                                       s.set_age=MethodType(set_age,s);  #方法名，对象名
