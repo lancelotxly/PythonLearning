@@ -112,3 +112,51 @@ file loading and save: 1. try:
 # with open('data.json','r') as f:
 #     data = json.load(f)
 # print(data)
+
+
+'''
+StringIO and ByteIO: StringIO 
+                     1. f = StringIO(' ') <--> f.read(), f.readline(), for item in f:
+                     2. f = StringIO()
+                        f.write(' ')    <-->  f.getvalue()
+                        
+                    BytesIO
+                    1. f = BytesIO(b' ')   <--> f.read(), f.readline(), for item in f:
+                    2. f = BytesIO()
+                       f.write(b' ')  <--> f.getvalue()
+'''
+# from io import StringIO
+# # f = StringIO('''John loves Cindy, but he never told her.
+# # What a pity thing!
+# # However, he thinks it's a pure love.
+# # ''')
+# # for item in f:
+# #     print(item)
+#
+#
+# f = StringIO()
+# f.write('''John loves Cindy, but he never told her.
+# What a pity thing!
+# However, he thinks it's a pure love.
+# ''')
+# data = f.getvalue()
+# print(data)
+
+from io import BytesIO
+# f = BytesIO('''
+# John loves Cindy, but he never told her.
+# What a pity thing!
+# However, he thinks it's a pure love.
+# '''.encode('utf-8'))
+#
+# for item in f:
+#     print(item.decode('utf-8'))
+
+# f = BytesIO()
+# f.write(b'''John loves Cindy, but he never told her.
+# What a pity thing!
+# However, he thinks it's a pure love.
+# ''')
+#
+# data = f.getvalue().decode('utf-8')
+# print(data)
