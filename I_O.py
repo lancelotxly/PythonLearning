@@ -1,11 +1,10 @@
 '''
-I/O: file loading and save, StringIO and ByteIO,
+I/O: os operation, file loading and save, StringIO and ByteIO,
 '''
 
 
 '''
-file loading and save:
-        os: 1. operate path
+os:         1. operate path
                abspath = os.path.abspath('.')  # current abspath
                dirpath = os.path.join(abspath,'filedir')  # join path based on current path
                filepath = os.path.join(dirpath,'test.py')  # build filepath
@@ -57,3 +56,59 @@ file loading and save:
 # print(file)
 # pythonfile = [x for x in os.listdir('.') if os.path.isfile(x) and os.path.splitext(x)[1] == '.py']
 # print(pythonfile)
+
+'''
+file loading and save: 1. try: 
+                              f = open('filename.format','r/rb/w/wb')
+                              for item in f:   # f.read();  f.readline()
+                          except  IOError as e:
+                              print(str(e))
+                          finally:
+                              f.close()
+                              
+                      2. with open('filename.format', 'r/rb/w/wb') as f:    
+                              
+                      # strip('a') delete 'a' from str; default(\n \t)
+                      # split('b') split str into item according to 'b', and save each item into a list
+                      
+                      save and load:  
+                                #pickle(unimportant)  rb/wb
+                                import pickle
+                                with open('data.pickle','wb') as f:
+                                   pickle.dump(data,f)
+                                
+                                with open('data.pickle','rb') as f:
+                                   data = pickle.load(f)
+                                   
+                                #json(usual)  r/w
+                                import json
+                                with open('data.json', 'w') as f:
+                                    json.dump(data, f)
+                                
+                                with open('data.json', 'r') as f:
+                                    data = json.load(f)
+                                print(data)
+'''
+# with open('sport_data.txt','r') as f:
+#     data = {}
+#     for item in f:
+#         data_item = item.strip().split(',')
+#         score = data_item[1:len(data_item)]
+#         data[data_item[0]]=score
+# print(data)
+
+# import pickle
+# with open('data.pickle','wb') as f:
+#     pickle.dump(data, f)
+#
+# with open('data.pickle','rb') as f:
+#     data = pickle.load(f)
+# print(data)
+
+# import json
+# with open('data.json','w') as f:
+#     json.dump(data,f)
+#
+# with open('data.json','r') as f:
+#     data = json.load(f)
+# print(data)
