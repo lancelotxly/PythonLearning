@@ -79,7 +79,7 @@ special attrs and functions:
                                    self.attr = value --> a __dict__={attr: value}
                                    
                             # define how to operation by using class.attr
-                            __getattr__():  return self.dict__[item]      # get attr class.key
+                            __getattr__():  return self.__dict__[item]      # get attr class.key
                             __setattr__():  self.__dict__[key] = value    # set attr class.key = value 
                             
                             # __call__():  define a callable function of class  #  instance()  call for 
