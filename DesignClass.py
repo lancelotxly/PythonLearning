@@ -11,6 +11,7 @@ bind attrs and functions: 1. for instance:
                                     or：
                                                from types import MethodType
                                                s.function = MethodType(function,s)
+                                               s.function() # call for
                                                
                          2. for class:
                               bind attr: Student.attr = value   # attrs belong to class
@@ -29,14 +30,14 @@ bind attrs and functions: 1. for instance:
 # def printInf(self):
 #     print('this is %s, %d years old' % (self.name, self.age))
 #
-# def printHometowm(self):
-#     print('his hometown is Chongqing')
+# def printHometowm(self, hometowm):
+#     print('his hometown is %s' % (hometowm))
 #
 # s.printInf = printInf
 # s.printInf(s)
 # from types import MethodType
 # s.printHomtwon = MethodType(printHometowm,s)
-# s.printHomtwon
+# s.printHomtwon('Chongqing')
 
 # class Student():
 #     pass
@@ -64,26 +65,74 @@ bind attrs and functions: 1. for instance:
 
 '''
 special attrs and functions: 
-                            __len__()
+                            __len__():  return length of instance data
                             __str__()/ __repr__():  print(Student()) output str
                             
                             __iter__():   return iterable
                             __next__():   __next__() define how to get the next value of iterable, until StopIteration breakout
                             
-                            
+                            __dict__:  1. for class, Class.__dict__ will save attrs which belongs to class and functions
+                                       2. for instance, self.__dict__ = kwargs
+                                                        self.attr = value -->  __dict__={attr: value}
+                                                        
+                                       tips: 1. then we can use dict operation to operate item,
+                                                eg.  __dict__[key], __dict__[key_new] = value_new, __dict__.pop(key)
+                                             2. args # tuple
+                                                kwargs # dict
+                                                __dict__ # dict
+                                       
                             # define how to operation by using class[key]
                             __getitem__(): return self.__dict__[item]   # get item class[key] 
                             __setitem__(): self.__dict__[key] = value   # set item class[key] = value
-                            __delitem__(): self.__dict__.pop[key]       # del item class[key]
-                            tips:  python wil save 
-                                   self.attr = value --> a __dict__={attr: value}
+                            __delitem__(): self.__dict__.pop(key)       # del item class[key]
                                    
                             # define how to operation by using class.attr
                             __getattr__():  return self.__dict__[item]      # get attr class.key
                             __setattr__():  self.__dict__[key] = value    # set attr class.key = value 
+                            __delattr__():  self.__dict__.pop(key) = value    # del attr class.key
                             
-                            # __call__():  define a callable function of class  #  instance()  call for 
+                            __call__():  define a callable function of class  #  instance()  call for
+                            
+                            
+                            Class.__name__:  the name of class, instance doesn't have the attr
+                            Class.__bases__:  the super class of this class
+                            Class.__modules__ / instance.__modules__:  modules
+                            Class.__class__ : # <class 'type'>    instance.__class__: # <class '__main__.Class'>
+                            
+                            Class.__doc__ / instance.__doc__: help document
+                            
+                            
+                            
+                            
+                            
 '''
+# class Student():
+#     '''
+#     this is a test example
+#     '''
+#     def __init__(self, name, age, **kwargs):
+#         self.__dict__ = kwargs
+#         self.name = name
+#         self.age = age
+#
+# s = Student('xzq',18, gender = 'man')
+# print(s.__dict__)
+# print(Student.__dict__)
+#
+# print(Student.__doc__)
+# print(s.__doc__)
+#
+# class Boy(Student):
+#     pass
+# print(Boy.__bases__)
+#
+# print(Student.__module__)
+# print(s.__module__)
+#
+# print(Student.__class__)
+# print(s.__class__)
+
+
 # class Fib():
 #     def __init__(self):
 #         self.a, self.b = 0, 1
@@ -197,22 +246,23 @@ special attrs and functions:
 # s()
 
 
+
 '''
 metaclass: create a class  dynamically
            className = type('className', (father1,father2), dict(attr=value, function=f))
 '''
-class Student():
-    def __init__(self,name,age):
-        self.name = name
-        self.age = age
-
-def __init__(self,name,age,gender):
-    Student.__init__(self,name,age)
-    self.gender = gender
-
-def printInf(self):
-    print('this %s names %s, %d years old' % (self.gender, self.name, self.age))
-
-Boy = type('Boy',(Student, ),dict(__init__ = __init__, printInf = printInf))
-b = Boy('xzq',18,'man')
-b.printInf()
+# class Student():
+#     def __init__(self,name,age):
+#         self.name = name
+#         self.age = age
+#
+# def __init__(self,name,age,gender):
+#     Student.__init__(self,name,age)
+#     self.gender = gender
+#
+# def printInf(self):
+#     print('this %s names %s, %d years old' % (self.gender, self.name, self.age))
+#
+# Boy = type('Boy',(Student, ),dict(__init__ = __init__, printInf = printInf))
+# b = Boy('xzq',18,'man')
+# b.printInf()

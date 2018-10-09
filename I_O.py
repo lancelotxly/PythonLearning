@@ -142,7 +142,7 @@ StringIO and ByteIO: StringIO
 # data = f.getvalue()
 # print(data)
 
-from io import BytesIO
+# from io import BytesIO
 # f = BytesIO('''
 # John loves Cindy, but he never told her.
 # What a pity thing!
