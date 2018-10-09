@@ -14,7 +14,7 @@ os:         1. operate path
                boolean = os.path.isfile(filepath)  # judge whether file
                boolean = os.path.exists(dirpath)   # judge whether the path exists
                
-            2. file operate
+            2. file operation
                os.mkdir(dirpath)   # make a dir
                os.rmdir(dirpath)   # delete the dir, the dir must be empty
                os.rename(filepath, new_filepath)  # rename a file, the original don't exist anymore 
