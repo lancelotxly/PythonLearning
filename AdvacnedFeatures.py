@@ -10,8 +10,8 @@ slice: A_new = A[n:m:i]  # [n,m) step-length: i; A: list/tuple
 # print(A_new)
 
 '''
-iterable: list, tuple, dict, set, str, 
-          for x in iterale:
+iterable: list, tuple, dict, set, str, range()
+          for x in iterale:  # iterable-->iterator
           from collection import Iterable
 '''
 # A = list(range(0,5))
@@ -83,9 +83,9 @@ generator: g = (func(x) for x in iterable)     # next(g);  for x in g:
 #     print(x)
 
 '''
-Iterator: generator, generator function, range()
+Iterator: generator, generator function (Iterator must be Iterable object)
           from collections import Iterator
           
-          translate iterbable(list, tuple, dict, set, str):  __iter()__---iterable-->__next(iterable)__
+          translate iterbable(list, tuple, dict, set, str, range()):  __iter()__---iterable-->__next(iterable)__
                                                              for x in iterable(or iterator):
 '''

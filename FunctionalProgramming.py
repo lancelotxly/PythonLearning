@@ -30,12 +30,12 @@ iterator = filter(f,iterable)
 iterator = reduce(f,iterable)
 sorted(iterable, key = f, reverse = False)
 '''
-# A = [0,1,2,3]
-# def f(x):
-#     return x*2
-# A_new = map(f, A)
-# a=next(A_new)
-# print(a)
+A = [0,1,2,3]
+def f(x):
+    return x*2
+A_new = map(f, A)
+a=next(A_new)
+print(a)
 
 # def f(x):
 #    return x > 0
@@ -118,6 +118,22 @@ decorator: 1. no para input
 # @decorator
 # def now():
 #     print('2018-10-01')
+# a = now()
+
+# import functools
+# def decorator(f):
+#     a = 1
+#     b = 2
+#     d = {1:'2'}
+#     @functools.wraps(f)
+#     def wrapper(*args, **kwargs):
+#         print('call %s, %d and %d' % (f.__name__,a,b))
+#         print(a, b, d)
+#         return f(*args, **kwargs)
+#     return wrapper
+# @decorator
+# def now():
+#     print('2018-10-16')
 # a = now()
 
 # import functools

@@ -69,11 +69,11 @@ special attrs and functions:
                             __str__()/ __repr__():  print(Student()) output str
                             
                             __iter__():   return iterable
-                            __next__():   __next__() define how to get the next value of iterable, until StopIteration breakout
+                            __next__():   __next__() define how to get the next value of iterable, until 'raise StopIteration' breakout
                             
                             __dict__:  1. for class, Class.__dict__ will save attrs which belongs to class and functions
                                        2. for instance, self.__dict__ = kwargs
-                                                        self.attr = value -->  __dict__={attr: value}
+                                                        self.attr = value -->  self.__dict__={attr: value}
                                                         
                                        tips: 1. then we can use dict operation to operate item,
                                                 eg.  __dict__[key], __dict__[key_new] = value_new, __dict__.pop(key)
