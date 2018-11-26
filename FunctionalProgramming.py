@@ -30,12 +30,12 @@ iterator = filter(f,iterable)
 iterator = reduce(f,iterable)
 sorted(iterable, key = f, reverse = False)
 '''
-A = [0,1,2,3]
-def f(x):
-    return x*2
-A_new = map(f, A)
-a=next(A_new)
-print(a)
+# A = [0,1,2,3]
+# def f(x):
+#     return x*2
+# A_new = map(f, A)
+# a=next(A_new)
+# print(a)
 
 # def f(x):
 #    return x > 0
@@ -43,16 +43,16 @@ print(a)
 # for x in A_new:
 #     print(x)
 
-# from functools import reduce
-# Digits = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9}
-# def str2int(strs):
-#     def char2num(s):
-#         return Digits[s]
-#     def f(x,y):
-#         return x*10+y
-#     return reduce(f,map(char2num,strs))
-# num = str2int('123456')
-# print(type(num))
+from functools import reduce
+Digits = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9}
+def str2int(strs):
+    def char2num(s):
+        return Digits[s]
+    def f(x,y):
+        return x*10+y
+    return reduce(f,map(char2num,strs))
+num = str2int('123456')
+print(num)
 
 # A = [-8,-3,-1,0,1]
 # print(A)

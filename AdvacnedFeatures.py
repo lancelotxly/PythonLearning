@@ -2,7 +2,7 @@
 Advanced features: slice, iterable, list generation, generator, iterator
 '''
 '''
-slice: A_new = A[n:m:i]  # [n,m) step-length: i; A: list/tuple
+slice: A_new = A[n:m:i]  # [n,m) step-length: i; A: list/tuple/str/dict
 '''
 # A = list(range(0,5,1))  # A = [0, 1, 2, 3, 4]
 # print(A)
@@ -11,7 +11,7 @@ slice: A_new = A[n:m:i]  # [n,m) step-length: i; A: list/tuple
 
 '''
 iterable: list, tuple, dict, set, str, range()
-          for x in iterale:  # iterable-->iterator
+          for x in iterable:  # iterable-->iterator
           from collection import Iterable
 '''
 # A = list(range(0,5))

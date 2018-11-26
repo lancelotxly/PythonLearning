@@ -8,6 +8,7 @@ type(a)
 '''
 list: len(A), A[i],
       A.append(DataModel), A.extend(list, tuple, set), A.insert(i, DataModel), A.remove(DataModel)
+      list()  # translate sequence into list
 '''
 # A = [1, 2.4, 'xzq', True]
 # l_A = len(A)  # l_A = 4

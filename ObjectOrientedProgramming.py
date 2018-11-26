@@ -24,12 +24,12 @@ class and instance:
                                                      _varable, _function  # protected, visited only by the class or its children
                                                                        
 '''
-# class Student(object):
-#     Name = 'Cindy'
-#     @classmethod
-#     def printName(cls):
-#         print('xzq love %s' % cls.Name)
-# Student.printName()
+class Student(object):
+    Name = 'Cindy'
+    @classmethod
+    def printName(cls):
+        print('xzq love %s' % cls.Name)
+Student.printName()
 #
 # class Student():
 #     GradeNumber = 2
