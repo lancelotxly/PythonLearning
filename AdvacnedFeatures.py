@@ -10,7 +10,7 @@ slice: A_new = A[n:m:i]  # [n,m) step-length: i; A: list/tuple/str/dict
 # print(A_new)
 
 '''
-iterable: list, tuple, dict, set, str, range()
+iterable: list, tuple, dict, set, str, range(), generator, generator funcion
           for x in iterable:  # iterable-->iterator
           from collection import Iterable
 '''

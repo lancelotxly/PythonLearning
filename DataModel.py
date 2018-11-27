@@ -7,7 +7,8 @@ type(a)
 '''
 '''
 list: len(A), A[i],
-      A.append(DataModel), A.extend(list, tuple, set), A.insert(i, DataModel), A.remove(DataModel)
+      A.append(DataModel), A.extend(iterable), A.insert(i, DataModel), A.remove(DataModel), A.count(e), A.clear(), A.index(e)
+      A.pop([p]), A.reverse(), A.sort([key=function], [reverse])
       list()  # translate sequence into list
 '''
 # A = [1, 2.4, 'xzq', True]
