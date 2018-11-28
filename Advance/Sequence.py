@@ -11,7 +11,7 @@ Sequence:
          MutableSequence has: __setitem__, __delitem__, __iadd__ +=, __imul__, insert(i,v), append(i), reverse(), extend(v), pop([v]), remove(v)
             NotMutableSequence has: __getitem__, __reversed__, __add__ +, __mul__ *, index(v), count(v), sort([key],[reverse])
                   Container:  __contains__
-                  iterable:  __iter__
+                  iterable:  __iter__  (iterator: __next__(iterable))
                   Sized:     __len__
 
          Slice:  1. define
