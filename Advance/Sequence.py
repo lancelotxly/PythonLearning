@@ -6,7 +6,7 @@ Sequence:
                   Flat:  # only include one type data
                          str, array.array, memoryview, bytes
          Classified by mutable or not:
-                  MutableSequence: list, array.array, memoryview
+                  MutableSequence: list, array.array, memoryview, bytearray
                   NotMutableSequence: tuple, str, bytes
          MutableSequence has: __setitem__, __delitem__, __iadd__ +=, __imul__, insert(i,v), append(i), reverse(), extend(v), pop([v]), remove(v)
             NotMutableSequence has: __getitem__, __reversed__, __add__ +, __mul__ *, index(v), count(v), sort([key],[reverse])
@@ -22,6 +22,7 @@ Sequence:
                  2. operation
                     s[n:m] = iterable
                     del s[n:m]
+                 there is a note that for any slices of sequence still are sequence object, even for the slice with only one element, e.g. s[:1]
 
          Joint: '+','+=' # the two sides must have the same DataStructure, e.g all 'list','tuple','str' or 'array'
                 '*', '*=' # copy and extend the original sequence to n-folds
@@ -142,6 +143,7 @@ array: more efficient than list, tuple
           array('d', iterable)  # float array
           array('b', iterable)  # signed int -128~127
           array('I', iterable)  # unsigned int
+          array('h', iterable)  # array_length = 2**15, signed int
        2. operation see MutableSequence and the new
           the file operation:
           .tofile(fp), .fromfile(fp, data_length)
@@ -158,3 +160,19 @@ array: more efficient than list, tuple
 # floats2.fromfile(fp,10**7)
 # fp.close()
 # print(floats2[-1])
+
+'''
+memoryview: share the memory of the original array, can operate the slices of the array without copying it.
+            1. define
+               memo = memoryview(array)
+            2. operation same to array
+               and more:  memo_new = memo.cast('d/b/I/B')  # transform type   
+               
+            struct: package bytes into tuple 
+                   struct.unpack(fmt, memoryview/bytes/bytearray)            
+'''
+# from array import array
+# num = array('h',list(range(7)))
+# memo = memoryview(num)
+# memo_new = memo.cast('B')
+# del memo, memo_new
