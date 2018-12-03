@@ -10,6 +10,8 @@ String: except some methods of Sequence.
                   index = s.find('sub_str',[beg=0,end=len(s)]) # search 's' to find 'substr', if find out return the beg index of 'substr' or not return '-1'
                   s1 = s.replace('str','new_str',[n]) # replace 'str' of 's' into 'new_str' by n-times
                   s1 = s.casefold()  # 'ABJC%$##' --> 'abjc%$##'
+                  s1 = s.upper()
+                  s1 = s.lower()
                   judgement:
                         s.startswith('a',[beg=0,end=len(s)])  # whether 's' starts with 'a'
                         s.endswith('a',[beg=0,end=len(s)])   # whether 's' ends with 'a'
