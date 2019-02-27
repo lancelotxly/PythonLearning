@@ -1,19 +1,31 @@
 '''
-Advanced features: slice, iterable, list generation, generator, iterator
+Advance features: slice, iterable/iterator, list generation, generator
 '''
 '''
-slice: A_new = A[n:m:i]  # [n,m) step-length: i; A: list/tuple/str/dict
+slice: l_new = l[n:m:i] # where l is a Seq(list, tuple, str, dict), and be sliced into a new SubSeq from [n,m) with the Step-length: s
 '''
-# A = list(range(0,5,1))  # A = [0, 1, 2, 3, 4]
-# print(A)
-# A_new  = A[0:2:1] # A = [0, 1]
-# print(A_new)
+# l = [0,1,2,3,4]
+# l_new = l[0:3:1]
+# print(l)
+# print(l_new)
+
 
 '''
-iterable: list, tuple, dict, set, str, range(), generator, generator funcion
-          for x in iterable:  # iterable-->iterator
-          from collection import Iterable
+Iterable: 1. DEFINE: an object called 'Iterable object' who implements '__iter__()'
+          2. INCLUDE: list, tuple, str, dict, set, range(), generator, generator function
+          
+Iterator: 1. DEFINE: a 'Iterable object' who further implements '__next__(iterable)' called 'Iterator'
+                     Specially, __iter__() --> Iterable object --> __next__(Iterable)
+                     So, 'Iterator' must be 'Iterable'
+          2. INCLUDE: generator, generator function
+
+To distinguish: from collections import Iterable, Iterator
+                isinstance(a, Iterable)
+                isinstance(a, Iterator)
+
+Traverse: for x in Iterable: # Iterable --> Iterator
 '''
+
 # A = list(range(0,5))
 # for x in A:
 #     print(x)
@@ -24,7 +36,7 @@ iterable: list, tuple, dict, set, str, range(), generator, generator funcion
 #
 # d = dict(a=1,b=2,c=3)
 # for x in d:
-#     print(x)
+#      print(x)
 #
 # for key_value in d.items():
 #     print(key_value)
@@ -43,49 +55,42 @@ iterable: list, tuple, dict, set, str, range(), generator, generator funcion
 # print(b,b1)
 
 '''
-list generation: [func(x) for x in iterable]
+list generation: 1. DEFINE: def func(x): pass
+                            [func(x) for x in iterable]
 '''
 # def func(x):
-#     return x*x
-#
-# A = [0,1,2,3]
+#     return x**2
+# A = [-1,1,2,3]
 # A_new = [func(x) for x in A]
-# print(A_new)
-
+# print(A, A_new)
 
 '''
-generator: g = (func(x) for x in iterable)     # next(g);  for x in g:
-           def func():
-               yield value
-               
-           for x in iterator
+generator: 1. DEFINE: 1) def func(x): pass
+                         g = (func(x) for x in Iterable)
+                      2) def func(x): yield value
+                         g = func(x)
+           2. OPERATION: Get value: ONLY FOR ONCE
+                                    1) next(g)
+                                    2) for x in g:
 '''
 # def func(x):
-#     return x*2
-# A = [0,1,2,3]
-# G = (func(x) for x in A)
-# g1 = next(G)
-# g2 = next(G)
-# print(g1, g2)
-# for x in G:
+#     return x**2
+# l = [0,1,2,3]
+# g = (func(x) for x in l)
+# # for i in range(0,len(l)):
+# #     print(next(g))
+# for x in g:
 #     print(x)
 
-# def fib(max):
+# def Fibonacci(max):
 #     n, a, b = 0, 0, 1
 #     while n < max:
 #         yield b
-#         a, b  = b, a + b
+#         a, b = b, a+b
 #         n = n + 1
 #     return 'Done'
-# g1 = next(fib(5))
-# print(g1)
-# for x in fib(6):
+# f = Fibonacci(6)
+# for x in f:
 #     print(x)
 
-'''
-Iterator: generator, generator function (Iterator must be Iterable object)
-          from collections import Iterator
-          
-          translate iterbable(list, tuple, dict, set, str, range()):  __iter()__---iterable-->__next(iterable)__
-                                                             for x in iterable(or iterator):
-'''
+

@@ -1,19 +1,42 @@
 '''
-def function(a, b=1, *args, **kwargs)
-        a: 位置参数, 必须有
-        b: 默认参数, 默认参数提前存入args中。因此当使用args时要把默认参数预先存入args中，不然会造成重复定义
-        *args: 可变参数, 将输入数目可变的变量 存入名为args的tuple中
-        **kwargs: 关键字参数，将输入的数目可变的 键值对 存入名为kwargs的dict中
+Function: Definition, build-in functions
 '''
-def func(a, b=1, *args, **kwargs):
-    print(a, b)
+'''
+Definition & Call For Function: 
+          def func(a, b=2, *arg, c=3, **kwargs):pass
+                   a: POSITIONAL, can't omit when call for
+                   b: KEYWORD(default): reserved in __defaults__: (2, ), can omit or revise when call for
+                   *arg: VAR_POSITIONAL: reserved in arg: (, )
+                   c: KEYWORD_ONLY: reserved in __kwdefaults__: {'c': 3}, can omit or revise but must be rewrite clearly, e.g. 'c=5' or {'c':5}
+                   **kwargs: reserved in kwargs: dict
+          
+          if plunge paras into function as 'args'(tuple) or 'kwargs'(dict): 1) reserved a, b, c first
+                                                                            2) reserved the remains into corresponding 'arg' or 'kwargs'
+'''
+def func(a, b=1, *args, c=3, **kwargs):
+    print(a, b, c)
     print(args)
     print(kwargs)
 
-args = (1,'xzq','love','Cindy')
-kws ={'name':'xzq', 'age': 18}
-func(0,*args, **kws)
+args = ('xzq','love','Cindy')
+kws ={'name':'xzq','c':4, 'age': 18}
+func(*args, **kws)
+print(func.__defaults__)
+print(func.__kwdefaults__)
 
-def func2(a,b=1):
-    print(a,b)
-func2(1,2)
+'''
+Function Error: TypeError: 1) plunge wrong number of arguments
+                           2) plunge wrong type of arguments
+'''
+# def my_abs(x):
+#     if not isinstance(x, (int, float)):
+#         raise TypeError('Wrong type of argument')
+#     if x >= 0:
+#          return x
+#     else:
+#         return -x    # function will return a tuple
+# print(my_abs('-99'))
+'''
+Build-in Function: Num: abs(), max(), hex()
+                   Data Transform: int(), float(), str(), bool()
+'''

@@ -28,7 +28,7 @@ Definition:
           def func(a,b=2,*args,c=3,**kwargs): pass
                    ^  ^    ^     ^    ^
                    |  |    |     |    |__ VAR_KEYWORD: reserved in kwargs: {}
-                   |  |    |     |__ KEYWORD_ONLY: reserved in __kwdefaults__: {'c':3}, can omit,but when default absent, you must write in clearly
+                   |  |    |     |__ KEYWORD_ONLY: reserved in __kwdefaults__: {'c':3}, can omit,but when default absent, you must write clearly
                    |  |    |__ VAR_POSITIONAL: reserved in args: (, )
                    |  |__ KEYWORD(default): reserved in __defaults__: (2, ), can omit or revise
                    |__ POSITIONAL: can't omit
