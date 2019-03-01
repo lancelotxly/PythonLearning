@@ -26,3 +26,15 @@ Traverse: for x in:
 '''
 Numerical Operation: +, -, *, /, //, %, **
 '''
+
+'''
+Others: 1. eval('str'):  #  return value of 'str' as Expression 
+        2. enumerate(Seq):  #  return (index, value)
+        3. locals():  # return local variables
+        4. globals():  # return global variables
+        5. 'str'.strip(char) # return 'str', strip 'char'
+        6. input('str'): # return <class 'str'>
+        7. sum(iterable): # return sum 
+        8. Num: abs(), max(), hex()
+        9. Data Transform: int(), float(), str(), bool()
+'''

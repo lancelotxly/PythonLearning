@@ -1,142 +1,206 @@
 '''
-Object oriented programming: module, class and instance, encapsulation,  inheritance and polymorphism, multiple inheritance
+Object Oriented Programming: Module, Class and Instance, Get Information,  Encapsulation, Inheritance, Polymorphism, Multi-Inheritance.
 '''
 '''
-modules: packages
-            |--modules
-                 |--classes
-                   |--functions
+Anaconda, git, pycharm base
 '''
 
 '''
-class and instance:
-                   class className(father):
-                         # cls, belongs to class
-                         Field
-                         @classmethod
-                         def function(cls):
-                         
-                         # self, belongs to instance
-                         def __init__(self):
-                         def function(self):    
-                         
-                  type of variables and functions:   __varable, __function   # private, visited only by the class
-                                                     _varable, _function  # protected, visited only by the class or its children
-                                                                       
+Modules: package
+            |-- __init__.py # necessary, also a 'Module'
+            |-- module
+                  |-- class
+                        |-- function
+                  |-- function
 '''
-class Student(object):
-    Name = 'Cindy'
-    @classmethod
-    def printName(cls):
-        print('xzq love %s' % cls.Name)
-Student.printName()
-#
-# class Student():
-#     GradeNumber = 2
-#     ClassNumber = 1
-#     __StudentNumber = 50
+
+'''
+Get Info of Class:  1. GET Type:          type(obj)
+                    2. GET Inheritance:   isinstance(obj, Class)
+                    3. GET all Attr:      dir(obj)
+                    4. OPERATE Attr:  Reflect
+                                          hasattr(obj, 'attr')
+                                          getattr(obj, 'attr')
+                                          setattr(obj, 'attr')
+                                          delattr(obj, 'attr') 
+                                          
+                                      Import modules dynamically('str')
+                                          1) m = __import__('module.class')    # m = module
+                                          2) m = importlib.import_module('module.class')   # m = module.class
+'''
+'''
+Class and Instance: 1. DEFINE:
+                       class ClassName(father):
+                           # cls, belongs to class
+                           variable
+                           @classmethod
+                           def func(cls):
+                           
+                           # self, belongs ot instance
+                           def __init__(self,a,b):  # Instance variable
+                           def func(self): # Instance method
+                    
+                    2. BUILD INSTANCE:
+                       c = ClassName(a, b)
+'''
+# class Student(object):
+#     Hometown = 'CHONG QING'
 #     @classmethod
-#     def _printClassInf(cls):
-#         print('There are %d students in class %d grade %d' % (cls.__StudentNumber, cls.ClassNumber, cls.GradeNumber))
+#     def printWelcome(cls):
+#         print('Welcome to Njupt')
 #
-#     def __init__(self,name,age):
+#     def __init__(self, name, age):
 #         self.name = name
 #         self.age = age
+#     def printInf(self):
+#         print('This is %s, comes from %s, %d years old' % (self.name, Student.Hometown, self.age))
 #
-#     def _printStudentInf(self):
-#         print('this is %s, %d years old' % (self.name, self.age))
-#
-# class Boy(Student):
-#       def __init__(self,name,age):
-#           # Student.__init__(self,name,age)
-#           super(Boy,self).__init__(name,age)
-#
-# s = Student('Cindy',18)
-# s._printStudentInf()
-# Student._printClassInf()
-# b = Boy('xzq',18)
-# classNumber = Boy.ClassNumber
-# gradeNumber = Boy.GradeNumber
-# b._printStudentInf()
+# xzq = Student('xzq',24)
+# xzq.printInf()
+# xzq.printWelcome()
+# print(Student.Hometown)
+# xzq.printInf()
+
 '''
-encapsulation: don't reveal attrs, design attrs through private attr and only expose set() and get() to outer for settting or getting attrs
-               @property   @attr.setter
+Encapsulation: 1. Type of attr(variable, function) in class:
+                  __variable__, __function__(): Dunder Method
+                  __variable, __function(): Private, can't call for by the outer # __variable -->  _ClassName__variable
+               
+               2. Encapsulate: 1) Design attr Privately
+                               2) Expose set() and get() to outer for setting or getting attr
+                                  def set_name(self, name):
+                                      self.__name = name
+                                  def get_name(self):
+                                      return sefl.__name
+                                  
+                                  @property
+                                  def name(self):
+                                      return self.__name
+                                  @name.setter
+                                  def name(self, name):
+                                      self.__name = name
+                                    
 '''
-# class Student():
-#     def __init__(self,name,age):
+# class Student(object):
+#     def __init__(self, name, age):
 #         self.__name = name
 #         self.__age = age
 #
 #     @property
-#     def Name(self):
+#     def name(self):
 #         return self.__name
 #     @property
-#     def Age(self):
+#     def age(self):
 #         return self.__age
 #
-#     @Name.setter
-#     def Name(self,name):
+#     @name.setter
+#     def name(self, name):
 #         self.__name = name
-#     @Age.setter
-#     def Age(self,age):
+#     @age.setter
+#     def age(self,age):
 #         self.__age = age
 #
-# s = Student('xzq',18)
-# print(s.Name, s.Age)
-# s.Name = 'Cindy'
-# s.Age = 18
-# print(s.Name,s.Age)
-
-
+#     def printInf(self):
+#         print('This is %s, %d years old' % (self.__name, self.__age))
+#
+# s = Student('xzq', 24)
+# s.printInf()
+# s.name = 'John'
+# s.age = 24
+# s.printInf()
 
 '''
-inheritance and polymorphism:
-                             class father():
-                                  def __init__(self):
-                                  def function(self):
-                            
-                             class child(father):
-                                  def __init__(self):    # if father has __init__(), child must rewrite it, 
-                                      father.__init__(self)   # furthermore if child wants use the father's __init__(), must calls it obvoiusly
-                                    # super(child,self).__init()  # another method
-                                       
-                             polymorphism:
-                                 Claim the type of father class, and use its functions may perform different on the children classes.
-                                 even the class isn't a child of father, if only it has the function, it could perform polymorphism.
+Inheritance: 1. DEFINE:
+                       class Father(object):
+                           # cls
+                           def __init__(self, a, b):
+                                pass
+                           def func1(self):
+                                pass
+                        
+                       class Child(Father):
+                           # cls
+                           def __init__(self, a, b, c):
+                              super(Child, self).__init__()
+                              self.c = c
+             
+             2. DISCIPLINE: 1) Child has all attr and func of the Father
+                            2) Child can add its own attr and func
+                            3) When Initialize, plunge paras into the Father attr primarily.
+                          
 '''
-# class Student():
-#     def __init__(self,name,age):
+# class Student(object):
+#     def __init__(self, name, age):
 #         self.name = name
 #         self.age = age
 #
 #     def printInf(self):
-#         print('this is %s, %d years old' % (self.name, self.age))
+#         print('This is %s, %d years old' % (self.name, self.age))
 #
 # class Boy(Student):
-#     def __init__(self,hometown):
+#     def __init__(self, name, age, hometown):
+#         super(Boy, self).__init__(name, age)
 #         self.hometown = hometown
+#     def printHometown(self):
+#         print('The boy comes from % s' % self.hometown )
 #
-#     def printInf(self):
-#         print('his hometown is %s' % (self.hometown))
-#
-# class girl():
-#     def printInf(self):
-#         print('Cindy comes from Zhangzhou, Fujian')
-#
-# def printInf(a):
-#     a.printInf()
-#
-# s = Student('Cindy',18)
-# b = Boy('Chongqing')
-# g = girl()
-# printInf(s)
-# printInf(b)
-# printInf(g)
+# s = Student('xzq', 24)
+# s.printInf()
+# b = Boy('John',23,'CQ')
+# b.printHometown()
 
 '''
-multiple inheritance: MixIn
-                      principle: decide a main inheritance threading, and mixin other properties
+Polymorphism: 1. DEFINE: 1) Define a function: 'def func(Father): Father.attr'
+                         2) Call for: 'func(Child1)' or 'func(Child2)'
+                         3) Execute: 'Child1.attr' or 'Child2.attr'
+              
+              2. DISCIPLINE: OPEN: For a Father class, we can add some attr by inheriting
+                             CLOSED: For a operation function, it can perform polymorphism without changing code. 
 '''
+# class Animal(object):
+#     pass
+#
+# class Dog(Animal):
+#     def run(self):
+#         print('The dog is running')
+# class Cat(Animal):
+#     def run(self):
+#         print('The cat is running')
+#
+# def Run_twice(animal):
+#     animal.run()
+#     animal.run()
+#
+# Run_twice(Dog())
+# Run_twice(Cat())
+
+'''
+Multi-Inheritance: 1. DEFINE:
+                             class A(): def __init__(self)
+                             class B(): def __init__(self)
+                             
+                             class C(A, B): 
+                                  def __init__(self):
+                                     super(C, self).__init__(?) 
+                   2. DISCIPLINE: Nearby principle to find the '__init__(self)' of Father
+                   
+                   3. MIXIN: 1) Decide a main inheritance threading
+                             2) Maxin other properties.
+'''
+# class A():
+#     # def __init__(self,a):
+#     #     print(a)
+#     pass
+#
+# class B():
+#     def __init__(self, a, b):
+#         print(a+b)
+#
+# class C(A, B):
+#     def __init__(self,a,b):
+#         super(C,self).__init__(a,b)
+# c = C(1,2)
+
 # class Animal():
 #     pass
 #

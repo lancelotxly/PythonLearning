@@ -17,7 +17,11 @@ Iterable: 1. DEFINE: an object called 'Iterable object' who implements '__iter__
 Iterator: 1. DEFINE: a 'Iterable object' who further implements '__next__(iterable)' called 'Iterator'
                      Specially, __iter__() --> Iterable object --> __next__(Iterable)
                      So, 'Iterator' must be 'Iterable'
+          
           2. INCLUDE: generator, generator function
+          
+          3. Iterable to Iterator: Can use 'next(Iterator)'
+                                   Iterator = iter(Iterable)
 
 To distinguish: from collections import Iterable, Iterator
                 isinstance(a, Iterable)
@@ -67,21 +71,28 @@ list generation: 1. DEFINE: def func(x): pass
 '''
 generator: 1. DEFINE: 1) def func(x): pass
                          g = (func(x) for x in Iterable)
-                      2) def func(x): yield value
+                      2) def func(x): 
+                            var = yield value1
+                            yield value2
                          g = func(x)
-           2. OPERATION: Get value: ONLY FOR ONCE
-                                    1) next(g)
+           
+           2. OPERATION: ONLY FOR ONCE
+                         Get value: 
+                                    1) next(g)  # return 'value1'
+                                       # code  : can operate data right now.
+                                       next(g)  # return 'value2'
                                     2) for x in g:
+                         Get and Send value:
+                                    3) g.send(None): return 'value1'
+                                       g.send(value3): return 'value2', send 'value3' to 'var'
+           
+           3. Quality of yield: 1) Return value
+                                2) Save status
+                                3) Receive value 
+           
+           Using: 1)  Loading File Info: Save memory (based on Q1, Q2)
+                  2)  Producer & Consumer Model: Concurrence (based on Q2, Q3)
 '''
-# def func(x):
-#     return x**2
-# l = [0,1,2,3]
-# g = (func(x) for x in l)
-# # for i in range(0,len(l)):
-# #     print(next(g))
-# for x in g:
-#     print(x)
-
 # def Fibonacci(max):
 #     n, a, b = 0, 0, 1
 #     while n < max:
@@ -94,3 +105,41 @@ generator: 1. DEFINE: 1) def func(x): pass
 #     print(x)
 
 
+# def test():
+#     print('Begin')
+#     first = yield 1
+#     print('First', first)
+#     yield 2
+#     print('Second')
+# t = test()
+# res = next(t)
+# print(res)
+# res2 = t.send('123')
+# print(res2)
+
+
+# def get_Info(filename):
+#     with open(filename, 'r', encoding='utf-8') as f:
+#         for line in f:
+#             info = eval(line)
+#             yield info
+# g = get_Info('Information')
+# all_pop = sum(p['population'] for p in g)
+# g = get_Info('Information')
+# for i in g:
+#     print('%s : %.1f' % (i['name'], i['population']/all_pop))
+
+
+# def Consumer():
+#     while True:
+#         var = yield
+#         print('Consumer is running')
+#         yield
+#
+# def Producer():
+#     while True:
+#         print('Producer is running')
+#         c = Consumer()
+#         next(c)
+#         c.send(None)
+# Producer()

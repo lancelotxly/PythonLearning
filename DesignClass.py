@@ -1,67 +1,52 @@
 '''
-Design class: bind attrs and functions, special attrs and functions, metaclass
+Design Class: Bind Attrs(var, func), Dunder Attr, Metaclass
 '''
 '''
-bind attrs and functions: 1. for instance:
-                              bind attrs:  s.attr = value
-                              bind functions:  def function(self):
-                                                    pass
-                                               s.function = function
-                                               s.function(s)  # call for
-                                    or：
-                                               from types import MethodType
-                                               s.function = MethodType(function,s)
-                                               s.function() # call for
-                                               
-                         2. for class:
-                              bind attr: Student.attr = value   # attrs belong to class
-                              bind function: Student.function = function      # for all instances have this function
-                              
-                         3. __slots__ = ('attrs','functions')  # limits the attrs and functions what instance can define
-                            tips: 1. only limit in current class, the instance to child class isn't limited(if no __slots__ in child class)
-                                  2. if child class has __slots__, then the limitation are father's + child's __slots__
+Bind Attrs: 1. For Instance: Other instance or class don't have these attrs
+                             1) Bind variable: s.var = value
+                             2) Bind function: 
+                                              def func(self): pass
+                                              s.func = func   # Call for: s.func(s)   
+                                     OR:      s.func = types.MethodType(func, s)  # Call for: s.func()
+            2. For Class: The addition attrs belongs to class
+                             1) Bind variable: ClassName.var = value
+                             2) Bind function: 'def func(cls): pass' or 'def func(self): pass'
+                                                ClassName.func = func
+                                                
+            3. Limitation: 1.DEFINE: ONLY the attrs in __slots__ can be bind.
+                                     class Father():
+                                        __slots__ = ('attr', )
+                           2. DISCIPLINE: 1) Only for the current class, the instance of the ChildClass isn't limited
+                                          2) If ChildClass has __slots__, the limitation are Father's + Child's __slots                                         
 '''
-# class Student():
-#     pass
+# class Student(object):
+#     __slots__ = ('name','age')
+# # Bind for instance
+# s1 = Student()
 #
-# s = Student()
-# s.age = 20
-# s.name = 'xzq'
+# s1.name = 'xzq'
+# s1.age = 24
+#
 # def printInf(self):
-#     print('this is %s, %d years old' % (self.name, self.age))
+#     print(self.name, self.age)
+# def printHometown(self):
+#     print('Hometown is CQ')
 #
-# def printHometowm(self, hometowm):
-#     print('his hometown is %s' % (hometowm))
+# s1.printInf = printInf
+# s1.printInf(s1)
 #
-# s.printInf = printInf
-# s.printInf(s)
 # from types import MethodType
-# s.printHomtwon = MethodType(printHometowm,s)
-# s.printHomtwon('Chongqing')
-
-# class Student():
-#     pass
+# s1.printHometown = MethodType(printHometown,s1)
+# s1.printHometown()
 #
-# s = Student()
-#
-# def set_age(self,age):
-#     self.age = age
-#
-# Student.set_age = set_age
-# s.set_age(25)
-# print(s.age)
-
-# class Student():
-#     __slots__ = ('name', 'age', 'gender','printInf')
-#
-# class Boy(Student):
-#     __slots__ = ('hometowm')
-#     pass
-#
-# b = Boy()
-# b.name = 'CQ'
-# print(b.name)
-
+# # Bind for class
+# Student.Hometown = 'CQ'
+# print(s1.Hometown)
+# def Welcome(cls):
+#     print('Welcome to %s' % (cls.Hometown))
+# Student.Welcome = Welcome
+# Student.Welcome(Student)
+# s1.Welcome()
 
 '''
 special attrs and functions: 
@@ -80,176 +65,76 @@ special attrs and functions:
                                              2. args # tuple
                                                 kwargs # dict
                                                 __dict__ # dict
-                                       
-                            # define how to operation by using class[key]
-                            __getitem__(): return self.__dict__[item]   # get item class[key] 
-                            __setitem__(): self.__dict__[key] = value   # set item class[key] = value
-                            __delitem__(): self.__dict__.pop(key)       # del item class[key]
-                                   
-                            # define how to operation by using class.attr
-                            __getattr__():  return self.__dict__[item]      # get attr class.key
-                            __setattr__():  self.__dict__[key] = value    # set attr class.key = value 
-                            __delattr__():  self.__dict__.pop(key) = value    # del attr class.key
-                            
-                            __call__():  define a callable function of class  #  instance()  call for
-                            
-                            
-                            Class.__name__:  the name of class, instance doesn't have the attr
-                            Class.__bases__:  the super class of this class
-                            Class.__modules__ / instance.__modules__:  modules
-                            Class.__class__ : # <class 'type'>    instance.__class__: # <class '__main__.Class'>
-                            
-                            Class.__doc__ / instance.__doc__: help document
-                            
-                            
-                            
-                            
-                            
 '''
-# class Student():
-#     '''
-#     this is a test example
-#     '''
-#     def __init__(self, name, age, **kwargs):
-#         self.__dict__ = kwargs
-#         self.name = name
-#         self.age = age
-#
-# s = Student('xzq',18, gender = 'man')
-# print(s.__dict__)
-# print(Student.__dict__)
-#
-# print(Student.__doc__)
-# print(s.__doc__)
-#
-# class Boy(Student):
-#     pass
-# print(Boy.__bases__)
-#
-# print(Student.__module__)
-# print(s.__module__)
-#
-# print(Student.__class__)
-# print(s.__class__)
-
-
-# class Fib():
-#     def __init__(self):
-#         self.a, self.b = 0, 1
-#
-#     def __iter__(self):
-#         return self
-#
-#     def __next__(self):
-#         self.a , self.b = self.b, self.a + self.b
-#         if self.a > 1000:
-#             raise StopIteration
-#         return self.a
-#
-#     def __getitem__(self, item):
-#         self.a, self.b = 1, 1
-#         if isinstance(item, int):
-#             for i in range(item):
-#                 self.a, self.b = self.b, self.a + self.b
-#             return self.a
-#         elif isinstance(item,slice):
-#             start = item.start
-#             stop = item.stop
-#             if start is None:
-#                 start = 0
-#             L = []
-#             for i in range(stop):
-#                 if i >= start:
-#                     L.append(self.a)
-#                 self.a, self.b = self.b, self.a + self.b
-#             return L
-#
-# f = Fib()
-# for x in f:
-#     print(x, end = ' ')
-# print()
-# print(f[0])
-# print(f[:5])
-
-# class Foo():
-#     def __init__(self,x,y):
-#         self.x = x
-#         self.y = y
-#
-#     def __getitem__(self, item):
-#         return self.__dict__[item]
-#
-#     def __setitem__(self, key, value):
-#         self.__dict__[key] = value
-#
-#     def __delitem__(self, key):
-#         self.__dict__.pop(key)
-#
-# f = Foo(2,2)
-# f.x = 1
-# print(f['x'])
-# print(f.__dict__)
-#
-# f['b'] = 2
-# print(f.b)
-# print(f.__dict__)
-#
-# del f['x']
-# print(f.__dict__)
-
-# class Fib():
-#     def __getitem__(self, item):
-#         self.a, self.b = 1, 1
-#         for i in range(item):
-#             self.a, self.b = self.b, self.a + self.b
-#         return self.__dict__['a']
-#
-# f = Fib()
-# print(f[10])
-
-# class Student():
-#     def __getattr__(self, item):
-#         try:
-#             return self.__dict__[item]
-#         except KeyError as e:
-#             return '%s isn\'t exists' % item
-#
-#     def __setattr__(self, key, value):
-#         self.__dict__[key] = value
-#
-#     def __getitem__(self, item):
-#         try:
-#             return self.__dict__[item]
-#         except KeyError as e:
-#             return '%s isn\'t exists' % item
-#
-#     def __setitem__(self, key, value):
-#         self.__dict__[key] = value
-#
-# s = Student()
-# print(s.name)
-# s.age = 18
-# print(s.age)
-# print(s['age'])
-# s['name'] = 'xzq'
-# print(s.name)
-
-# class Student():
-#     def __init__(self,name,age):
-#         self.name = name
-#         self.age = age
-#
-#     def __call__(self, *args, **kwargs):
-#         print('this is %s, %d years old' % (self.name, self.age))
-#
-# s = Student('xzq',18)
-# s()
-
-
+'''
+Dunder Attrs: 1. Iterable/Iterator:
+                 __iter__(): # return Iterable
+                 __next__(Iterable): # 'for x in Iterable' ever step will call for '__next__(Iterable)' to return value, till 'raise StopIteration'.
+              
+              2. __dict__: 1) For Class: Class.__dict__    # save attrs of Class
+                           2) For Instance: self.__dict__  # self.var = value --> self.__dict__ = {var: value}
+                           
+              3. Sequence Quality: The following __func__() will execute, when Seq operation.
+                 __getitem__(key):    # Execute when 'obj[key]'
+                    # code
+                    return self.__dict__[key]
+                    
+                 __setitem__(key, value):    # Execute when 'obj[key] = value'
+                    # code
+                    self.__dict__[key] = value
+                    
+                 __delitem__(key):          # Execute when 'del obj[key]'
+                    # code
+                    self.__dict__.pop(key)
+                    
+                 __len__(): # len()
+              
+              4. Operate Attr: The following __func__() will execute, when class.attr operation
+                 1) __getattr__(key):   # Execute when 'obj.key' not exist
+                        # code
+                        return value
+                   
+                   Using: # Return New attr, NOT Inherit
+                          e.g.  class MyOpen():
+                                   def __init__(self, filename, mode, encoding='utf-8')
+                                      self.file = open(filename, mode, encoding)
+                                      
+                                   def __getattr__(self,item):
+                                      return getattr(self.file, item)
+                                
+                                f = MyOpen()
+                                f.read()  # The essence: f.read --> __getattr__(read) --> return getattr(self.file.read) --> call for 'self.file.read'
+                                   
+                 2) __setattr__(key, value):  # Execute when 'obj.key = value'
+                        # code
+                        self.__dict__[key] = value 
+                   
+                 3) __deliattr__(key):   # Execute when 'del obj.key'  
+                        # code
+                        self.__dict__.pop(key)
+                   
+              5. Callable Method:
+                 __call___(): # s() call for directly
+                 
+              6. Print(ClassName):
+                 __str__() / __repr__()
+              
+              7. Others:
+                 Class.__name__: # The name of Class
+                 Class.__bases__: # The Father of Class         
+                 Class.__modules__ / Instance.__modules__ :  # modules
+                 Class.__class__: # <class 'type'>     Instance.__class__:  # <class '__main__.Class'>
+                 Class.__doc__ / Instance.__doc__:  # help document
+'''
 
 '''
 metaclass: create a class  dynamically
            className = type('className', (father1,father2), dict(attr=value, function=f))
+'''
+'''
+MetaClass: Create a Class dynamically
+           1. DEFINE: 
+                     ClassName = type('ClassName', (father1, ), dict(var=value, func=f, ))
 '''
 # class Student():
 #     def __init__(self,name,age):

@@ -12,12 +12,15 @@ Features of functions: 1. variable could be function: x = abs
 # abs = 0
 # print(a, x(-10), abs)
 
+
 # def abs_sum(x,y,f):
 #     print(f(x) + f(y))
 # abs_sum(-10,-10,abs)
 
+
 '''
-High-order function: DON'T CHANGE THE ORIGINAL DATA
+High-order function: Comply the 'Features of function'
+                     DON'T CHANGE THE ORIGINAL DATA
                      1. Iterator = map(func, Iterable) # map 'func' for x in Iterable
                      2. Iterator = filter(func, Iterable) # filter x for x in Iterable, if 'func' return True(False) then save(delete) x.
                      3. f(f(x1,x2),x3) = functool.reduce(f,[x1,x2,x3])
@@ -43,6 +46,7 @@ High-order function: DON'T CHANGE THE ORIGINAL DATA
 # from functools import reduce
 # print(reduce(sum,Original_data))
 
+
 # # str2int: map, reduce
 # from functools import reduce
 # Digits = {'0':0, '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9}
@@ -57,22 +61,14 @@ High-order function: DON'T CHANGE THE ORIGINAL DATA
 # num = str2int('41584654')
 # print(num, type(num))
 
+
 # A = [-9,0,1,-10,18]
 # A_new = sorted(A, key=abs,reverse=True)
 # print(A,A_new)
 # A.sort(key=abs,reverse=True)
 # print(A)
 
-'''
-Closure: 1. DEFINE: def func1():
-                        paras
-                        def func2():
-                            pass
-                        return func2
-         2. DISCIPLINE: 1) The return value (func2) is a inner function, doesn't execute right now till call for it.
-                        2) 'func2' could use paras of 'func1' whose paras saved in 'args'
-                        3) Every call for 'func1' will return a new 'func2'
-'''
+
 '''
 Closure: 1. DEFINE: def func1():
                        def func2():
@@ -90,6 +86,7 @@ Closure: 1. DEFINE: def func1():
 # f = func1(1,2,4,5,d=6)
 # print(f())
 
+
 # def count(): # generate a list saving 3 function 'f'
 #     fs = []
 #     for i in range(1,4):
@@ -99,6 +96,7 @@ Closure: 1. DEFINE: def func1():
 #     return fs
 # f1, f2, f3 = count()
 # print(f1(),f2(),f3()) # execute 'f', but where i=3.
+
 
 # def count_plus():
 #     def f(j):
@@ -112,9 +110,10 @@ Closure: 1. DEFINE: def func1():
 # f1, f2, f3 = count_plus()  # where 'f1, f2, f3' are all Closure of 'g'
 # print(f1(),f2(),f3())
 
+
 '''
 Anonymous Function: 1. DEFINE: lambda x: f(x)
-                    2. QUALITY: 1) Only one f(x)
+                    2. QUALITY: 1) ONLY ONE f(x)
                                 2) f2 = lambda x: f1(x)
                                 3) def func2(): return lamdba x: f(x) # where the returned anonymous function is also a closure.
 '''
@@ -129,28 +128,33 @@ Anonymous Function: 1. DEFINE: lambda x: f(x)
 #     return lambda: r**2
 # print(area(2)())
 
+
 '''
-Decorator: 1. DEFINE: not change the original function, and add some decorator qualities when the code running.
-           2. STRUCTURE: 1) No para input:
-                             Define Decorator:  def decorator(f):
+Decorator: 1. DEFINE: NOT CHANGE the original function
+                      NOT CHANGE the call for method
+                      ADD some decorator qualities when the code running.
+           2. STRUCTURE: 1) Decorator No para input:
+                             Define Decorator:  def decorator(f):  
                                                    @functools.wraps(f)        <--------so the function name is 'wraper', need to point to 'f'
-                                                   def wrapper(*args, **kwargs):  ----                                            |
-                                                       DECORATOR PART                |                                            |
-                                                       return f(*args, **kwargs)     |<--- where wrapper as a closure to return---|
-                                                   return wrapper                 ___|   
+                                                   def wrapper(*args, **kwargs):  
+                                                       DECORATOR PART             <-- Comply DEF.3: Addition part    
+                                                       value = f(*args, **kwargs) <-- Comply DEF.1: Execute the original function
+                                                       return value               <-- Return value of 'f'
+                                                   return wrapper                 <-- Comply DEF.2: Return 'wrapper'(closure)      
                              
-                             Call For:         @decorator
+                             Call For:         @decorator  
                                                def f():
                                                    pass     # The essence is: 1) f = decorator(f), return 'wrapper'(closure)
-                                               f()                            2) f(), call for 'wrapper()'
+                                               f()                            2) f(), Call for 'wrapper()', Execute 'f()' in 'wrapper()' ONLY ONCE.
                                                
-                        2) Para input:
+                        2) Decorator Need Para input:
                              Define Decorator:  def InputPara(a,b):
                                                     def decorator(f):
                                                        @functools.wraps(f)
                                                        def wrapper(*args, **kwargs):
                                                            CAN USE a,b
                                                            DECORATOR PART
+                                                           f(*args, **kwargs)
                                                        return wrapper
                                                     return decorator
                              
@@ -169,9 +173,11 @@ Decorator: 1. DEFINE: not change the original function, and add some decorator q
 #         return f(*args, **kwargs)
 #     return wapper
 # @log
-# def now():
+# def now(str):
+#     print(str)
 #     print('2019-2-27')
-# print(now.__name__)
+# now('execute')
+
 
 # from functools import wraps
 # def InputPara(d,e):
@@ -189,6 +195,54 @@ Decorator: 1. DEFINE: not change the original function, and add some decorator q
 # def f():
 #     print('2019-2-27')
 # f()
+
+
+# # Authenticate
+# import  functools
+# def auth_func(func):
+#     @functools.wraps(func)
+#     def wrapper(*args, **kwargs):
+#         username = input('username: ').strip()
+#         password = input('password: ').strip()
+#         if username == 'xzq' and password == '123':
+#             return func(*args, **kwargs)
+#         else:
+#             print('Wrong username or password')
+#     return wrapper
+# @auth_func
+# def home():
+#     print('Welcome')
+# home()
+
+# Session
+user_list = [{'username':'xzq','password':'123'},{'username':'John','password':'456'}]
+current_user = {'username':None, 'login':False}
+import functools
+def auth_func(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        if current_user['login'] == True:
+            return func(*args, *kwargs)
+        username = input('username: ').strip()
+        password = input('password: ').strip()
+        for user in user_list:
+            if username == user['username'] and password == user['password']:
+                current_user['username'] = username
+                current_user['login'] = True
+                return func(*args, **kwargs)
+        print('Wrong username or password')
+    return wrapper
+
+@auth_func
+def home():
+    print('Welcome')
+
+@auth_func
+def index():
+    print('The order is')
+home()
+index()
+
 
 '''
 Partial function: Preinstall the para into *arg or **kwargs

@@ -36,7 +36,3 @@ Function Error: TypeError: 1) plunge wrong number of arguments
 #     else:
 #         return -x    # function will return a tuple
 # print(my_abs('-99'))
-'''
-Build-in Function: Num: abs(), max(), hex()
-                   Data Transform: int(), float(), str(), bool()
-'''

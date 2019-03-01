@@ -1,6 +1,6 @@
 '''
 DataModel: 1. INCLUDE: int, float, str, bool, None
-                       list, tuple, dict, set
+                       list, tuple, dict, set, slice
            2. OPERATION: isinstance(a, DataModel)
                          type(a)
 '''
@@ -9,7 +9,7 @@ DataModel: 1. INCLUDE: int, float, str, bool, None
 list: 1.DEFINE: l = [value] # where value can be all of DataModel
       2. OPERATION: Get: a = l[i]
                     Add: l[new_i] = new_value, l.append(value), l.extend(iterable), l.insert(i,value)
-                    Delete: l.remove(value), l.pop([i]), l.clear()
+                    Delete: l.remove(value), l.pop([i]), l.clear(), del l[key]
                     Rewrite: l[i] = new_value
                     Search: count_value = l.count(value), value_index = l.index(value)
                     
@@ -60,7 +60,7 @@ dict: 1. DEFINE: d1 = {key1: value1, key2: value2,...} # where 'key' are unchang
                  d3 = dict([(key1, value1),(key2, value2),...])
       2. OPERATION: Get: a = d[key], a = d.get(key)
                     Add: d[new_key] = new_value
-                    Delete: d.pop(key)
+                    Delete: d.pop(key), del d[key]
                     Rewrite: d[key] = new_value
                     Search: a = d[key], a = d.get(key)
                     
@@ -70,6 +70,7 @@ dict: 1. DEFINE: d1 = {key1: value1, key2: value2,...} # where 'key' are unchang
                     Traverse: for key in d.keys():
                               for value in d.values():
                               for key, value in d.items():
+                              
 '''
 # d1 = {'a':1,'b':2,'c':3}
 # d2 = dict(a=1,b=2,c=3)
