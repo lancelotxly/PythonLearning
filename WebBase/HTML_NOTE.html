@@ -1,0 +1,119 @@
+<!DOCTYPE html>            # 声明为W3C渲染方式
+<html lang="en">
+<head>                     # head 内部大多是解释型标签
+    <meta http-equiv="content-type" charset="UTF-8">     # 声明编码为utf-8
+    <meta http-equiv = "X-UA-Compatible" content = "IE=EmulateIE7">   # 兼容IE7
+    <meta http-equiv="Refresh" content="2;URL=http://www.bilibili.com">    # 用于定时刷新, 可指定时间和具体网页
+    <meta name="keyword" content="html总结, html, meta属性">  # 用于浏览器关键词搜索
+    <meta name="description" content="用于关键内容搜索">        # 用于浏览器关键内容搜索
+
+    <link rel="icon" href="http://www.jd.com/favicon.ico">    # 指定图标
+    <link rel="stylesheet" type="text/css" href="URI">        # 指定CSS文件: 渲染效果           html: 具体有哪些元素
+    <script src="hello.js"></script>                          # 指定js文件:  动态效果 也是操作标签
+    <base href="base path">                                   # 指定基地址
+
+    <title>Title</title>                                      # 标题
+</head>
+
+<body>
+     # 标签之间的东西，是供显示的，给用户看的 ; 标签内部的东西，才是供开发者传递信息(设置)，或读取数据的
+     # 每个标签基本的类型设置:  id(唯一), class属性(固有属性), 自定义属性
+                            style:
+     # 级联元素，独占一行（不能在一行显示），可嵌套级联元素和内联元素
+     <h1>Hello, this a head</h1>                     # hn: n=1~6, 标题，空行
+     <p>this a sentence</p>                          # 段落，空行
+     <div>This is white board</div>                  # 白板，没有自身特性，因此不空行
+
+     <ul>                                            # 无序列表
+         <li>1</li>
+         <li>2</li>
+     </ul>                                         # 无序列表
+     <ol></ol>                                       # 有序列表
+     <dl>                                            # 章节体
+         <dt>Title</dt>
+         <dd>Section A</dd>
+     </dl>                                         # 章节体
+     <table border="1px" cellpadding="10px" cellspacing="2-px">
+         <thead>
+         <tr>
+             <th>111</th><th>222</th><th>333</th>
+         </tr>
+         </thead>
+
+         <tbody>
+         <tr>
+             <td rowspan="2">AAA</td>
+             <td colspan="2">BBB</td>
+             <!--<td>CCC</td>-->
+         </tr>
+         <tr>
+             <!--<td>AAA</td>-->
+             <td>BBB</td>
+             <td>CCC</td>
+         </tr>
+         </tbody>
+     </table>   # 表格
+
+     <br/>                                           # 空一行
+     <hr/>                                           # 分割线
+
+
+     # 内联元素，不独占一行，只能嵌套内联元素，不能设定content长宽
+     <span></span>                                   # 白板
+
+     <a href="path">This a link</a>                  # 链接
+     <a href="path" target="_blank"></a>             # 新页面打开
+     <div id="abc"></div>
+     <a href="#abc">跳转到abc</a>                     # 跳转到同一网页指定位置
+
+     <img src="12.jpg" alt="加载失败提示" title="鼠标悬浮提示" width="宽度px" height="长度px">     # 导入图片
+
+     <input>                                         # 输入
+     <textarea></textarea>                           # 大文本域
+
+     <b></b>                                         # 加粗
+     <em></em>                                       # 斜体
+     <strike></strike>                               # 划线
+     2<sup>3</sup>                                   # 上移半格
+     2<sub>3</sub>                                   # 下移半格
+
+     &nbsp                                           # 空格
+
+
+
+     # 表单 输出到服务器
+     <form action="URI" method="post/get" target="_blank">
+         <fieldset>
+             <legend>Title</legend>                           # placeholder 输入即隐藏，value一直存在
+             <p>姓名<input type="text" name="username"></p>    # 文本输入框 可选属性 readonly, disabled
+             <p>密码<input type="password" name="password"></p>  # 密码输入框 可选属性 readonly, disabled
+             <p>爱好 音乐<input type="checkbox" name="hobby" value="music">电影<input type="checkbox" name="hobby" value="movie"></p>  # 多选框 可选属性 checked
+             <p>性别 男<input type="radio" name="gender" value="man">女<input type="radio" name="gender" value="woman"></p>   # 单选框 可选属性 checked
+
+             <p>省份
+                 <select name="provice">                # 选择框， 可选属性 multiple(多选) size(最多显示) 多选提交列表，django用getlist取
+                     <option value="BJ">北京</option>
+                     <option value="HB">河北</option>
+                     <option value="HN">河南</option>
+                     <option value="NJ">南京</option>
+             </select></p>
+
+             <p><textarea name="desc" rows="10" cols="10"></textarea></p>  # 文本域
+             <p><input type="file" name="put-file"></p>                    # 上传文件 <form enctype="multipart/form-data"></form>
+             <p><input type="reset" value="重置"></p>
+             <p><input type="button" value="按钮"></p>
+
+             <p><input type="submit" value="提交"></p>
+             # submit 最后会提交有name属性的标签，由name:value组成键值对，没有值输入，则用默认value代替
+             {
+               username: 'xzq',
+               password: '123',
+               hobby:'music,movie',
+               provice: 'BJ',
+               desc: 'this is a good day'
+             }
+         </fieldset>
+     </form>
+
+</body>
+</html>

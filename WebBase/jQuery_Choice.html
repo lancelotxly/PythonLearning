@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choice</title>
+</head>
+<body>
+<button id="all_choice">全选</button>
+<button id="adverse_choice">反选</button>
+<button id="cancel">取消</button>
+<table border="1px" cellspacing="5px" cellpadding="2px">
+    <tr>
+        <td><input type="checkbox"></td>
+        <td>111</td>
+    </tr>
+    <tr>
+        <td><input type="checkbox"></td>
+        <td>222</td>
+    </tr>
+    <tr>
+        <td><input type="checkbox"></td>
+        <td>333</td>
+    </tr>
+</table>
+</body>
+<script src="jquery-3.1.1.js"></script>
+<script>
+    $("#all_choice").click(function () {
+        $("table :checkbox").prop("checked",true);
+
+    })
+    $("#cancel").click(function () {
+        $("table :checkbox").prop("checked",false);
+    })
+    $("#adverse_choice").click(function () {
+        $("table :checkbox").each(function () {
+            $(this).prop("checked",!$(this).prop("checked"));
+        })
+    })
+</script>
+</html>

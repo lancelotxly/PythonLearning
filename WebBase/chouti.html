@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        a{
+            text-decoration: none;
+        }
+        body{
+            font-family: "Times New Roman";
+            font-size: 12px;
+        }
+
+
+        /*header*/
+        .head-box{
+            background-color: blue;
+            height: 44px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .head-content{
+            width: 1016px;
+            /*background-color: blueviolet;*/
+            height: 44px;
+            line-height: 44px;
+            /*<!--居中-->*/
+            margin: 0 auto;
+            /*border: 1px solid red;*/
+            position: relative;
+        }
+
+        .head-content .logo{
+            display: inline-block;
+            background: url("12.jpg");
+            width: 123px;
+            height: 23px;
+            float: left;
+            margin-top: 11px;
+        }
+        .head-content .action-menu{
+            float: left;
+            margin-left: 5px;
+
+        }
+        .head-content .action-menu a.tb{
+            display: inline-block;
+            /*background-color: white;*/
+            margin-left: -3px;
+            /*border: 1px solid red;*/
+            padding: 0 16px 0 13px;
+            color: white;
+        }
+        .head-content .action-menu a.tb:hover{
+            color: white;
+            background-color: cornflowerblue;
+        }
+        .head-content .action-menu a.active, .head-content .action-menu a.active:hover{
+            color: white;
+            background-color: blue;
+        }
+
+        .key-search{
+            float: right;
+            margin-top: 5px;
+        }
+        .key-search .search-txt{
+            float: left;
+            width: 91px;
+            height: 25px;
+            padding: 2px 2px 2px 5px;
+        }
+        .key-search a{
+            display: inline-block;
+            width: 31px;
+            height: 32px;
+            background-color: darkgrey;
+        }
+        .key-search a span.ico{
+            display: inline-block;
+            width: 11px;
+            height: 13px;
+            background: url("12.jpg") 0 -195px;
+            margin-left: 10px;
+            margin-top: 2px;
+            /*border: 1px solid red;*/
+        }
+
+        .action-nav{
+            position: absolute;
+            right: 150px;
+        }
+        .action-nav a{
+            display: inline-block;
+            line-height: 44px;
+            color: white;
+            padding: 0 20px;
+            margin: 0 5px;
+        }
+        .action-nav a:hover{
+            background-color:cornflowerblue ;
+        }
+
+
+        /*content*/
+       .main-content-box{
+           background-color: lightgrey;
+           padding-top: 44px;
+       }
+       .main-content{
+           background-color: white;
+           margin: 0 auto;
+           width: 1016px;
+           height: auto !important;
+           min-height: 700px;
+           overflow: hidden;
+       }
+       .main-content .content-L{
+           float: left;
+           width: 630px;
+           margin-top: 10px;
+           margin-left: 5px;
+       }
+       /*.content-L .top-area{*/
+           /*border-bottom: 1px solid grey;*/
+           /*!*float: left;*!*/
+       /*}*/
+        /*.top-area .child-nav{*/
+           /*float: left;*/
+       /*}*/
+       /*.top-area .child-nav a{*/
+           /*display: inline-block;*/
+           /*width: 60px;*/
+           /*height: 26px;*/
+           /*line-height: 26px;*/
+           /*color: aquamarine;*/
+           /*text-align: center;*/
+
+       /*}*/
+       /*.top-area .child-nav .active{*/
+
+       /*}*/
+
+       .main-content .content-R{
+           float: left;
+       }
+       .main-content .footer-box{
+           clear: both;
+       }
+
+
+    </style>
+</head>
+<body>
+<div class="head-box">
+    <div class="head-content">
+        <a href="#" class="logo"></a>
+
+        <div class="action-menu">
+            <a href="#" class="tb active">全部</a>
+            <a href="#" class="tb">42区</a>
+            <a href="#" class="tb">段子</a>
+            <a href="#" class="tb">图片</a>
+            <a href="#" class="tb">挨踢1024</a>
+            <a href="#" class="tb">你问我答</a>
+        </div>
+
+        <div class="key-search">
+            <form action="/" method="post">
+                <input type="text" class="search-txt">
+                <a href="#" class="i">
+                    <span class="ico"></span>
+                </a>
+            </form>
+        </div>
+
+        <div class="action-nav">
+            <a href="#" class="register-btn">注册</a>
+            <a href="#" class="login-btn">登录</a>
+        </div>
+    </div>
+</div>
+
+<div class="main-content-box">
+    <div class="main-content">
+        <div class="content-L">
+            <div class="top-area">
+                <div class="child-nav">
+                    <a href="" class="hotbtn active">最热</a>
+                    <a href="" class="newbtn">最新</a>
+                    <a href="" class="person">人类发布</a>
+                </div>
+
+                <!--<div class="sort-nav"></div>-->
+
+                <!--<a href="#" class="publish-btn"></a>-->
+            </div>
+            <div class="content-list"></div>
+            <div class="page-area"></div>
+        </div>
+
+        <div class="content-R">Content Right</div>
+
+        <div class="footer-box">Footer</div>
+    </div>
+</div>
+
+
+</body>
+</html>

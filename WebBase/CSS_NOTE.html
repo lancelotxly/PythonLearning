@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        <!--查找标签-->
+        *{
+            color: green;
+        }                          <!--通用选择器-->
+        p{
+            background-color: aquamarine;
+        }                          <!--标签选择器-->
+        .pp{
+            color: green;
+                                                                                    }                        <!--class选择器-->
+        #p1{
+            color: green;
+                                                                                                                                                                                                  }                        <!--id选择器-->
+        p[alex]{
+            color: green;
+                                                                                                                                                                                                                                                                                                                                                                                                                                  }                    <!--属性选择器-->
+        p[alex="sb"]{
+            color: green;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }               <!--属性等于该值，则选择-->
+        p[alex~="sb"]                   <!--属性包含该值，则选择-->
+
+        div.pp{
+            color: green;
+                                                                                                                                                                                                                                                                                                                                                                                                                                  }                    <!--组合选择器-->
+        div#p1{
+            color: green;
+        }
+        div,p{
+            color: green;
+                                                                                    }                     <!--多元素选择器-->
+        div p{
+            color: green;
+                                                                                                                                                                                                  }                     <!--后代选择器，在div的嵌套中寻找所有的p-->
+        div > p{
+            color: green;
+                                                                                                                                                                                                                                                                                                                                                                                                                              }                   <!--子代选择器，只在div的第一层嵌套中寻找p-->
+        div + p{
+            color: green;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }                   <!--毗邻选择器，在div之后，紧邻div的p-->
+
+        <!--选择器优先级计算, style>id>.class 属性>标签名>继承（border, margin, padding, background）-->
+
+
+
+        <!--操作标签，修改添加属性-->
+        <!--标签从内到外为, content（width,height），padding，border，margin-->
+            <!--content-->
+                div {
+                    width: 80px;    # 设置文本框大小，内联元素不能设置
+                    height: 40px;
+
+                    background-color: red;
+                    background-image: url("URI");
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    display:none(隐藏)/block(声明为块可设置长宽)/inline(声明为内联，可放在一拍排)/inline-block(同时具有两种特性);
+                }
+                div.file{
+                    # 文本属性
+                    color: green;                                              # 设置字体颜色
+                    font-size: 40px;                                           # 设置字体大小
+                    font-family: "Droid Serif", "DejaVu Serif", "STIX", serif; # 设置字体
+                    font-weight: bold;                                         # 加粗
+                    font-style: italic;                                        # 斜体
+                    text-align: center;                                        # 文本居中/居右/居左
+                    line-height: 40px;                                         # 行间距
+                    letter-spacing:1px;                                        # 字符间距
+                    word-spacing:2px;                                          # 单词间距
+                }
+                div.list{
+                    # 列表属性
+                    list-style: decimal;
+                }
+            <!--padding-->
+                div{
+                      padding: 40px;              # 内联仅水平有效
+                }
+            <!--border-->
+                div{
+                   border:20px solid red;
+                }
+            <!--margin-->
+                div{
+                   margin: 40px;               # 内联仅水平有效
+                }
+                # 取消body的margin
+                  body{
+                    margin: 0px;
+                  }
+                # 兄弟div的margin按大的取
+                # 父子div，子div的margin向上寻找父级的border,padding,inline content, 没有则代替父级继续寻找
+                  父级div 添加 1. border solid transparent
+                              2. padding:0.5px
+
+
+        <!--伪类为选择器添加特殊效果 配合js-->
+        a:link{
+            color: red;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          color: red;
+        a:visited{
+            color: blue;
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+        a:hover{
+            color: green;
+        }
+        a:active{
+            color: yellow;
+        }
+
+        p:before{content: "hello"}
+        p:after{content: "end"}
+
+        <!--布局-->
+            文档流: 块级元素从上到下，内联元素从左到右
+            脱离文档流: 将该元素浮起，不占空间 float(盒子无视，文本环绕) absolute(全无视)
+            float: 某个div元素A是浮动的，如果A元素上一个元素也是浮动的，那么A元素会跟随在上一个元素的后边
+                   如果A元素上一个元素是标准流中的元素，那么A的相对垂直位置不会改变
+                   float:left/right                          # 向左向右浮动
+                   clear:none/left/right/both                # clear属性只会对自身起作用，而不会影响其他元素
+                   .clearfix:after{
+                               content: '.';  # 一定要有文本，不然下面的块会认为它是空的
+                               dispaly: block;
+                               clear:both;
+                               visibility: hidden; # 不可见但占空间
+                               line-height=0;
+                               height=0;
+                               font-size=0;}                      # 浮动后，创建一个不占空间，但实际存在的block块，且其为clear:both来阻挡后面的浮动
+            position: relative; top;left;right;bottom        # 相对于自己初始位置，且初始位置仍然占空间
+                      absolute; top;left;right;bottom        # 浮空，相对于最近已定位父级元素，一般用relative定位父级元素，子元素absoulte
+                      fixed;top;left;right;bottom            # 钉死
+
+
+    </style>                                                # 嵌入式
+
+    <link href="test.css" rel="stylesheet" type="text/css">   # 链接式，将所有css文件准备好，然后和html文件一起渲染，√
+
+    <style type="text/css">
+        @import "test.css";
+    </style>                                # 导入式，先渲染html，再渲染css
+</head>
+<body>
+<p style="color: red">Hello web</p>                          # 写死
+
+
+</body>
+</html>

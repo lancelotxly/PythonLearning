@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Left_menu</title>
+    <style>
+        .menu{
+            height: 500px;
+            width: 30%;
+            background-color: cornflowerblue;
+            float: left;
+        }
+        .content{
+            height: 500px;
+            width: 70%;
+            background-color: lightgrey;
+            float: left;
+        }
+        .title{
+            line-height: 50px;
+            background-color: aquamarine;
+            color: black;
+        }
+        .hide{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="outer">
+    <div class="menu">
+        <div class="item">
+            <div class="title">菜单一</div>
+            <div class="con">
+                <div>111</div>
+                <div>222</div>
+                <div>333</div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="title">菜单二</div>
+            <div class="con hide">
+                <div>111</div>
+                <div>222</div>
+                <div>333</div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="title">菜单三</div>
+            <div class="con hide">
+                <div>111</div>
+                <div>222</div>
+                <div>333</div>
+            </div>
+        </div>
+    </div>
+    <div class="content"></div>
+</div>
+</body>
+<script src="jquery-3.1.1.js"></script>
+<script>
+    $(".item .title").click(function () {
+        $(this).next().removeClass('hide');
+        $(this).parent().siblings().children(".con").addClass("hide");
+
+    })
+</script>
+</html>

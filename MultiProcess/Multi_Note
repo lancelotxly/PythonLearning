@@ -1,0 +1,217 @@
+1. Basic knowledge of Process and Threading:
+      1) 进程 & 线程
+            进程: 进程是一个程序在数据集上的一次动态执行过程
+                 由程序、 数据集、 进程控制模块组成
+
+            线程: 线程是CPU的一个最基本的执行单元，线程的出现是为了降低进程切换的消耗，完成在一个进程内的并发
+                 由线程ID、程序计数器、寄存器集合、堆栈组成
+
+            关系:  1> 进程是线程的容器，程序至少有一个进程，一个进程至少有一个线程
+                  2> 一个进程内的线程们共享进程资源， 线程几乎不拥有资源
+                  3> 进程间的资源不共享
+
+            切换方式:  1> IO阻塞
+                     2> 时间轮询
+
+
+      2) 并行 & 并发:
+            并发:  系统具有处理多个任务的能力
+
+            并行:  系统具有“同时”处理多个任务的能力
+
+            关系:  并行是并发的子集
+
+
+      3) 同步 & 异步:   同步与异步针对的是任务的调用方式(等待/不等待)
+            同步: 当进程(线程)执行IO操作时, 没得到结果就等待
+            异步: 当进程(线程)执行IO操作时, 不等待, 数据接收成功后，再回来处理
+
+
+      4) 阻塞 & 非阻塞:  阻塞与非阻塞针对的是进程或线程(挂起/不挂起)
+            阻塞: 当进程(线程)执行IO操作时，被挂起，直到等到结果才被激活
+            非阻塞: 当进程(线程)执行IO操作时, 没有结果也会返回
+
+
+
+      5) GIL: 全局解释器锁
+              Python没有多线程:  同一个时刻，在一个进程内(无论有多少个线程)，Python解释器只允许执行一个线程
+
+              任务: 1> IO密集型  ----> IO切换         无影响
+                   2> 计算密集型 ----> 轮询切换        Python不适用于计算密集型
+
+              解决:  多进程 + 协程 (但主要还是为IO密集型服务)
+
+
+
+2. Multi-Threading:
+   1) Module:   import  threading
+
+   2) 调用方法:  1> 直接调用
+               2> 继承调用
+
+   3) 子线程与主线程的关系:   join() & Daemon() 方法
+                       1> 主线程与子线程分别执行， 最后主线程等待最后一个子线程执行完毕后，关闭
+                       2> 子线程join到主线程，阻塞主线程，执行完该子线程后主线程继续执行，最后主线程等待最后一个子线程执行完毕后，关闭
+                       3> 在子线程执行执行前，申明该子线程为 t.setDaemon(True) [守护线程需要时才会唤醒],  则最后主线程不会等待该子线程执行完，关闭
+
+   4) 线程属性和方法:
+                   1> 对象方法和属性(启动, 阻塞/去阻塞, 获取信息, 判断状态)
+                   2> threading方法(获取当前线程对象，获取所有活跃线程对象)
+
+   5) 线程间通信同步
+      1> 同步锁(Lock): 保证线程间通信安全, 同一时刻只有获得锁的线程才能运行锁内的代码
+
+             死锁: 锁不能重用导致的，后面的代码需要前面的锁，但前面的锁已经被其他线程抢到了
+
+             ---> 递归锁(RLock): 可重入锁，不用完不释放
+
+
+      2> 同步对象(Event): 通过event.wait()来阻塞线程，event后的代码必须等待event.set()执行了才能执行
+
+      3> 信号量(Semaphore):  信号量是，可以开无限多的进程(线程)，但某一时刻只允许num个进程(线程)修改数据
+                            进程池是，从始至终只开num个进程
+
+      4> 线程队列(queue): q = queue.Queue(num)
+                        通过q.put()加满则阻塞 和 q.get()取空则阻塞来维护线程安全
+                        q.task_done()   / q.join()  一组阻塞，‘生产者做好一个包子通知用户吃一个’ 或者是 “用户吃了一个通知生产者做一个”
+
+      5> ThreadLocal:  thread_local = threading.local()
+                       线程本来只能访问公共变量，ThreadLocal为每个线程创建自己的变量
+                       theread_local对象的属性属于各个线程，互不干扰，由ThreadLocal将其映射到各个线程内
+
+
+3. MultiProcess:
+      1) Module:   import multiprocess.Process
+
+      2) 调用方式:  同线程
+
+      3) 子进程与父进程的关系: 同线程
+
+      4) 进程属性和方法:
+                   1> 对象方法和属性(启动, 阻塞/去阻塞daemon, 获取信息, 判断状态)
+                   2> os方法(获取当前进程号，获取当前父进程号)
+      5) 进程通信同步:
+                1> 锁机制: Lock/ Event/ Semaphore 同线程;
+                          不同的是: Lock, Event, Semaphore是进程的公共资源，因此要作为参数传入函数中才能调用
+
+                2> 进程队列(Queue): 与线程queue.Queue()不同的是: Queue()是进程的公共资源，因此要作为参数传入函数中才能调用
+
+                3> 管道(Pipe): multiprocess.Pipe 是一个双向管道，每个端口都有send()和recv()方法
+                              conn.recv() 为空则阻塞
+
+                4> Manager: manager = Manager() 为所有进程创建一个manager对象,
+                            各个进程可通过这些对象(manager.list(), manager.dict())对公共数据进行访问, 但注意加锁，不加锁必然会导致读写数据紊乱
+
+                5> 进程池(Pool): 与信号量类似，但没有加锁。信号量是，可以开无限多的进程(线程)，但某一时刻只允许num个进程(线程)修改数据
+                               进程池是，从始至终只开num个进程
+
+
+
+4. 协程(Coroutine):
+      1) 定义: 协程是一种协作而非抢占式的处理并发的程序。  A --> B --> A --> C
+      2) 特点: 协程本身是一个线程，是用户态的切换，
+              相比线程具有两个优势
+                   1> 没有切换的消耗
+                   2> 没有锁的概念
+              但也有缺点: 多个任务一旦有一个阻塞没有切，整个线程都阻塞在原地.
+                        一旦引入协程，就需要检测单线程下所有的IO行为, 实现遇到IO就切换,少一个都不行，以为一旦一个任务阻塞了，整个线程就阻塞了
+
+         Python大多用 多进程 + 协程 来处理大规模IO并发
+
+
+         协程的本质就是在单线程下，由用户自己控制一个任务遇到io阻塞了就切换另外一个任务去执行，以此来提升效率。
+         为了实现它，我们需要找寻一种可以同时满足以下条件的解决方案：
+                #1. 可以控制多个任务之间的切换，切换之前将任务的状态保存下来，以便重新运行时，可以基于暂停的位置继续执行。 (yield、greenlet都无法实现检测IO)
+
+                #2. 作为1的补充：可以检测io操作，在遇到io操作的情况下才发生切换 (geven)
+
+
+      3) 切换:
+             1> yield, next(g), g.send(value):
+                 yield 可以保存状态
+                 next(g) 进入任务g,                           检测到yield位置， 执行yield之前的代码
+                 g.send(value)  传入value，并执行任务g，        检测当前yield的位置，把值通过该yield传入，执行下一个yield到该yield之间的代码
+
+             2> greenlet:
+                        g = greenlet.greenlet(func) 包装原函数
+                        g.switch(*arg,**kwarg)      切换/调用函数，会保存变量
+                        相比与python自带的yield，它可以使你在任意函数之间随意切换，而不需把这个函数先声明为generator
+
+             3> gevent:
+                   g1 = gevent.spawn(func,*args,**kwargs)  # 相当于创建了一个虚拟线程对象，可以自动识别阻塞
+
+
+
+
+5. IO模型:
+         1) 基本概念:
+                    同步/异步: IO等待/不等待
+
+                    阻塞/非阻塞: 线程(进程)挂起/不挂起
+
+                    线程(进程)模型:
+                                    ------执 行--------------------
+                                    |        ^_______            |
+                                   等待IO             |       执行其他线程
+                                    |             执行该线程       |
+                                    v                |           |
+                                   阻 塞 ---有效IO--> 就 绪 <-------
+
+
+                    读写模型: wait_data(内核态) + copy_data(用户态)
+
+         2) IO模型:
+                  1> 同步阻塞: wait_data(block) + copy_data(block)
+
+                             --> multi-threading + blocking IO --> 线程池 --> 设计合适的池子大小
+
+                          socket :
+                                 TCP:  accept/connect_ex , recv/send
+                                 UDP:  recvfrom/sendto
+
+                          文件:   read/write
+
+
+                  2> 同步非阻塞:  wait_data(unblock, 轮询) + copy_data(block)
+                                --> 轮询耗资源，任务响应时间增大(需要等待轮询)
+
+                                1>>. 声明为非阻塞server.setblocking(False)
+
+                                2>>. wait_data不到，则报错BlockingIOError，期间可以做别的事
+
+
+
+                  3> 同步IO复用:
+                           1) select[conn1,conn2,..](block) + copy_data[conn_i](block),  wait_data[conn_i] unblock
+                                特点:
+                                    1>>. 利用select同时检测多个non-blocking的链接，哪个wait_data(ok)就让其copy_data
+                                    2>>. 相当于两次block, 适用于大规模链接的情况， 小规模还是multi-threading + blocking IO
+                                    3>>. select是一种无差别轮询，通过检测用户态的文件描述符变化，找到对应的内核态数据，运算的时间复杂度为O(n)
+                                    4>>. select采用水平触发方式，即只要内核态有数据就会触发
+                                         epoll可以采用边缘触发方法，即当内核态数据变化(有/无)才会触发。而且epoll是问答式检测，不需要轮询
+
+                                    缺点: 1>>. 每次调用select，都需要把fd集合从用户态拷贝到内核态(描述符到数据的映射)，这个开销在fd很多时会很大
+                                         2>>. 同时每次调用select都需要在内核遍历传递进来的所有fd(无差别轮询)，这个开销在fd很多时也很大
+                                         3>>. select支持的文件描述符数量太小了，默认是1024
+
+                                用法:
+                                    r_able, w_able, e_able = select.select(r_list, w_list, e_list, [timeout])
+                                       r_able: 为可读链接列表
+                                       w_able: 为可写链接列表
+                                       e_able: 为错误时间列表
+                                       timeout: 可选，为select检测间隔时间
+
+                           2) selectors.DefaultSelector()  监督者根据系统自动适配
+                                用法:  1. 创建监督者
+                                         sel = selectors.DefaultSelector()
+                                      2. 将不同链接对象sock/conn， 以及其对应的处理函数注册到sel上
+                                         sel.register(sock,selectors.EVENT_READ,accept)
+                                      3. 开始监听，并根据返回对象的不同，多态的实现处理函数，完成各自的任务
+                                         events = sel.select()
+                                         for sel_obj, mask in events:
+                                             callback = sel_obj.data
+                                             callback(sel_obj.fileobj,mask)
+
+
+                  4> 异步IO:  wait_data(unblock) + copy_data(自动完成返回信号)
+                             异步IO模型需要一个消息循环，在消息循环中，主线程不断地重复“读取消息-处理消息

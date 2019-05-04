@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dialogue</title>
+    <style>
+        .back{
+            background-color: cornflowerblue;
+            height: 2000px;
+        }
+        .shade{
+            position: fixed;
+            top: 0;
+            bottom:0;
+            left:0;
+            right:0;
+            background-color: lightgrey;
+            opacity: 0.4;
+        }
+        .hide{
+            display: none;
+        }
+        .models{
+            position: fixed;
+            top:50%;
+            left:50%;
+            background-color: aquamarine;
+            height: 200px;
+            width: 200px;
+            margin-left: -100px;
+            margin-top: -100px;
+        }
+    </style>
+</head>
+<body>
+<div class="back"><input type="button" value="click" id="ID1"></div>
+<div class="shade hide"></div>
+<div class="models hide"><input type="button" value="cancel" id="ID2"></div>
+</body>
+<script src="jquery-3.1.1.js"></script>
+<script>
+    $("#ID1").click(function () {
+        $(this).parent().siblings().removeClass("hide");
+    })
+    $("#ID2").click(function () {
+        $(this).parent().addClass("hide").prev().addClass("hide");
+    })
+</script>
+</html>
