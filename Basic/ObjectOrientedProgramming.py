@@ -44,10 +44,10 @@ POP & OOD & OOP:
        
        2. 实例化
           obj = ClassName(a,b)
-          实例化过程: 
-                   1. 调用__new__()方法, 开拓空间
-                   3. ClassName()调用abc.__call__()方法
-                   2. 进而调用__init__(self,a,b), 实例化对象, 并把该对象赋给obj                             
+          实例化过程:  执行元类__call__()方法, 详细见MetaClass.py
+                     1.  调用Object.__new__(self)方法创建一个实例t
+                     2.  调用ClassName.__init__(t)方法初始化实例
+                     3.  返回初始化好的t, 赋值给obj                        
                     
        3. 访问属性: 只能通过obj或ClassName访问
              1) obj访问属性(data+method): 

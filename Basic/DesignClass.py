@@ -144,6 +144,12 @@ __del__():  module运行结束后执行, 释放空间
 ''' # 上下文管理: __enter__()/ __exit__()
 
 '''
+类型:
+ 1) class类型: ClassName.__class__  # type(ClassName)会返回该属性, 值为 <class 'type'>
+ 2) obj类型: obj.__class__          # type(obj)会返回该属性, 值为<class '__main__.ClassName'> 
+''' # 类型: __class__
+
+'''
 描述符: 是一个新式类, 实例调用它作为属性
      1. 定义描述符 Type
         class Type:
@@ -303,32 +309,8 @@ p = People('xzq',24,18000.00)
     
     5) Class.__doc__/obj.__doc__: 说明文档, 不能继承
     
-    6) Class.__class__: <class 'type'>
-    
-    7) obj.__class: <class '__main__.ClassName'>              
-    
     8) Class.__mro__: 返回一个tuple, 继承链
        Class.mro(): 返回一个list,继承链
-''' # __name__, __bases__, __modules__, __doc__, __class__, __mro__
+''' # __name__, __bases__, __modules__, __doc__, __mro__
 
-'''
-MetaClass: Create a Class dynamically
-           1. DEFINE: 
-                     一切皆对象, 类也是一个对象, 创建类(obj)的类, 就是元类
-                     ClassName = type('ClassName', (father1, ), dict(var=value, func=f, ))
-'''
-# class Student():
-#     def __init__(self,name,age):
-#         self.name = name
-#         self.age = age
-#
-# def __init__(self,name,age,gender):
-#     Student.__init__(self,name,age)
-#     self.gender = gender
-#
-# def printInf(self):
-#     print('this %s names %s, %d years old' % (self.gender, self.name, self.age))
-#
-# Boy = type('Boy',(Student, ),dict(__init__ = __init__, printInf = printInf))
-# b = Boy('xzq',18,'man')
-# b.printInf()
+# 下一章: MetaClass.py
