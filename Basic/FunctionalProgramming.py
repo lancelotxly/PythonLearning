@@ -115,43 +115,43 @@
 # print(area(2)())
 
 '''
-    装饰器: 
-       1. 定义: 
-              1) 不改变原有的代码
-              2) 不改变原来的调用方式
-              3) 添加了新的功能
-       
-       2. 结构: 
-             1) 无参数传入的装饰器
-                定义: 
-                    def decorator(f):
-                      @functools.wraps(f)    <----   所以这里将wrapper闭包的内存地址重新指向了f
-                      def wrapper(*args, **kwargs):
-                         # 新功能                     <--- 执行新的功能(可交换) 
-                         value = f(*args, **kwargs)  <--- 执行原生的f(可交换)
-                         return value                <--- 返回值一定要是原来的, 不能改变原来函数的执行结果
-                      return wrapper      <--- 这里返回的是wrapper的闭包给f, 因此f的内存地址与原来不同了       
-                调用:  
-                     @decorator
-                     def f(*args,**kwargs): pass        #1. @decorator -->  执行f = decorator(f), 返回wrapper闭包
-                     f(*args,**kwargs)                  #2. f() = wrapper() 执行wrapper()                   
-                                                
-             2) 有参数输入的装饰器
-                定义:
-                    def InputPara(a,b):
-                       def decorator(f):
-                         @functools.wraps(f)
-                         def wrapper(*args, **kwargs)
-                             # 新功能,可以使用a,b
-                             value = f(*args,**kwargs)
-                             return value
-                         return wrapper
-                       return decorator
-                调用:
-                    @InputPara(a,b)                      #1. 执行InputPara(a,b), 返回decorator闭包
-                    def f(*args,*kwargs):pass            #2. @decorator(f) --> 执行f = decorator(f), 返回wrapper闭包
-                    f(*args,**kwargs)                    #3. f() = wrapper() 执行wrapper()         
-''' # 装饰器
+装饰器: 
+1. 定义: 
+      1) 不改变原有的代码
+      2) 不改变原来的调用方式
+      3) 添加了新的功能
+
+2. 结构: 
+     1) 无参数传入的装饰器
+        定义: 
+            def decorator(f):
+              @functools.wraps(f)    <----   所以这里将wrapper闭包的内存地址重新指向了f
+              def wrapper(*args, **kwargs):
+                 # 新功能                     <--- 执行新的功能(可交换) 
+                 value = f(*args, **kwargs)  <--- 执行原生的f(可交换)
+                 return value                <--- 返回值一定要是原来的, 不能改变原来函数的执行结果
+              return wrapper      <--- 这里返回的是wrapper的闭包给f, 因此f的内存地址与原来不同了       
+        调用:  
+             @decorator
+             def f(*args,**kwargs): pass        #1. @decorator -->  执行f = decorator(f), 返回wrapper闭包
+             f(*args,**kwargs)                  #2. f() = wrapper() 执行wrapper()                   
+                                        
+     2) 有参数输入的装饰器
+        定义:
+            def InputPara(a,b):
+               def decorator(f):
+                 @functools.wraps(f)
+                 def wrapper(*args, **kwargs)
+                     # 新功能,可以使用a,b
+                     value = f(*args,**kwargs)
+                     return value
+                 return wrapper
+               return decorator
+        调用:
+            @InputPara(a,b)                      #1. 执行InputPara(a,b), 返回decorator闭包
+            def f(*args,*kwargs):pass            #2. @decorator(f) --> 执行f = decorator(f), 返回wrapper闭包
+            f(*args,**kwargs)                    #3. f() = wrapper() 执行wrapper()         
+''' # 函数的装饰器
 
 # from functools import wraps
 # def log(f):
@@ -235,6 +235,53 @@
 #
 # home()
 # index()
+
+'''
+类的装饰器:
+   1.  无参
+       def decorate(cls):
+          @functools.wrapper(cls)               
+          def wrapper(*args,**kwargs)
+              # 装饰部分
+              obj = cls(*args,**kwargs)
+              return obj
+          return wrapper
+       
+       @decorate                             #1. @decorate, 执行ClassName = decorate(ClassName), 返回wrapper闭包
+       class ClassName:
+           def __init__(self):pass 
+           
+       c = ClassName()                       #2. 此时执行的是wrapper, 但内部能通过cls找到ClassName, 进而执行__init__(self)实例化
+   
+   2. 有参
+     def InputPara(a,b)
+        def decorate(cls):
+           @functools.wrapper(cls)
+           def wrapper(*args,**kwargs):
+              # 装饰部分
+              obj = cls(*args,**kwargs)
+              return obj
+           return wrapper
+        return decorate
+     
+     @InputPara(a,b)                      # 1. InputPara(a,b)返回decorate闭包
+     class ClassName:                     # 2. @decorate, 执行ClassName = decorate(ClassName)返回wrapper闭包 
+          def __init__(self): pass
+     c= ClassName()                       # 3. 此时执行的是wrapper, 但内部能通过cls找到ClassName, 进而执行__init__(self)实例化                     
+''' # 类的装饰器: 同函数装饰器
+
+
+
+# @decorate
+# class People:
+#     def __init__(self,name,age,salary):
+#         self.name=name
+#         self.age=age
+#         self.salary=salary
+
+# p = People('xzq',12,12)
+
+
 
 '''
 偏函数: 提前将部分参数存入*arg或**kwargs中

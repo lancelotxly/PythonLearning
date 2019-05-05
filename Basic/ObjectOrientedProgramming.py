@@ -45,8 +45,9 @@ POP & OOD & OOP:
        2. 实例化
           obj = ClassName(a,b)
           实例化过程: 
-                   1. 调用__new__()方法
-                   2. 调用__init__(self,a,b), 实例化对象, 并把该对象赋给obj                             
+                   1. 调用__new__()方法, 开拓空间
+                   3. ClassName()调用abc.__call__()方法
+                   2. 进而调用__init__(self,a,b), 实例化对象, 并把该对象赋给obj                             
                     
        3. 访问属性: 只能通过obj或ClassName访问
              1) obj访问属性(data+method): 
@@ -216,11 +217,12 @@ POP & OOD & OOP:
       2. 获取继承信息:  isinstance(obj,Class),  issubclass(Child, Father)
       3. 获取所有属性:  dir(obj)      # 返回一个list, 包含所有属性, 不包括属性值
                       obj.__dict__  # 返回一个dict, 所有属性和值
-      4. 反射:
-             hasattr(obj,'attr')
-             getattr(obj,'attr',默认值[可选])
-             setattr(obj,'attr')
-             delattr(obj,'attr')
+      
+      4. 反射: 操作实例属性或类属性
+             hasattr(obj/cls,'attr')
+             getattr(obj/cls,'attr',默认值[可选])
+             setattr(obj/cls,'attr')
+             delattr(obj/cls,'attr')
              用途:
                  1. 操作属性
                  2. 命令分发
