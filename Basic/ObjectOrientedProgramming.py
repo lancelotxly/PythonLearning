@@ -1,18 +1,21 @@
 '''
-Object Oriented Programming: POP & OOD & OOP, Class and Instance, Inheritance & Polymorphism & Encapsulation, Get Information (Reflection)
-'''
+面向对象编程:
+           1. POP, OOD, OOP
+           2. 类与实例
+           3. 继承: 单继承, 接口继承与多态, 多继承
+           4. 封装
+           5. 反射(获取信息, 命令分发, 动态加载模块)
+''' # 综述
 
 '''
 POP & OOD & OOP:
-               1. POP (Process Oriented Programming): Divide the Process into Sub-process to complete.
-               2. OOD (Object Oriented Design): Define function to achieve 'obj = data + method'
-                            
-                            
-               3. OOP (Object Oriented Programming):  Define class + OOD
-'''
+              1. POP(Process Oriented Programming, 面向过程编程): 将一个过程分为几个子过程来完成
+              2. OOD(Object Oriented Design, 面向对象设计): 通过定义函数实现'obj = data + method'
+              3. OOP(Object Oriented Programming): 定义类 + OOD 
+''' # POP & OOD & OOP
 # # OOD
 # def Object_func(attr1, attr2):
-#     def init(attr1, attr2): v
+#     def init(attr1, attr2):
 #         obj = {
 #             'func1': func1,
 #             'func2': func2,
@@ -29,75 +32,68 @@ POP & OOD & OOP:
 # attr1 = obj['attr1']
 
 '''
-Class and Instance: 
-          1. Define a class and Instantiate          
-                    1) DEFINE:
-                             class ClassName(father):
-                                   class_var1 = value1
-                                   class_var2 = value2
-                                   ...
-                                   
-                                   def __init__(self,a,b):
-                                        self.a = a
-                                        self.b = b
-                                   def func1(self): pass
+类和实例:
+       1. 定义类
+           class ClassName(father):
+                class_v1 = v1               # 类属性
+                class_v2 = v2
+                def __init__(self,a,b):     # 实例属性
+                    self.a = a
+                    self.b = b
+                def func1(self): pass       # 实例方法, 所有实例共有
+       
+       2. 实例化
+          obj = ClassName(a,b)
+          实例化过程: 
+                   1. 调用__new__()方法
+                   2. 调用__init__(self,a,b), 实例化对象, 并把该对象赋给obj                             
                     
-                    2) Instantiation:
-                             obj = ClassName(a,b)      # 1. Call for '__init__(self,a,b)'
-                                                         2. Running '__init__(self,a,b)'
-                                                         3. '__init__(self,a,b)' will 'return obj'
-                    
-                    
-          2. Visit Attrs:     
-                    1) Object Visit Attrs:  Object ONLY have Data, DON'T have method
-                       1>. obj.attr   # 1. Search in '__init__()'
-                                        2. Search in the out class, Don't search in the outside
-                                        3. obj.func1()
-                                                      # When 'obj' call for 'func1(self)' [Belongs to class], will plunge 'self' automatically
-                       
-                       2> Bind Attrs: 1>>. Bind Data:     obj.data = value
-                                      2>>. Bind Method:   
-                                                          def func(self): pass
-                                                          obj.func = func
-                                                          # Call for
-                                                          obj.func(obj)    # When 'obj' call for 'func(self)' [Belongs to instance], need plunge 'self'.
-                                                    OR:   obj.func = types.MethodType(func,obj)  # Call for: obj.func()
-                    
-                    2) Class Visit Attrs:
-                       1>. ClassName.attr   # 1. Can't Visit obj.attr
-                                              2. ClassName.func1(obj)  # When 'class' call for 'func1(self)', need plunge 'self'
-                       
-                       2>. Bind Attrs: 1>>. Bind Data: ClassName.data = value
-                                       2>>. Bind Method:
-                                                        def func(self): pass
-                                                        ClassName.func = func
-                                                                            
-                    **: class 中的属性， 只能通过self.attr  ClassName.attr 来调用
-                                       直接调用variable : 1. 先在函数中找
-                                                         2. 没有则在class外部找 
-                                                          
-                                                          
-          3. Static property, ClassMethod, StaticMethod, Combine:
-                    1) Static property:  Encapsulate the logic of function
-                                      @property
-                                      def func(self): pass       # Can visit 'self.attr' and 'class.attr'
-                                      # Call for
-                                      obj.func                   
+       3. 访问属性: 只能通过obj或ClassName访问
+             1) obj访问属性(data+method): 
+                    obj.attr: 1> 搜索__init__()内部
+                              2> 然后在class内部搜索
+                              *当obj调用func(self,a,b)类内部方法时, 会自动传参self            
+            
+            2. Class访问属性(data+method):
+                   ClassName.attr: 1> 不能访问obj.attr, 即不会在__init__()中搜索, 直接在class内部搜索
+                                   * 当ClassName调用func(self,a,b)类方法时, 需要手动传入self, 也就是需要手动传入一个对象obj           
+                     
+       4. 绑定属性:
+            1)obj绑定属性: 对象应该只有data, 不应该有自己独立的method
+                  1> 绑定data:   obj.data = value
+                  2> 绑定method:
+                                        def func(self): pass
+                                方式一:  obj.func = func
+                                        obj.func(obj)           # 调用时需要手动传入self, 因为该方法是属于当前obj的, 只有实例方法才会自动传入self
+                                方式二:  obj.func = types.MethodType(func,obj)
+                                        obj.func()              # 可正常调用                      
+            2)Class绑定属性
+                  1> 绑定data:  ClassName.data = value
+                  2> 绑定method:
+                               # 绑定实例方法
+                               def func(self): pass
+                               ClassName.func                  # 绑定后所有实例都可以使用, 包括绑定前生成的实例   
+                                                    
+       5. 静态属性, 类方法, 静态方法            
+          1) 静态属性: 将method打包成data, 封装了内部细节
+                      @property
+                      def func(self):pass
+                      obj.func          # 访问时不再需要调用
+                                                    
+                      #1. property 本质是一个Data-Descriptor
+                      #2. @property  本质是在调用property.__get__()
+                      #3. @func.setter 本质是在调用property.__set__()
+                      #4. @func.deleter 本质是在调用property.__delete__()
+          
+          2) 类方法: 不要实例对象, 通过ClassName可直接访问的方法
+                    @classmethod
+                    def func(cls):pass     # 类方法只能访问类属性, 没有self
+                    ClassName.func()       # 通过类名直接调用
                                       
-                                      #1. property 本质是一个Data-Descriptor
-                                      #2. @property  本质是在调用property.__get__()
-                                      #3. @func.setter 本质是在调用property.__set__()
-                                      #4. @func.deleter 本质是在调用property.__delete__()
-                                      
-                    2) ClassMethod:  Some method don't need obj, Can call for by class (and obj)
-                                      @classmethod
-                                      def func(cls): pass        # Can visit 'class.attr' ONLY
-                                      # Call for                  
-                                      ClassName.func()
+          3) 静态方法: 不能操作类属性, 实例属性, 但可以被class或obj直接调用
+                    @staticmethod
+                    def func():pass          
                     
-                    3) StaticMethod:  Some method no matter for 'class.attr' and 'self.attr', But can call for by 'class' and 'obj'
-                                      @staticmethod
-                                      def func(): pass           # Not operate 'class.attr' or 'self.attr'    
                                       
                    4) Combine: 类A与类B显著不同, 类A是类B的组件
                                class Object_C():
@@ -111,165 +107,132 @@ Class and Instance:
                                a = Object_A()
                                b = Object_B()
                                c = Object_C(a,b)
+''' # 类和实例
+
 '''
-
+组合: 类A与类B显著不同, 类A是类B的组件
+          class Object_C(object):
+              def __init__(self,a,b):
+                 self.a = a
+                 self.b = b
+              ...
+          class Object_A(object):pass
+          class Object_B(object):pass
+          
+          a = Object_A()
+          b = Object_C()
+          C = Object_C(a,b)
+''' # 组合
 
 '''
-Inheritance: 类之间相同，共同功能做基类
-            1. DEFINE:
-                       class Father(object):
-                           # cls
-                           def __init__(self, a, b):
-                                pass
-                           def func1(self):
-                                pass
-
-                       class Child(Father):
-                           # cls
-                           def __init__(self, a, b, c):
-                              super(Child, self).__init__(a,b)
-                              # Father.__init__(self,a,b)         # Not better, ClassName.func(self), 'self' is necessary
-                              self.c = c
-
-                           def func_new(self):
-                               super(Child,self).func1()
-                               # Father.func1(self)
-
-
-            2. Visit Attr:
-                          1) child.attr (Order of Visit):  # 引入描述符的情况见DesignClass.py  
-                                   1>. child.data: 
-                                                 child.__init__() --> father.__init() --> Child.class --> Father.class
-                                                 
-                                   2>. child.method:
-                                                 Child.class --> Father.class                                          
-                          2) Child.attr: 
-                                       Child.class -->  Father.class
-               
-                                       
-            3. Interface-Inheritance: 1) The Interface doesn't need to instantiate
-                                      2) The methods of Interface must complete
-                                      
-                                      import abc
-                                      class Interface(metaclass=abc.ABCMeta):
-                                           @abc.abstractmethod
-                                           def func(self): pass
-                                      
-                                      class Child(Interface):
-                                           def func(self): # code
+继承: 类和类之间大部分功能相同
+单继承:             
+    1. 定义  
+           父类: class Father(object):
+                    def __init__(self,a,b):
+                        self.a = a
+                        self.b = b
+                    def func1(self):pass
            
+           子类: class Child(Father)
+                1. 子类完全继承父类所有属性和方法
+                2. 子类可对父类方法进行重写
+                    * 重写__init__()方法时, 必须实现父类方法, 即添加新的实例属性时, 必须先确保父类实例属性
+                      def __init__(self,a,b,c):
+                         super(Child,self).__init__(a,b)
+                         self.c = c
+                3. 子类可部分继承父类方法, 对方法进行添加
+                      def func1_plus(self):
+                         super(Child,self).func1()     # 调用时, 这里会执行父类func1()
+                         # 新功能
+                4. 子类可定义自己的方法和属性         
+                                    
+    2. 子类访问属性:          # 引入描述符的情况见DesignClass.py
+          1) 子类对象obj访问属性
+              obj.attr(data+method): 1> 搜索子类__init__()
+                                     2> 搜索父类__init__()
+                                     3> 子类中搜索
+                                     4> 父类中搜索
+          2) 子类ClassName访问属性
+              ClassName.attr(data+method): 1> 子类中搜索            
+                                           2> 父类中搜索  
+''' # 单继承: 定义, 访问属性
+
+'''
+接口继承: 归一化设计
+       1. 定义:
+            1) 接口不能实例化
+            2) 接口中的方法必须要实现
+       
+       2. 操作:
+           import abc
+           class Interface(metaclass=abc.ABCMeta)    # 定义接口
+               @abc.abstractmethod
+               def func(self): pass
            
-            4. Multi-Inheritance:  1) DEFINE:
-                                         class A(): def __init__(self)
-                                         class B(): def __init__(self)
-                                         
-                                         class C(A, B): 
-                                              def __init__(self):
-                                                 super(C, self).__init__(?) 
-                                                 
-                                      *DISCIPLINE: Nearby principle to find the '__init__(self)' of Father
-                                   
-                                   2) Search Inherited tree:  
-                                              C.__mro__   # Return a List
-                                                                           
-                                   3) MIXIN: 1> Decide a main inheritance threading
-                                             2> Maxin other properties.
-'''
+           class Child(Interface):                   # 继承接口并重写所有方法
+              def func(self):
+                 # code 
 
+多态: 不同对象调用相同方法, 结果不同                             
+''' # 接口继承: 归一化设计, 多态
 
-'''
-Polymorphism: 1. DEFINE: 不同对象调用相同属性，结果不同
-
-              2. DISCIPLINE: OPEN: For a Father class, we can add some attr by inheriting
-                             CLOSED: For a operation function, it can perform polymorphism without changing code. 
-'''
-# class Animal(object):
-#     pass
-#
-# class Dog(Animal):
-#     def run(self):
-#         print('The dog is running')
-# class Cat(Animal):
-#     def run(self):
-#         print('The cat is running')
-#
-# def Run_twice(animal):
-#     animal.run()
-#     animal.run()
-#
-# Run_twice(Dog())
-# Run_twice(Cat())
-
+'''  
+多继承:
+     1. 定义
+           class A(): 
+              def __init__(self)
+           class B(): 
+              def __init__(self)
+           class C(A,B):
+              def __init__(self):
+                 super(C,self).__init__(?)      # 传参按继承的就近原则
+     
+     2. 访问属性的搜索顺序:
+         经典类 class A(object): 深度优先, 会沿着第一条继承链搜到A
+         新式类 class A:    广度优先, 沿着第一条继承链搜索到A之前一个类, 然后最后一条链搜索到A
+     
+     3. 继承链存在 C.__mro__中, 是一个list, 查找时从左到右搜索到基类             
+''' # 多继承
 
 '''
-Encapsulation: 1. Type of attr(variable, function) in class:
-                  __variable__, __function__(): Dunder Method
-                  __variable, __function(): Private, can't call for by the outer # __variable -->  _ClassName__variable
-
-               2. Encapsulate: 1) Design attr Privately
-                               2) Expose set() and get() to outer for setting or getting attr
-                                  def set_name(self, name):
-                                      self.__name = name
-                                  def get_name(self):
-                                      return sefl.__name
-
-                                  @property
-                                  def name(self):
-                                      return self.__name
-                                  @name.setter
-                                  def name(self, name):
-                                      self.__name = name
-                                      
-                               OR:   Attr_name = property(get_func,set_func,delete_func)
+封装: 
+    1. 属性(data+method)的类型:
+         _var, _func(): 对外部不可见, 可继承
+         __var, __func(): 对外部不可见, 且不可继承
+    
+    2. 数据封装
+       1) 设置为__var
+       2) 通过静态属性访问和设置
+           @property
+           def var(self): return self.__var
+           @var.setter
+           def var(self,a): self.__var = a                  
+''' # 封装
 
 '''
-# class Student(object):
-#     def __init__(self, name, age):
-#         self.__name = name
-#         self.__age = age
-#
-#     @property
-#     def name(self):
-#         return self.__name
-#     @property
-#     def age(self):
-#         return self.__age
-#
-#     @name.setter
-#     def name(self, name):
-#         self.__name = name
-#     @age.setter
-#     def age(self,age):
-#         self.__age = age
-#
-#     def printInf(self):
-#         print('This is %s, %d years old' % (self.__name, self.__age))
-#
-# s = Student('xzq', 24)
-# s.printInf()
-# s.name = 'John'
-# s.age = 24
-# s.printInf()
+获取类信息:
+      1. 获取对象类型:  type(obj)
+      2. 获取继承信息:  isinstance(obj,Class),  issubclass(Child, Father)
+      3. 获取所有属性:  dir(obj)      # 返回一个list, 包含所有属性, 不包括属性值
+                      obj.__dict__  # 返回一个dict, 所有属性和值
+      4. 反射:
+             hasattr(obj,'attr')
+             getattr(obj,'attr',默认值[可选])
+             setattr(obj,'attr')
+             delattr(obj,'attr')
+             用途:
+                 1. 操作属性
+                 2. 命令分发
+                 3. 动态运行方法
+                 e.g. 
+                     if  hasattr(f1,'get'):
+                         getattr(f1,'get')()
+                     else:
+                         # 运行其他代码    
+             
 
-
-'''
-Get Info of Class:  1. GET Type:                           type(obj)
-                    2. GET Inheritance:                    isinstance(obj, Class)  issubclass(child, father)
-                    3. GET all Attr (with out value):      dir(obj)  # List
-                    4. OPERATE Attr:  Reflect
-                                          hasattr(obj, 'attr')
-                                          getattr(obj, 'attr', ['default'])
-                                          setattr(obj, 'attr')
-                                          delattr(obj, 'attr') 
-                                          
-                                      # Use reflection: 
-                                            if hasattr(f1,'get'):
-                                                func_get = getattr(f1,'get')
-                                                func_get()
-                                            else:
-                                                # Running other code
-                                          
-                                      Import modules dynamically('str')
-                                          1) m = __import__('module.class')    # m = module
-                                          2) m = importlib.import_module('module.class')   # m = module.class
-'''
+动态加载模块: 通过字符串加载
+   1) m = __import__('module')                                          
+   2) m = importlib.import_module('module')                                                                           
+''' # 反射(获取信息, 命令分发, 动态加载模块)

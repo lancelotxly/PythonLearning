@@ -1,139 +1,167 @@
 '''
-Modules: Modules Structure
-         time, random, os, sys, logging, hashlib
-         re
-         json, pickle, xml, configparser, io
-'''
-'''
-Modules: 1. Structure: 
-                     package
-                       |-- __init__.py # necessary, also a 'Module'
-                       |-- module1
-                              |-- class
-                              |-- function
-                       |-- module2
-                       |-- function
-
-             module1.py:      __name__ == '__main__'
-             module2.py:      import module1
-                              module1.__name__ == 'module1'
-
-        2. Import Module: module1.py
-                  import module2.py               # abspath(module1.py) + module2.py
-                  
-                  import sys,os
-                  BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-                  sys.path.append(BASE_DIR)
-                  from module3 import module2     # abspath(module1.py) + module3/module2
+Modules: 模块
+       1) module的基本常识
+       2) 常用的modules:
+          time. random, os, sys, logging, hashlib, re
+          json, pickle, xml, configparser, io            
+       
+''' # 综述
 
 '''
+module的基本常识:
+         1. 结构:
+            package
+               |-- __init__.py   # 必须的, 也是一个module
+               |-- module1
+                      |-- class
+                      |-- function
+               |-- module2
+                   
+         2. __name__ 属性:
+                在module1.py中,  module1.__name__ == "__main__"
+                在module2.py中,  module2.__name__ == "module1"  
+         
+         3. 模块的导入: 
+            import:                               
+            1) 同一个模块只导入一次, 并加载到内存中
+            2) 模块的第一次导入: 
+                             1> 为模块创建新的命名空间
+                             2> 顺序执行模块中的代码
+                             3> 创建变量来引用该命名空间
+                             
+            from.. import..: 与import不同的是, 直接将module导入到当前的命名空间, 可能会存在执行冲突
+            from.. import..as: 模块重命名, 解决冲突
+            
+         4. 模块的用途: 
+                     1) 脚本: 导入时运行
+                     2) 调用: 后面调用                         
+         
+         5. 模块的搜索顺序:
+               内存中已经加载的模块 --> 内置模块 --> sys.path中的模块 
+               sys.path设置:
+                           BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # 退回到根目录, __file__ 为当前文件的目录
+                           sys.path.append(BASE_DIR)                                                       
+''' # modules的基本常识
 
 '''                 
-time:  1. Three Types of Time:  1) Format         # Expression,  %Y年 %m月 %d日 %X时间(%H时 %M分 %S秒) %a星期
-                                2) Struct_Time    # Save Info
-                                3) Timestamp      # Calculate
+time: 时间模块
+      1. 三种形式的时间:
+                     1) Format          # 用于表示  %Y %m %d %X(%H %M %S) %a星期
+                     2) Struct_time     # 用于存储信息, 结构体, 可通过属性拿到
+                     3) Timestamp       # 用于计算
+      2. 转化:
+             1) Timestamp --> Struct_time:  time.localtime([time.time()])
+             2) Struct_time --> Timestamp:  time.mktime(time.localtime())
+             3) Struct_time --> Format:     time.strftime(format,time.localtime())
+                Format --> Struct_time:     time.strptime('str',format)
+             
+             4) Struct_time --> Format(固定格式):  time.asctime(time.localtime())
+             5) Timestamp --> Format(固定格式):    time.ctime(time.time()) 
+      
+      * datetime.datetime.now()        # 获取当前时间                                 
+''' # time: 时间模块
 
-       2. Transform: 1) Timestamp --> Struct_Time:  time.localtime([time.time()])
-                     2) Struct_Time --> Timestamp:  time.mktime(time.localtime())
-                     3) Struct_Time --> Format:  time.strftime(format,time.localtime())
-                        Format --> Struct_time:  time.strptime('str',format)
-
-                     4）Struct_Time --> Format(Static): time.asctime(time.localtime())
-                     5) Timestamp --> Format(Static): time.ctime(time.time())
-
-                     *) datatime.datatime.now()
-
-       3. time.sleep(num)
 '''
-
-'''
-random:  .random()         # [0,1] float
-         .randint(a,b)     # [a,b] int
-         .randrange(s)     # (0,s) int
-         .choice(Seq)      # select x from Seq
-         .shuffle(Seq)     # Shuffle Seq
-
-         .uniform(a,b)             #  Uniform distribution
-         .expovariate(lambda)      #  Exponent distribution
-         .gauss(mu,sigma)          #  Gaussian distribution
-         .lognormvariate(mu,sigma) #  Lognormal distribution
-'''
+random: 生成随机数
+        1. 方法: 
+               random()        # [0,1] float
+               randint(a,b)    # [a,b] int
+               randrange(d)    # (0,d) int
+               choice(Seq)     # 从Seq随机取一个元素
+               shuffle(list)   # 原地打乱list
+               
+               uniform(a,b)              # 均匀分布
+               expovariate(lambda)       # 指数分布
+               gauss(mu,sigma)           # 高斯分布
+               lognormvariate(mu,sigma)  # lognormal分布
+                       
+''' # random: 生成随机数
 
 '''
 os: 与操作系统交互
     1. 基本操作
-            1. 操控系统
-               os.chdir('path')                  # cd: path
-               os.chdir('..')                    # 返回上一级
-               os.system('bash cmd')             # 运行shell命令
-               
-            2. 操作目录/文件
-               os.mkdir('dirname')                                   # 创建目录
-               os.rmdir('dirname')                                   # 删除目录(目录为空)
-               os.makedirs('dirname1/dirname2')                      # 递归创建目录
-               os.removedirs('dirname1/dirname2')                    # 递归删除目录(目录为空)
-               
-               os.list('dirname')                                    # 列出该目录下的所有文件, 返回列表
-               os.remove('filename')                                 # 删除文件
-               os.rename('old_name', 'new_name')                     # 重命名文件/目录
             
-            3. 操作路径
-               os.getcwd()                       # 当前工作路径
-               os.curdir                         # 当前目录   '.'
-               os.pardir                         # 上一级目录  '..'
-               os.sep                            # 路径分隔符  \\
-               os.linesep                        # 行终止符    \t\n
-               os.pathsep                        # 文件分隔符  ;
-               
-               os.path.abspath(path)             # 返回规范化绝对路径
-               os.path.split(path)               # (上一级目录, 最后一级目录)
-               os.path.dirname(path)             # 上一级目录
-               os.path.basename(path)            # 最后一级目录
-               os.path.splitext(file)            # (文件名, 文件格式)
-               os.path.join(path1, path2)        # 连接路径
-               
-               os.path.exists(path)              # 判断路径是否存在
-               os.path.isdir(path)               # 判断是否为目录
-               os.path.isfile(path)              # 判断是否为文件
-               
-               os.path.normcase(path)            # 路径格式规范化
-               
-               
-               os.urandom(n)                  # 生成n位二进制字符串
-               
-    2. 应用
+os: 与操作系统交互
+    1. 路径标识符:
+            os.curdir            # 当前相对目录, '.'
+            os.pardir            # 相对父目录, '..'
+            os.sep               # 路径分隔符, '\\'
+            os.linesep           # 行终止符, '\r\n'
+            os.pathsep           # 文件分隔符, ';'     
+    
+    2. 操作路径: os.path
+            __file__                        # 当前.py文件相对路径
+            os.path.abspath(path)           # 规范化绝对路径
+            os.path.split(path)             # (上一级目录, 最后一级目录)
+            os.path.dirname(path)           # 上一级目录
+            os.path.basename(path)          # 最后一级目录
+            os.path.splitext(file.py)       # (文件名, 文件格式)
+            os.path.join(path1, path2)      # 连接路径    
+            
+            os.path.exists(path)            # 判断路径是否存在
+            os.path.isdir(path)             # 判断是否为文件夹
+            os.path.isfile(path)            # 判断是否为文件
+            
+            os.path.normcase(path)          # 路径格式化 
+    
+    3. 操控系统
+           os.getcwd()                       # 当前工作绝对路径, __file__上一级目录
+           os.chdir('path')                  # 进入下级目录 cd: path
+           os.chdir('..')                    # 返回上一级
+           os.system('bash cmd')             # 运行shell命令  
+                               
+    4. 操作目录/文件
+       os.mkdir('dirname')                                   # 创建目录
+       os.rmdir('dirname')                                   # 删除目录(必须目录为空)
+       os.makedirs('dirname1/dirname2')                      # 递归创建目录
+       os.removedirs('dirname1/dirname2')                    # 递归删除目录(必须目录为空)
+       
+       os.listdir('dirname')                                 # 列出该目录下的所有文件, 返回列表
+       os.remove('filename')                                 # 删除文件
+       os.rename('old_name', 'new_name')                     # 重命名文件/目录
+   
+    5. 应用
       POSSIBLE_DIR = os.path.normcase(os.path.join(
                     os.path.abspath(__file__),
                     os.pardir,
                     os.pardir,
                     os.pardir
       ))
-      sys.path.insert(0,POSSIBLE_DIR)
-       
-'''
+      sys.path.insert(0,POSSIBLE_DIR)       
+''' # os模块: 操作路径, 文件夹, 文件操作见I_O.py
 
 '''
-sys: 1. DEFINE: sys operation
-     2. OPERATE:
-             .argv    # Return List = [ModuleName.py, para1, para2..]  includes paras in Command line.
-             .path    # Return List = [path1, path2,..]  includes paths for searching modules
-             .exit()  # End 'ModuleName.py'
-             .stdout.write('str')  # Write into memory
-             .stdout.flash()       # Flash memory
-'''
+sys: 操作系统
+    1. 属性:
+          sys.argv   # 是一个list, 用于存储命令参数 [module.py, p1, p2] 
+          sys.path   # 是一个list, 用于存储modules的搜索路径
+    2. 方法:
+          sys.exit()               # 直接终止程序
+          sys.stdout.write('str')  # 写值到内存中
+          sys.stdout.flash()       # 刷新内存          
+''' # sys模块: 操作系统
 
 '''
-logging: 1. DEFINE: log record
-         2. Config:
-                  1> Config file:
-                     Config_file = {'level':logging.DEBUG,
-                                     'format': '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                                     'datefmt':'%Y年 %m月 %d日 %X时间(%H时 %M分 %S秒) %a星期',
-                                     'filename': 'test.log',
-                                     'filemode': '[a]w'
-                     }
-                     logging.basicConfig(**Config_file)
-
+logging: 日志模块
+         1. 配置日志文件
+            方式一: Config_file
+                  Config_file = {
+                     'filename': 'test.log'                                   # 日志文件名
+                     'filemode': 'a/w'                                        # 文件的打开方式: a追加, w重新写
+                     'format': ''                                             # 日志格式
+                     'datefmt': '%Y年 %m月 %d日 %X时间(%H时 %M分 %S秒) %a星期'   # 时间格式
+                     'level': logging.DEBUG                                   # 日志级别
+                  } 
+                  logging.basicConfig(**Config_file)
+                  *'format': 
+                            %(asctime)s    # 日志时间, 可用datetime设置
+                            %(filename)s   # 调用日志的.py文件
+                            %(pathname)s   # .py文件的完整路径
+                            %(lineno)s     # .py文件的第几行调用日志
+                            %(levelname)s  # 日志级别
+                            %(message)s    # 日志内容
+            
+            方式二:  logger obj          
                   2> logger obj
                       def logger():
                              logger = logging.getLogger(['Child_logger'])
@@ -144,29 +172,33 @@ logging: 1. DEFINE: log record
                              fmt = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
                              fh.setFormatter(fmt)
                              sh.setFormatter(fmt)
+                  def logger():
+                        logger = logging.getLogger()            # 创建logger对象 
+                        fh = logging.FileHandler('filename')    # 记录到文件
+                        sh = logging.StreamHandler()            # 记录到屏幕
+                        fmt = logging.Formatter('format')       # 定义日志格式
+                        fh.setFormatter(fmt)                    # 传入格式
+                        sh.setFormatter(fmt)
+                        logger.addHandler(fh)                   # 添加到logger对象
+                        logger.addHandler(sh)
+                        logger.setLevel('DEBUG')                # 设定日志等级
+                        return logger                           # 返回logger对象
 
-                             logger.addHandler(fh)
-                             logger.addHandler(sh)
-                             logger.setLevel('DEBUG')
-                             return logger
-
-                  Tips: 1. Child_logger's name unique.
-                        2. Child_logger will log father_logger record.
-
-         3. Log:
-           logging.debug('debug message')
-           logging.info('info message')
-           logging.warning('warning message')
-           logging.error('error message')
-           logging.critical('critical message')
-
-
-'''
+         2. 记录日志:
+           logging/logger.debug('debug message')
+           logging/logger.info('info message')
+           logging/logger.warning('warning message')
+           logging/logger.error('error message')
+           logging/logger.critical('critical message')
+''' # logging模块: 开发日志, 运维中的错误信息
 # import logging
-# Config_file = {'level':logging.DEBUG,
+# Config_file = {
+#                'level':logging.DEBUG,
 #                'format':'%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-#                'filename':'test_log.log',
-#                'filemode':'w'}
+#                'filename':'test_log2.log',
+#                'filemode':'w',
+#                'datefmt':'%Y-%m-%d'
+#                }
 # logging.basicConfig(**Config_file)
 # logging.debug('debug')
 # logging.info('info')
@@ -175,45 +207,45 @@ logging: 1. DEFINE: log record
 # logging.critical('critical')
 
 
-import logging
-def logger():
-    logger = logging.getLogger()
-    fh = logging.FileHandler('test_log')
-    sh = logging.StreamHandler()
-
-    fmt = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
-    fh.setFormatter(fmt)
-    sh.setFormatter(fmt)
-
-    logger.addHandler(fh)
-    logger.addHandler(sh)
-    logger.setLevel(logging.DEBUG)
-    return logger
-
-logger = logger()
-logger.debug('hello')
-
+# import logging
+# def logger():
+#     logger = logging.getLogger()
+#     fh = logging.FileHandler('test_log')
+#     sh = logging.StreamHandler()
+#
+#     fmt = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
+#     fh.setFormatter(fmt)
+#     sh.setFormatter(fmt)
+#
+#     logger.addHandler(fh)
+#     logger.addHandler(sh)
+#     logger.setLevel(logging.DEBUG)
+#     return logger
+#
+# logger = logger()
+# logger.debug('hello')
+# logger.critical('critical')
 
 '''
-hashlib: 1. DEFINE: Hash encode
-         2. OPERATE: 
-                    md5 = hashlib.md5()
-                    md5.update('str'.encode('utf-8'))    
-                    str_hash = md5.hexdigest()      # 返回摘要， 十六进制字符串
-                    byte_hash = md5.digest()        # 返回摘要， 二进制字符串
-
-hmac: 1. DEFINE: key-encode
-      2. OPERATE:
-                 h = hmac.new('key'.encode('utf-8'))
+hashlib: 
+        方法一: MD5, 一个md5对象只能编码一个字符串
+               md5 = hashlib.md5()
+               md5.update('str'.encode('utf8'))
+               str_hash = md5.hexdigest()         # 返回摘要, 十六进制字符串
+               byte_hash = md5.digest()           # 返回摘要, 二进制
+        
+        方法二: sha1, sha224, sha256, sha384, sha512
+               sha = hashlib.sha256('key'.encode('utf8'))     # 生成时添加盐
+               sha.update('str'.encode('utf8))                # 其余同md5
+               
+hmac: 
+      方法一:     h = hmac.new(b'key')
                  h.update(b'msg')
-                 or:
-                 h = hmac.new(b'key',b'msg')
-                 
+      方法二:     h = hmac.new(b'key',b'msg')                            
                  str_encode = h.hexdigest()         # 返回摘要， 十六进制字符串
                  byte_hash = h.digest()             # 返回摘要， 二进制字符串
                  True/False = hmac.compare_digest(b'abc',b'123')    # 比较两个二进制字符串是否相同
-
-'''
+''' # 加密算法: hashlib(md5,sha), hmac
 
 '''
 正则表达式:
@@ -278,98 +310,66 @@ re:
            8) re_operator = re.compile(r'')                                            
 ''' # re模块
 
-
 '''
 json & pickle: 
-              1. json: 
-                      1) DEFINE: Operate Base on 'dict', Can't Save 'obj'
-                      2) OPERATE:
-                                 1> Write into: 
-                                              with open('filename','w',encoding='utf-8') as f:
-                                                        # data
-                                                        data_json = json.dumps(data)       # str --> str_json
-                                                        json.dump(data,f)                  # 1) str --> str_json  2) f.write(str_json)
-                                 2> Loading:
-                                              with open('filename','r',encoding='utf-8') as f:
-                                                        data = json.loads(data_json)       # str_json --> str
-                                                        data = json.load(f)                # 1) f.read() --> str_json  2) str_json --> str
+    1. json: 序列化为字符串
+             1）能json序列化的: 基本数据类型, list, tuple, dict
+             2) 操作:
+                    1> 序列化
+                          data_json = json.dumps(data)                          # 直接序列化
+                          with open('filename','w',encoding='utf8) as f:
+                             json.dump(data,f)                                  # 序列化存入文本
+                    2> 读取
+                          data = json,loads(data_json)
+                          with open('filename','r', encoding='utf8') as f:
+                             data = json.load(f)         
 
-
-              2. pickle: 
-                      1) DEFINE: ONLY python, Can save 'obj'
-                      2) OPERATE:
-                                 1> Write into:
-                                              with open('filename','wb') as f:
-                                                        # data
-                                                        pickle.dump(data,f)
-
-                                 2> Loading:
-                                              with open('filename','rb') as f:
-                                                        data = pickle.load(f)    
-'''
-# import pickle
-# with open('data.pickle','rb',) as f:
-#       data = pickle.load(f)
-#       print(data)
-#
-# with open('data.json','wb') as f:
-#       data2 = {'John':123}
-#       pickle.dump(data2,f)
-
+    2. pickle: 序列化为二进制文件, 仅python能用
+       1) 能序列化的类型: 基本数据类型, list, tuple, dict, set, obj
+       2) 操作:
+              1> 序列化
+                    data_pickle = pickle.dumps(data)
+                    with open('filename','wb') as f:
+                         pickle.dump(data)
+              2> 读取
+                    data = pickle.loads(data_pickle)
+                    with open('filename','rb') as f:
+                         pickle.load(f)                                                                       
+''' # json & pickle: 序列化
 
 '''
-xml: 1. DEFINE:  import xml.etree.ElementTree as ET
-
-     2. OPERATE: Operate base on Node obj,
-                 Node attr:  node.tag          #   'str', Node name
-                             node.attrib      #   dict = {'attr':'attr_value'}
-                             node.text         #   'str', Node value
-
-                1> Generate .xml file:
-                   father_node = ET.Element('father_node')
-                   child_node = ET.SubElement(father_node, 'child_node',attrib={'attr':'attr_value'})
-                   child_node.text = 'value'
-
-                   et = ET.ElementTree(father_node)                                   # Generate document obj 
-                   et.write('filename.xml',encoding='utf-8',xml_declaration=True)     # Generate  document
-
-                2> tree = ET.parse('filename.xml')                                    # Get document obj
-                   root = tree.getroot()                                              # Get root obj
-                   1>> Traverse:
-                               for child in root:                                     # child is also an obj
-                   2>> Search: 
-                              node.findall('node_name')                               # Find out all children nodes named 'node_name'
-                              node.find('node_name')                                  # Find out a child node named 'node_name'
-                              node.getchildren()                                      # Return all children nodes
-                   3>> Rewrite:
-                              node.tag = new_tag
-                              node.attrib = {'attr':'attr_value'}
-                              node.text = new_value
-                              tree.write('filename.xml')
-
-                   4>> Delete:
-                             node.remove(node obj)                                    # Delete child node                 
-'''
-# import xml.etree.ElementTree as ET
-# data = ET.Element('data')
-# Score_table1 = ET.SubElement(data, 'Score_table',attrib={'name':'Class_1'})
-# Student_xzq = ET.SubElement(Score_table1,'Student',attrib={'name':'xzq'})
-# Student_xzq.text = '100'
-# Student_John = ET.SubElement(Score_table1,'Student',attrib={'name':'John'})
-# Student_John.text = '90'
-# Score_table2 = ET.SubElement(data, 'Score_table',attrib={'name':'Class_2'})
-#
-# et = ET.ElementTree(data)
-# et.write('data.xml',encoding='utf-8',xml_declaration=True)
-
-# import xml.etree.ElementTree as ET
-# tree = ET.parse('data.xml')
-# root = tree.getroot()
-# children = root.getchildren()
-# print(children[1].attrib)
-# root.remove(children[1])
-# tree.write('new.xml')
-
+xml: 操作xml文件 import xml.etree.ElementTree as ET
+     1. 特点: 
+             1) 基于节点对象操作
+             2) 每一个节点有如下属性:
+                 node.tag        # 'str' 节点名
+                 node.attrib     # dict = {'attr':'value'} 节点属性值
+                 node.text       # 'str' 节点值
+     2. 操作:
+            1) 生成xml文件
+               father_node = ET.Element('father_node')                                      # 生成父节点
+               child_node = ET.SubElement('father_node','child_node',attrib={'attr':value}) # 生成子节点
+               child_node.text = 'str'
+               et = ET.ElementTree(father_node)                                 # 生成document对象
+               et.write('filename.xml',encoding='utf8',xml_declaration=True)    # 生成xml
+                       
+            2) 访问xml文件
+                tree = ET.parse('filename.xml')                               # 获取document对象
+                root = tree.getroot()                                         # 获取根节点
+                1> 遍历
+                      for child in root:            # child也是一个节点对象, 若要获取内部元素要继续遍历
+                2> 搜索
+                      node.findall('node_name')     # 在node的内部子节点中搜索所有node_name
+                      node.find('node_name')        # 在node的内部子节点中搜索一个node_name
+                      node.getchildren()            # 获取node的所有子节点     
+                3> 重写
+                      node.tag = new_tag   
+                      node.attrib = {'attr':'attr_value'}
+                      node.text = new_value
+                      tree.write('filename.xml')    # 重新生成xml文件
+                4>> 删除
+                      node.remove(node obj)         # 删除子节点                                     
+''' # xml模块
 
 '''
 configparser: 1. DEFINE: Generate config file
@@ -415,7 +415,7 @@ configparser: 1. DEFINE: Generate config file
                                 config.remove_option(section_name,attr)
                                 with open('filename','w/a') as f:
                                    config.write(f)
-'''
+''' # configparser模块: 配置文件
 
 '''
 StringIO and ByteIO: StringIO 
@@ -427,7 +427,10 @@ StringIO and ByteIO: StringIO
                     1. f = io.BytesIO(b' ')   <--> f.read(), f.readline(), for item in f:
                     2. f = io.BytesIO()
                        f.write(b' ')  <--> f.getvalue()
-'''
+''' # StringIO, ByteIO
+
+# 下一章: ObjectOrientProgramming.py
+
 # from io import StringIO
 # f = StringIO('''John loves Cindy, but he never told her.
 # What a pity thing!

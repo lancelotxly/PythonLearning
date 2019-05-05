@@ -1,94 +1,62 @@
 '''
-Functional Programming: Features of functions, High-Order function, Closure, Anonymous functions, Decorator, Partial function
-'''
-'''
-Features of functions: 1. variable could be function: x = abs
-                       2. function could be variable: abs = 10
-                       3. function could be arguments plunging into another function: def func2(x, y, func1): pass
-                       4. function could be return value by another function(as Closure): def func2(): return func1
-'''
-# a = abs(-10)
-# x = abs
-# abs = 0
-# print(a, x(-10), abs)
-
-
-# def abs_sum(x,y,f):
-#     print(f(x) + f(y))
-# abs_sum(-10,-10,abs)
-
+函数式编程: 
+           1) 函数的特性 Features of function
+           2) 高阶函数   High-Order function
+           4) 闭包      Closure
+           5) 匿名函数   Anonymous function
+           6) 装饰器     Decorator
+           7）偏函数     Partial function
+''' # 综述
 
 '''
-High-order function: Comply the 'Features of function'
-                     DON'T CHANGE THE ORIGINAL DATA
-                     1. Iterator = map(func, Iterable) # map 'func' for x in Iterable
-                     2. Iterator = filter(func, Iterable) # filter x for x in Iterable, if 'func' return True(False) then save(delete) x.
-                     3. f(f(x1,x2),x3) = functools.reduce(f,[x1,x2,x3])
-                     4. list = sorted(Iterable, key=func, reverse=True)  # list.sort() will change the original data.
-                     5. Maximum = max(Iterable, [key = func])
+函数的特性: 
+         1. 变量可作函数: x = abs
+         2. 函数可作变量: abs = 10
+         3. 可以将一个函数func1作为参数传给func2: def func2(x, y, func1)
+         4. 函数func1可以作为func2的返回值:  def func2(): return func1
+''' # 函数的特性
+
+'''
+高阶函数: 同样符合函数的基本特性
+        1. map:     iterator = map(func, iterable)       # 返回一个迭代器, 将func函数作用到iterable_obj的每个元素上
+        
+        2. filter:  iterator = filter(func, iterable)    # 返回一个迭代器, 仅包含func返回值为True的元素
+        
+        3. reduce:  f(f(x1,x2),x3) = functools.reduce(f,[x1,x2,x3])     
+        
+        4. sorted:  list = sorted(Iterable,key=func,reverse=True) # 返回一个list, 不改变原来的数据; list.sort(key=func)会改变
+        
+        5. max/min:  num = max(iterable, key=func)     # 返回最大值
+                     num = min(iterable, key=func)     # 返回最小值
+        
+        6. zip:   iterator = zip(Seq1, Seq2)  # 输入两个Seq, 合上拉链, 返回一个迭代器, 每项是一个tuple
+                  iterator = zip(*list_tuple) # 返回一个迭代器, 打开拉链                
                      
-                     6. Iterator = zip(Seq1, Seq2)  # 输入两个list, 合上拉链，返回一个迭代器，其每项是(sep1,sep2)组成的元组
-                                   zip(*list_tuple) # 输入一个由二元元组组成的list,打开拉链，返回一个迭代器，两项元组，拆分tuple
-                     7. Num = pow(a,b)     # Num = a**b
-                     8. Num = round(3.5)   # 四舍五入
-                     9. s = slice(n,m,i)   # s = [n:m:i]  
-                     
-                     10. eval('str'):     #  Return value of 'str' as Expression
-                     11. enumerate(Seq):  #  Return (index, value)     
-                     12. input('str'):    #  Input, Return <class 'str'>              
-'''
-# Original_data = list(range(1,6))
-# def Twice(x):
-#     return x*2
-# map_data = map(Twice, Original_data)
-# for x in map_data:
-#     print(x)
-#
-# def Biger(x):
-#     if x > 3:
-#         return True
-#     else:return False
-# filter_data = filter(Biger,Original_data)
-# for x in filter_data:
-#     print(x)
-#
-# def sum(x,y):
-#     return x + y
-# from functools import reduce
-# print(reduce(sum,Original_data))
-
-
-# # str2int: map, reduce
-# from functools import reduce
-# Digits = {'0':0, '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9}
-# def str2int(strs):
-#     if not isinstance(strs,str):
-#         raise TypeError('Wrong type of arguments. Please input string')
-#     def char2num(s):
-#         return Digits[s]
-#     def num2dec(x,y):
-#         return x * 10 + y
-#     return reduce(num2dec, map(char2num,strs))
-# num = str2int('41584654')
-# print(num, type(num))
-
-
-# A = [-9,0,1,-10,18]
-# A_new = sorted(A, key=abs,reverse=True)
-# print(A,A_new)
-# A.sort(key=abs,reverse=True)
-# print(A)
-
+        7. pow:  num = pow(a,b)        # num = a**b
+        
+        8. round: num = round(3.5)     # 四舍五入
+        
+        9. slice: s = slice(n,m,i)     # 生成切片对象              
+                    
+        10. eval:  r = eval('str')     # 将'str'作为表达式运行, 返回运行结果             
+        
+        11. enumerate(Seq):            # 返回一个迭代器, 每一项是一个tuple包括(i,value)
+        
+        12. input('str')               # 输入值, 返回一个字符串            
+''' # 高阶函数
 
 '''
-Closure: 1. DEFINE: def func1():
-                       def func2():
-                           pass
-                       return func2
-         2. DISCIPLINE: 1) The returned value (func2) is a inner function(Closure), doesn't execute right now till call for it.
-                        2) 'func2' could use arguments of 'func1' which save in 'args'
-                        3) Every call for 'func1' will return a new 'func2'
-'''
+闭包:
+    1. 定义:
+           def func1():
+              def func2():pass
+              return func2
+    2. 规则:
+           1) 返回一个内部函数, 不会立即执行, 直到调用才执行
+           2) func2可以向上使用func1的参数
+           3) 每一次调用func1都会返回一个新的func2, 内存地址不同          
+''' # 闭包
+
 # def func1(a,b=1,*args,**kwargs):
 #     c = 3
 #     def func2():
@@ -121,13 +89,20 @@ Closure: 1. DEFINE: def func1():
 # f1, f2, f3 = count_plus()  # where 'f1, f2, f3' are all Closure of 'g'
 # print(f1(),f2(),f3())
 
+'''
+匿名函数: 
+        1.定义:  lambda x: f(x)
+        
+        2.特点:  
+               1) 只能有一个函数f(x)
+               2) 匿名函数同样满足函数的基本特性
+               3) 匿名函数也可以作为闭包返回, 性质一样
+               4) 使用一次就释放, 命名后不释放, 一般不命名, 一次性使用
+        
+        3. 应用场景: 高阶函数中
+                    map, filter, reduce, sorted, max, min
+''' # 匿名函数
 
-'''
-Anonymous Function: 1. DEFINE: lambda x: f(x)
-                    2. QUALITY: 1) ONLY ONE f(x)
-                                2) f2 = lambda x: f1(x)
-                                3) def func2(): return lamdba x: f(x) # where the returned anonymous function is also a closure.
-'''
 # l = map(lambda x: x**2, list(range(1,6)))
 # for x in l:
 #     print(x)
@@ -139,44 +114,45 @@ Anonymous Function: 1. DEFINE: lambda x: f(x)
 #     return lambda: r**2
 # print(area(2)())
 
-
 '''
-Decorator: 1. DEFINE: NOT CHANGE the original function
-                      NOT CHANGE the call for method
-                      ADD some decorator qualities when the code running.
-           2. STRUCTURE: 1) Decorator No para input:
-                             Define Decorator:  def decorator(f):  
-                                                   @functools.wraps(f)        <--------so the function name is 'wrapper', need to point to 'f'
-                                                   def wrapper(*args, **kwargs):  
-                                                       DECORATOR PART             <-- Comply DEF.3: Addition part    
-                                                       value = f(*args, **kwargs) <-- Comply DEF.1: Execute the original function
-                                                       return value               <-- Return value of 'f'
-                                                   return wrapper                 <-- Comply DEF.2: Return 'wrapper'(closure)      
-                             
-                             Call For:         @decorator           #1. @decorator --> f = decorator(f): return wrapper
-                                               def f():
-                                                   pass     
-                                               f()                  #2. f() = wrapper()           
+    装饰器: 
+       1. 定义: 
+              1) 不改变原有的代码
+              2) 不改变原来的调用方式
+              3) 添加了新的功能
+       
+       2. 结构: 
+             1) 无参数传入的装饰器
+                定义: 
+                    def decorator(f):
+                      @functools.wraps(f)    <----   所以这里将wrapper闭包的内存地址重新指向了f
+                      def wrapper(*args, **kwargs):
+                         # 新功能                     <--- 执行新的功能(可交换) 
+                         value = f(*args, **kwargs)  <--- 执行原生的f(可交换)
+                         return value                <--- 返回值一定要是原来的, 不能改变原来函数的执行结果
+                      return wrapper      <--- 这里返回的是wrapper的闭包给f, 因此f的内存地址与原来不同了       
+                调用:  
+                     @decorator
+                     def f(*args,**kwargs): pass        #1. @decorator -->  执行f = decorator(f), 返回wrapper闭包
+                     f(*args,**kwargs)                  #2. f() = wrapper() 执行wrapper()                   
                                                 
-                        2) Decorator Need Para input:
-                             Define Decorator:  def InputPara(a,b):
-                                                    def decorator(f):
-                                                       @functools.wraps(f)
-                                                       def wrapper(*args, **kwargs):
-                                                           CAN USE a,b
-                                                           DECORATOR PART
-                                                           f(*args, **kwargs)
-                                                       return wrapper
-                                                    return decorator
-                             
-                             Call For:   @InputPara(a,b)    #1. InputPara(a,b):return decorator
-                                                            #2. @decorator(f) --> f = decorator(f): return wrapper
-                                         def f():                             
-                                             pass                         
-                                         f()                #3. f() = wrapper()                 
-                                                    
-                            
-'''
+             2) 有参数输入的装饰器
+                定义:
+                    def InputPara(a,b):
+                       def decorator(f):
+                         @functools.wraps(f)
+                         def wrapper(*args, **kwargs)
+                             # 新功能,可以使用a,b
+                             value = f(*args,**kwargs)
+                             return value
+                         return wrapper
+                       return decorator
+                调用:
+                    @InputPara(a,b)                      #1. 执行InputPara(a,b), 返回decorator闭包
+                    def f(*args,*kwargs):pass            #2. @decorator(f) --> 执行f = decorator(f), 返回wrapper闭包
+                    f(*args,**kwargs)                    #3. f() = wrapper() 执行wrapper()         
+''' # 装饰器
+
 # from functools import wraps
 # def log(f):
 #     @wraps(f)
@@ -229,40 +205,47 @@ Decorator: 1. DEFINE: NOT CHANGE the original function
 # home()
 
 # Session
-user_list = [{'username':'xzq','password':'123'},{'username':'John','password':'456'}]
-current_user = {'username':None, 'login':False}
-import functools
-def auth_func(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        if current_user['login'] == True:
-            return func(*args, *kwargs)
-        username = input('username: ').strip()
-        password = input('password: ').strip()
-        for user in user_list:
-            if username == user['username'] and password == user['password']:
-                current_user['username'] = username
-                current_user['login'] = True
-                return func(*args, **kwargs)
-        print('Wrong username or password')
-    return wrapper
-
-@auth_func
-def home():
-    print('Welcome')
-
-@auth_func
-def index():
-    print('The order is')
-home()
-index()
-
+# user_dict = {'xzq':123,'Jerris':456}
+# current_user = {'username':None, 'status':None}
+# import functools
+# def auth(f):
+#     @functools.wraps(f)
+#     def wrapper(*args,**kwargs):
+#         if current_user['status'] == 'login':
+#             return f(*args,**kwargs)
+#         else:
+#             username = input('username: ').strip()
+#             if username in user_dict:
+#                 password = input('password: ').strip()
+#                 if user_dict[username] == int(password):
+#                     current_user['status'] = 'login'
+#                     current_user['username'] = username
+#                     return f(*args,**kwargs)
+#             else:
+#                 print('用户名不存在')
+#     return wrapper
+#
+# @auth
+# def home():
+#     print('Welcome %s' % current_user['username'])
+#
+# @auth
+# def index():
+#     print('Session success')
+#
+# home()
+# index()
 
 '''
-Partial function: Preinstall the para into *arg or **kwargs
-                  1. DEFINE: func2 = functools.partial(func,para, para=value) 
-'''
+偏函数: 提前将部分参数存入*arg或**kwargs中
+       1. 定义:
+              func2 = functools.partial(func, a, b=2)
+''' # 偏函数
+
 # from functools import partial
 # max10 = partial(max,10)
 # print(max10(2,7,0))
+
+
+# 下一章: Modules.py
 
