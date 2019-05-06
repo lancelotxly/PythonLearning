@@ -56,4 +56,65 @@
 完整的属性查找过程:
        1. 先按类的继承链查找(MRO)
        2. 没有找到再按元类查找, 即Test --> myMeta --> type
+''' # 完整的属性查找过程
+
 '''
+单例模式:
+      1) 定义: 同一个类实例化多次的结果指向同一个对象, 用于节省内存空间
+              任意一个实例属性变化, 所有实例的属性都会变化
+      2) 用途: 配置相同的对象, 可用单例模式实例化, 节省空间
+   
+类实现单例模式, 定义类方法实现
+    HOST = '1.1.1.1'
+    PORT = 3306
+    
+    class Test:
+        __instance = None
+        def __init__(self,host,port):
+            self.host = host
+            self.port = port    
+        @classmethod
+        def singe_type(cls):
+            if not cls.__instance:                  # 如果实例不存在
+                cls.__instance = cls(HOST,PORT)     # 则创建, cls == Test, 调用Test.__init__()方法
+            return cls.__instance
+    
+    obj1 = Test.singe_type()
+    obj2 = Test.singe_type()                        # obj1和obj2为同一个实例                          
+''' # 单例模式: 类方法实现
+
+'''
+元类实现单例模式, myMeta.__init__()在定义类时就已经创建了一个实例
+       class myMeta(type):
+           def __init__(self,cls_name,cls_bases,cls_dict):
+               self.__instance = object.__new__(self)                    # 创建一个实例
+               self.__init__(self.__instance,HOST,PORT)                  # 为该实例初始化
+               super(myMeta,self).__init__(cls_name,cls_bases,cls_dict)
+           def __call__(self,*args,**kwargs):
+               if args or kwargs:                                        # 如果有参数传入, 正常创建实例
+                  obj = object.__new__(self)
+                  self.__init__(obj,*args,**kwargs)
+                  return obj
+               return self.__instance                                    # 无参数传入, 返回唯一已经创建好的实例
+       
+       class Test(metaclass=myMeta):
+           def __init__(self,host,port):pass         
+''' # 单例模式: 元类实现
+
+'''
+类的装饰器实现: 在装饰部分创建实例
+def single_type(cls):
+    _instance = cls(HOST,PORT)        # 相当于Test(HOST,PORT)创建实例
+    def wrapper(*args,**kwargs):
+       if args or kwargs:
+          obj = cls(*args,**kwargs)
+          return obj
+       return _instance
+    return wrapper
+    
+@single_type                         # 执行Test = single_type(Test), 创建实例, 返回wrapper
+class Test:
+    def __init__(self,host,port): pass
+''' # 单例模式: 类的装饰器实现
+
+# 下一章: ExceptionBase.py

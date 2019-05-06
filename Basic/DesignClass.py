@@ -34,7 +34,7 @@ Seq特性:
 3. __delitem__(key): self.__dict__.pop(key)               # del obj[key]删除数据时执行
 
 4. __len__():                                             # len(obj)获取长度时执行                            
-''' # Seq特性: __getitem__(), __setitem__(), __delitem__(), __len()
+''' # Seq特性: __getitem__(), __setitem__(), __delitem__(), __len__()
 
 '''
 属性操作: obj.attr

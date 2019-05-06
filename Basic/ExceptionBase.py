@@ -1,50 +1,49 @@
 '''
-Exception: Flow, assert
+异常处理:
+       1. 异常处理流程
+       2. 自定义异常类
+       3. 常见的异常类
+       4. 断言: assert 
+''' # 综述
 
 '''
-'''
-Exception: 1. DEFINE:
-                     try:
-                         code1
-                         if condition: 
-                              raise Exception      # 主动触发异常
-                         code2
-                     except Exception as e:
-                         code3
-                     else:
-                          code4                    # try 没有异常执行code4
-                     finally:
-                         code4
-
-                     Tips: # Flow: code1 -> code2 -> code3 -> code4
-                           # The essence of 'Exception' is a Class, and 'e' is a instance of this 'Exception'
-                             Thus we can define 'OurException' by inheriting from 'Exception'
-'''
-class OurException(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-
-    def printError(self):
-        print('Denominator should not equal 0')
-
-
-try:
-    b = 0
-    if b == 0:
-        raise OurException
-    a = 10 / b
-    print(a)
-except OurException as e:
-    e.printError()
-finally:
-    print('End')
-
+异常处理流程:
+  1. 对于可预知的异常, 可用if处理
+  2. 对于不可预知的异常, 用try..except处理
+     try: 
+        code1
+        if condition:
+           raise Exception          # 主动触发异常, 调转异常处理, 执行code3
+        code2                       # 没有触发异常, 执行code2
+     except Exception as e:         # 异常处理, 异常是一个类, 这里用了上下文管理
+        code3  
+     else:                          # try整个没有异常执行code4 
+        code4
+     finally:                       # 不管有没有异常都会执行code5
+        code5            
+''' # 异常处理流程
 
 '''
-assert:  1. Using:
-                  code1 :return value
-                  assert value == exc_value
-                  code2
-                  
-         2. Flow:  if 'code1' return exc_value, then execute 'code2'
+自定义异常类: 继承Exception类
+''' # 自定义异常类: 继承Exception类
+
 '''
+常见异常类:
+   AttributeError:  访问属性不存在
+   IOError:         读写文件出错
+   ImportError:     导入模块路径出错
+   IndexError:      超出索引
+   KeyError:        访问字典中不存在的键
+   NameError:       变量未声明
+   TypeError:       传入参数类型不对，或者数目不对
+   ValueError:      传入值不对, 类型正确
+''' # 常用异常类
+
+'''
+断言: assert
+     # code1: return value
+     assert value == exc_value
+     # code2
+     只有当code1返回期望值时, code2才会执行, 否则报错
+''' # 断言
+
