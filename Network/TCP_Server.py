@@ -12,7 +12,7 @@ tcp_server.listen(5)
 print('Server is running')
 
 while True:                                           # 一直可以接收客户端连接
-      conn, addr_client = tcp_server.accept()
+      conn, addr_client = tcp_server.accept()         # addr_client = ('ip',port)
       print('Receive info from %s' % addr_client[0])
 
       while True:                                     # 处理一次连接, 一直通信

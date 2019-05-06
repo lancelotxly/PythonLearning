@@ -48,7 +48,62 @@
             十六进制转换成十进制：v = “0x12”              # int('0x12',16)
             十进制转换成十六进制：v = 87                 #  hex(87)
 
-8. 直接赋值, 浅拷贝, 深拷贝:
+
+
+8. IP地址转化: 见IP_Translate.py
+
+9. Python最大递归层数: 1000
+
+10.  and, or: 1. num and bool              # 结果转bool
+              2. a and b                   # and为连通型, a,b都要判断
+              3. a or b                    # or为截断型, a为真则不需要判断b
+    v1 = 1 or 3                            # 1
+    v2 = 1 and 3                           # 3
+    v3 = 0 and 2 and 1                    # 0
+     v4 = 0 and 2 or 1                     # 1
+     v5 = 0 and 2 or 1 or 4                # 1
+     v6 = 0 or False and 1                 # False
+
+12. 字符编码的规则: ASCII(1B)               # 英文
+                 GBK(英文1B, 中文2B)       # 中文
+                 Unicode(2B)             # 中文英文, 定长,
+                 UTF-8(英语1B, 中文3B)     # 中文英文, 变长,
+
+13. 三元运算符:   a if condition else b     # 条件成立为a, 不成立为b
+
+14. Python2和Python3的区别:
+    1) Python3对Unicode字符的原生支持, Python2中使用 ASCII 码作为默认编码方式导致string有两种类型str和unicode
+    2) Python3采用的是绝对路径的方式进行import, Python2中相对路径的import会导致标准库导入变得困难
+    3) Python2中存在老式类和新式类的区别，Python3统一采用新式类。新式类声明要求继承object
+    4) Python3使用更加严格的缩进。Python2的缩进机制中，1个tab和8个space是等价的.Python3中1个tab只能找另外一个tab替代
+
+15. 一行代码交换a=1,b=2:
+        a, b = 2,1
+
+16. 列举布尔值为False的常见值？
+    '', 0, None, [],(),{}
+
+17. 字符串、列表、元组、字典每个常用的5个方法
+    str: split(), strip(), partition(), find(), count(), replace(), center(),ljust(), encode(),decode()
+    list: append(), insert(), extend(), remove(), pop(), clear(), index(), count(), sort()
+    tuple: index(), count(), len(), max(), min()
+    dict: dict(), get(), pop(), keys(), items(), values()
+
+18. lambda表达式格式以及应用场景
+    lambda x: f(x)    # 使用一次就释放, 命名后不释放, 一般不命名, 一次性使用
+                      # map, filter, reduce, max, min, sorted
+19. pass的作用:
+    定义函数或类, 可先不写内容, 不报错
+
+20. *arg和**kwarg作用
+   arg: tuple, 存储输入的位置参数
+   kwargs: dict, 存储输入的关键字参数
+
+21. is和==的区别
+    is: 变量完全相等, 包括内存地址
+    ==: 变量值相等
+
+22. 直接赋值, 浅拷贝, 深拷贝:
    直接赋值: 按对象引用
           a = [1,[2,3]], b = a
    浅拷贝: 拷贝父对象, 不拷贝内部的子对象, 内部子对象按对象引用
@@ -57,24 +112,44 @@
           from copy import deepcopy
           b = deepcopy(a)
 
-9. IP地址转化: 见IP_Translate.py
+23. Python的垃圾回收机制:
+    引用计数为主, 分代回收为辅
+    引用计数:  缺点循环引用的问题
+             如果一个对象的引用数为0，Python虚拟机就会回收这个对象的内存
+             引用+1: 创建对象, 对象被引用, 对象作为参数, 对象被存储
+             引用-1: 销毁对象, 对象赋予新值, 对象离开作用域(函数执行完, 销毁局部变量), 对象容器被销毁
+    标记清理:
+            1. 对象之间通过引用(指针)构成一个有向图
+            2. 从根对象(全局变量,调用栈)开始遍历, 将可达的对象标记为活动对象, 不可达的对象标记为清理对象
+    分代回收:
+            1. 根据对象存活时间，将对象分为不同的集合，总共为三代
+            2. 当一代中的对象达到上限时, 使用标记清理这代, 没有被清理的移至上一代中
 
-10. Python最大递归层数: 1000
+24. Python的可变类型和不可变类型
+    可变: list, dict
+    不可变: num, str, tuple, set
 
-11. 字符编码的规则: ASCII(1B)               # 英文
-                 GBK(英文1B, 中文2B)       # 中文
-                 Unicode(2B)             # 中文英文, 定长,
-                 UTF-8(英语1B, 中文3B)     # 中文英文, 变长,
+25. v = dict.fromkeys(['k1','k2'],[])      # 取'k1','k2'为键, []为值, 创建字典
+    v['k1'].append(66)
+    print(v)                   # {'k1':[66],'k2':[66}
+    v['k1'] = 77
+    print(v)                   # {'k1':77, 'k2':[66]}
 
-12. v1 = 1 or 3                            # 1
-    v2 = 1 and 3                           # 3
-    v3 = 0 and 2 and 1                    # 0
-     v4 = 0 and 2 or 1                     # 1
-     v5 = 0 and 2 or 1 or 4                # 1
-     v6 = 0 or False and 1                 # False
+26. def num():
+       return [lambda x:i*x for i in range(4)]      # 返回一个list, 内部为4个匿名函数的闭包
+    print([n(2) for n in num()])                    # 循环调用匿名函数, 传入x=2
+                                                    # 结果为[6,6,6,6]  这时i全部为3
 
-13. 三元运算符:   a if condition else b     # 条件成立为a, 不成立为b
+27. 内置函数
+    map, filter, sorted, max, min, eval, enumerate, zip
 
+28. filter、map、reduce的作用？
+    map:     iterator = map(func, iterable)       # 返回一个迭代器, 将func函数作用到iterable_obj的每个元素上
+    filter:  iterator = filter(func, iterable)    # 返回一个迭代器, 仅包含func返回值为True的元素
+    reduce:  f(f(x1,x2),x3) = functools.reduce(f,[x1,x2,x3])
+
+29. 一行代码实现9*9乘法表
+    print ("\n".join("\t".join(["%s*%s=%s" %(x,y,x*y) for y in range(1, x+1)]) for x in range(1, 10)))
 14. yield from Iterable_obj
     yield value
 

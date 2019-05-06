@@ -33,6 +33,7 @@ while True:
     length = head_json['data_size']
 
 
+    # 知道数据长度后，开始接受数据
     recv_size = 0
     data = b''
     while recv_size < length:

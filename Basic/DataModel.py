@@ -148,6 +148,8 @@ Dict: 1. 定义:
       3. 方法:
              dict():  1> 拷贝: dict(Dict)
                       2> 创建: dict(**kwargs), dict([(a,b),])
+             
+             dict.fromkeys(seq,value): 创建dict, 以seq的每一项为key, value为所有keys的初始值         
       4. 遍历:
              for k,v in dict.items():
              for k in dict.keys():
@@ -181,6 +183,7 @@ Set: 无重复元素, 无序, 不可遍历, 不可变(hashable)
                      
             三元表达式:  a if condition else b     # 条件成立为a, 不成立为b         
 ''' # List, Tuple, Dict, Set基本操作
+
 
 # 下一章: AdvanceFeatures.py
 
