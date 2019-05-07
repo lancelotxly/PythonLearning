@@ -1,7 +1,4 @@
 '''
-Design Class: Bind Attrs(var, func), Dunder Attr, Metaclass
-'''
-'''
 定制类: 
       1. 双下划线属性__attr__
       2. 元类metaclass

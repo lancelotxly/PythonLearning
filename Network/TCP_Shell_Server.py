@@ -47,7 +47,7 @@ while True:
                              3. 接收端先提取前面四个bytes，获得报文长度
                              4. 循环接收，直到达到报文长度，全部收完
             '''
-            # conn.send(struct.pack('i',len(feedback)))
+            # conn.send(struct.pack('i',len(feedback)))   # 将整数转为4字节的二进制字符串
             # conn.sendll(feedback)
 
 
@@ -64,7 +64,7 @@ while True:
                         '''
             header = {'data_size': len(feedback)}
             head_json = json.dumps(header)
-            head_json_byte = bytes(head_json, encoding='utf-8')
+            head_json_byte = bytes(head_json, encoding='utf-8')  # bytes将字符串转为二进制字符串
 
             conn.send(struct.pack('i', len(head_json_byte)))
             conn.send(head_json_byte)

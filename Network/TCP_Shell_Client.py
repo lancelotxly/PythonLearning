@@ -1,7 +1,3 @@
-'''
-
-'''
-
 from socket import *
 import struct,json
 IP_PORT = ('127.0.0.1',9000)
@@ -23,7 +19,7 @@ while True:
 
     # struct版
     # msg = tcp_client.recv(4)
-    # length = struct.unpack('i', msg)[0]
+    # length = struct.unpack('i', msg)[0]     # 反解数据, 返回一个元组
 
 
     # struct复杂报头版

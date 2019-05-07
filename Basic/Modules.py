@@ -127,7 +127,10 @@ os: 与操作系统交互
                     os.pardir,
                     os.pardir
       ))
-      sys.path.insert(0,POSSIBLE_DIR)       
+      sys.path.insert(0,POSSIBLE_DIR) 
+      
+    其他方法:
+          os.urandom(i)      # 生成i位随机二进制字符串        
 ''' # os模块: 操作路径, 文件夹, 文件操作见I_O.py
 
 '''

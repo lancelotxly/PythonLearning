@@ -13,23 +13,23 @@ POP & OOD & OOP:
               2. OOD(Object Oriented Design, 面向对象设计): 通过定义函数实现'obj = data + method'
               3. OOP(Object Oriented Programming): 定义类 + OOD 
 ''' # POP & OOD & OOP
-# # OOD
-# def Object_func(attr1, attr2):
-#     def init(attr1, attr2):
-#         obj = {
-#             'func1': func1,
-#             'func2': func2,
-#             'attr1': attr1,
-#             'attr2': attr2
-#         }
-#         return obj
-#     def func1(): pass
-#     def func2(): pass
-#     return init(attr1, attr2)
-#
-# obj = Object_func('xzq', 12)
-# obj['func1']()
-# attr1 = obj['attr1']
+# OOD
+def Object_func(attr1, attr2):
+    def init(attr1, attr2):
+        obj = {
+            'func1': func1,
+            'func2': func2,
+            'attr1': attr1,
+            'attr2': attr2
+        }
+        return obj
+    def func1(): pass
+    def func2(): pass
+    return init(attr1, attr2)
+
+obj = Object_func('xzq', 12)
+obj['func1']()
+attr1 = obj['attr1']
 
 '''
 类和实例:
@@ -94,20 +94,6 @@ POP & OOD & OOP:
           3) 静态方法: 不能操作类属性, 实例属性, 但可以被class或obj直接调用
                     @staticmethod
                     def func():pass          
-                    
-                                      
-                   4) Combine: 类A与类B显著不同, 类A是类B的组件
-                               class Object_C():
-                                     def __init__(self,a,b):
-                                         self.a = a
-                                         self.b = b
-                                     ...
-                               class Object_A(): pass
-                               class Object_B(): pass
-                               
-                               a = Object_A()
-                               b = Object_B()
-                               c = Object_C(a,b)
 ''' # 类和实例
 
 '''
@@ -215,8 +201,8 @@ POP & OOD & OOP:
 获取类信息:
       1. 获取对象类型:  type(obj)
       2. 获取继承信息:  isinstance(obj,Class),  issubclass(Child, Father)
-      3. 获取所有属性:  dir(obj)      # 返回一个list, 包含所有属性, 不包括属性值
-                      obj.__dict__  # 返回一个dict, 所有属性和值
+      3. 获取所有属性:  dir(obj)          # 返回一个list, 包含所有属性, 不包括属性值
+                      cls/obj.__dict__  # 返回一个dict, 所有属性和值
       
       4. 反射: 操作实例属性或类属性
              hasattr(obj/cls,'attr')

@@ -8,6 +8,7 @@ class MyServer(socketserver.BaseRequestHandler):
         print('conn is',self.request)
         print('addr is', self.client_address)
         print('server is', self.server.socket)
+        print(self.server.server_address)
 
         while True:
             try:

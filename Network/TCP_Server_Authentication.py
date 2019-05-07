@@ -45,7 +45,7 @@ class TCPServer:
             except Exception as e:
                 print(e)
                 break
-
+        conn.close()
     def conn_auth(self,conn):
         print('Authenticating...')
         msg = os.urandom(32)

@@ -103,6 +103,147 @@ UDP/IP: 无连接, 对等网络
 
 '''
 粘包: 
-    1) 发送间隔短, 数据量小
-    2）一次没接收完
+    粘包情况: 1) 发送间隔短, 数据量小
+             2）一次没接收完
+    
+    解决方法: 发送端在发送数据前，把自己将要发送的字节流总大小让接收端知晓，然后接收端来一个死循环接收完所有数据
+    见: TCP_Shell_Server.py  TCP_Shell_Client.py       
+''' # 粘包
+
 '''
+基于TCP的验证:
+    1. 面向对象的TCPServer, TCPClient写法
+    2. 验证: hmac + key
+    见: TCP_Server_Authentication.py TCP_Client_Authentication.py
+''' # 基于TCP的验证
+
+'''
+socketserver:
+继承结构:
+         #1. Server类(解决连接):
+                                                +------------+
+                                                | BaseServer |
+                                                +------------+
+                                                      ^
+                                                      |
+                                                +-----------+        +------------------+
+                                            |-->| TCPServer |<-------| UnixStreamServer |
+                                            |   +-----------+        +------------------+
++--------------------+                      |          ^
+| ThreadingMixIn     | <-----------|        |          |
++--------------------+             |        |          |
+         ^                         |        |          |
+         |                         |        |     +-----------+        +--------------------+
+         |                         |        |     | UDPServer |<-------| UnixDatagramServer |
+         |                         |        |     +-----------+        +--------------------+
++--------------------+             |        |           ^
+| ThreadingTCPServer | ------------|--------|           |
++--------------------+             |                    |
+                                   |                    |
+                            +--------------------+      |
+                            | ThreadingUDPServer |------|
+                            +--------------------+
+
+         #2. Request类: 解决通信
+                                 +--------------------+
+                     |---------> | BaseRequestHandler |<-----|
+                     |           +--------------------+      |
+                     |                               +----------------------+
+                     |                               | StreamRequestHandler |
+                     |                               +----------------------+
+            +----------------------+
+            | StreamRequestHandler |
+            +----------------------+
+
+        UDP:
+            1> s = socketserver.ThreadingUDPServer(IP_PORT, MyServer)
+               #1. BaseServer.__ini__(IP_PORT,MyServer)
+                   s.server_address = 服务器IP_PORT
+
+               #2. TCPServer
+                   s.socket = 创建socket对象        self.type = socket.SOCK_DGRAM
+                   s.server_bind() --> s.socket.bind()  = 绑定服务器IP_PORT
+                   s.server_active(): pass
+
+            2>. s.server_forever()
+               #1. BaseServer.server_forever() --> _handle_request_noblock()
+               #2. --> UDPServer.get_request() --> s.socket.recvfrom(self.max_packet_size=8192)
+                                                   return ((data, s.socket), client_addr)
+               #3. --> ThreadingMixIn.process_request()--> process_request_thread  为该连接创建一个线程
+               #4. --> BaseServer.finish_request() --> s.MyServer() 创建处理请求的对象
+               #5. --> BaseRequestHandler() --> self.request = (data, s.socket)
+                                                self.client_address = client_address
+                                                self.server = s为服务器对象
+                                                self.handle()
+''' # 多线程Socket: socketserver继承结构
+
+'''
+TCP          
+一、处理逻辑:
+    1. 创建服务器 s = socketserver.ThreadingTCPServer(ip_port, MyServer)
+       1) s.socket = socket(AF_INET,SOCK_STRAEM)
+       2) s.server_bind() --> s.socket.bind()
+       3) s.server_active() --> s.socket,listen()
+    
+    2. 运行服务器 s.server_forever()
+       1) s.verify_request()                                # 在BaseSever类里面, 是一个钩子函数
+       2) req, client_addr = s.socket.accept()              # 接受请求
+       3） t = threading.Thread(target = process_request_thread,args = (req, client_addr))  # 为当前请求分配一个线程, 并指定处理函数
+           t.start()
+       *) 处理函数会创建handler = MyServer(req,client_addr,server_obj)对象, 其中handler方法会在创建时执行    
+
+二、用法: 
+     1. 继承socketserver.BaseRequestHandler, 重写定义自己的handler方法
+        class MyServer(socketserver.BaseRequestHandler):           
+            def hanle(self):
+                # 本连接内通信逻辑
+                # 本线程可访问的属性有:
+                        self.request = request                     # 本线程内的连接conn
+                        self.client_address = client_address       # 客户端ip_port
+                        self.server = server                       # 服务器对象
+                        self.setup()                               # 钩子函数, 需要重写setup()方法
+     
+     2. 创建多线程的服务器
+        s = socketserver.ThreadingTCPServer(ip_port, MyServer)     # 创建服务器对象
+        s.serve_forever()                                          # 启动服务器, 会给每一个接入连接分配一个线程
+        # 服务器对象可访问的属性有:
+          s.server_address    # 服务器地址
+          s.socket            # 服务器的socket对象    
+    见: TCP_Server_SocketServer.py   
+''' # 多线程Socket: TCP
+
+'''
+UDP
+一、处理逻辑:
+    1. 创建服务器 s = socketserver.ThreadingUDPServer(ip_port, MyServer)
+       1) s.socket = socket(AF_INET,SOCK_DGRAM)
+       2) s.server_bind() --> s.socket.bind()
+    
+    2. 运行服务器 s.server_forever()
+       1) s.verify_request()                                # 在BaseSever类里面, 是一个钩子函数
+       2) data, client_addr = s.socket.recvfrom()           # 接受请求
+                                                            # socketserver中返回的是 req = (data,socket)                                                    
+       3） t = threading.Thread(target = process_request_thread,args = (req, client_addr))  # 为当前请求分配一个线程, 并指定处理函数
+           t.start()
+       *) 处理函数会创建handler = MyServer(req,client_addr,server_obj)对象, 其中handler方法会在创建时执行 
+
+二、用法: 
+     1. 继承socketserver.BaseRequestHandler, 重写定义自己的handler方法
+        class MyServer(socketserver.BaseRequestHandler):           
+            def hanle(self):
+                # 本连接内通信逻辑
+                # 本线程可访问的属性有:
+                        self.request = request                     # 本线程内的req = (data,socket)
+                        self.client_address = client_address       # 客户端ip_port
+                        self.server = server                       # 服务器对象
+                        self.setup()                               # 钩子函数, 需要重写setup()方法
+     
+     2. 创建多线程的服务器
+        s = socketserver.ThreadingTCPServer(ip_port, MyServer)     # 创建服务器对象
+        s.serve_forever()                                          # 启动服务器, 会给每一个接入连接分配一个线程
+        # 服务器对象可访问的属性有:
+          s.server_address    # 服务器地址
+          s.socket            # 服务器的socket对象 
+    
+     见: UDP_Server_SocketServer.py                
+''' # 多线程Socket: UDP
