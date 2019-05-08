@@ -12,7 +12,6 @@ import threading,time
 '''
 # def sayhi(*args,**kwargs):
 #     print('running on number <%s> with key <%s>' % (args[0],kwargs['key']))
-#     time.sleep(3)
 #
 # if __name__ == "__main__":
 #     t1 = threading.Thread(target=sayhi,args=(1,),kwargs={'key':'A'})
@@ -23,7 +22,6 @@ import threading,time
 #
 #     print(t1.name)
 #     print(t2.getName())
-
 
 '''
 继承调用:  1. 继承Thread类, 必须重写run()方法
@@ -60,8 +58,6 @@ import threading,time
 #         t.start()
 #     print('ending...')
 
-
-
 '''
 子线程与主线程的关系: 1. 并列运行，所有子线程结束后，主线程关闭
                    2. 子线程join阻塞主线程
@@ -83,17 +79,17 @@ import threading,time
 # t2 = threading.Thread(target=RecordBlog, args=('Python_Note',))
 #
 # if __name__ == "__main__":
-#     t1.start()
-#     t2.start()
+#     # t1.start()
+#     # t2.start()
 #
-#     t1.start()
-#     t2.start()
-#     t1.join()
-#
-#     t1.setDaemon(True)
-#     t1.start()
-#     t2.start()
-#
+#     # t1.start()
+#     # t2.start()
+#     # t2.join()
+#     #
+#     # t1.setDaemon(True)
+#     # t1.start()
+#     # t2.start()
+#     #
 #     t1.start()
 #     t2.setDaemon(True)
 #     t2.start()
@@ -120,8 +116,17 @@ import threading,time
              threading.enumerate()      返回一个list包含目前正在运行的所有线程对象
              threading.activeCount()    等于 len(threading.enumerate())        
 '''
-
-
+# class MyThread(threading.Thread):
+#     def run(self):
+#         print('active')
+#
+#
+# t = MyThread()
+# t.start()
+#
+# print(t.is_alive())
+# print(t.isAlive())
+# print(threading.enumerate())
 
 
 '''
@@ -131,19 +136,17 @@ import threading,time
                  将部分代码打包转为一体， 只有当一个线程处理完后，才能分配另外的线程进行处理  
                  
       同步锁流程:  线程A，线程B，线程C,...
-                 1. 多线程执行A,B,C
+                 1. 多线程执行func
                  2. A竞争到lock, 先执行锁内代码，释放lock
                  3. 其他线程竞争lock
 '''
-# import threading,time
-#
-# def addNum(i):
+# def reduceNum():
 #     global num
-#     print('running in numer <%s>' % i)
+#     print('running in <%s>' % threading.currentThread().getName())
 #     # Lock.acquire()
 #     with Lock:
 #         temp = num
-#         time.sleep(0.01)                 # IO阻塞, 还没来得及对全局变量计算, 就又有另外的线程来读取全局变量了
+#         time.sleep(0.01)    # IO阻塞, 还没来得及对全局变量计算, 就又有另外的线程来读取全局变量了
 #         num = temp - 1
 #     # Lock.release()
 #
@@ -152,8 +155,8 @@ import threading,time
 # Lock = threading.Lock()
 #
 # if __name__ == "__main__":
-#     for t in range(100):
-#         t = threading.Thread(target=addNum,args=(t,))
+#     for i in range(100):
+#         t = threading.Thread(target=reduceNum)
 #         t.start()
 #         thread_list.append(t)
 #
@@ -161,7 +164,6 @@ import threading,time
 #         t.join()
 #
 #     print('final num: %s' % num)
-
 
 
 '''
@@ -178,9 +180,11 @@ import threading,time
 #         with self.lock:           # 保证同一时刻只能取钱
 #             self._balance -= amount
 #
+#
 #     def deposit(self,amount):
 #         with self.lock:           # 保证同一时刻只能存钱
 #             self._balance += amount
+#
 #
 #     def drawcash(self,amount):
 #         with self.lock:
@@ -359,7 +363,7 @@ import threading,time
 #             semaphore.release()
 #
 # if __name__ == "__main__":
-#     semaphore = threading.Semaphore(2)
+#     semaphore = threading.Semaphore(10)
 #     thread_list = []
 #     for i in range(100):
 #         thread_list.append(MyThread())
@@ -397,20 +401,19 @@ import threading,time
 #     print('Producer %s has produced %s baozi..' %(name, count))
 #     count +=1
 #     # q.task_done()
-#     q.join()
+#     # q.join()
 # def Consumer(name):
 #   count = 0
-#   while count <9:
-#     time.sleep(3)
+#   while True:
+#     time.sleep(10)
 #     if not q.empty():
-#         q.task_done()
+#         # q.task_done()
 #         # q.join()
 #         data = q.get()
 #         print('\033[32;1mConsumer %s has eat %s baozi...\033[0m' %(name, data))
-#     count += 1
 #
 # if __name__ == '__main__':
-#   q = queue.Queue()
+#   q = queue.Queue(1)
 #
 #   p1 = threading.Thread(target=Producer, args=('A',))
 #   c1 = threading.Thread(target=Consumer, args=('B',))

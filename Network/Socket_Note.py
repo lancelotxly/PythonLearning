@@ -1,5 +1,11 @@
 '''
-
+网络编程:
+       1. 网络分层
+       2. C/S和B/S架构
+       3. Socket +  TCP/UDP
+       4. TCP粘包
+       5. 基于TCP实现验证
+       6. 多线程Socket
 ''' # 综述
 
 '''
@@ -23,6 +29,34 @@
 
 3. 程序的唯一标识:   IP_PORT = ('ip_port',port)                        
 ''' # 网络分层, socket分类, 程序的唯一标识
+
+'''
+C/S和B/S架构:
+    1. C/S: Client and Server
+       #1. 两层架构
+       #2. 客户端需要实现绝大多少的业务逻辑和界面展示
+       #3. 服务器端实现与数据库交互
+       
+       优点: 
+            #1. 交互只有一层, 响应速度快
+            #2. 客户端操作丰富
+            #3. 安全性好
+       缺点:
+            #1. 用户群窄, 需要安装客户端
+            #2. 维护成本高, 发生一次升级, 所有客户端要更新
+    
+    2. B/S: Browser and Server
+       #1. Browser, Server和DataBase构成三层架构
+       #2. 事务主要在后端处理, 前端负责呈现
+        
+       优点: 
+           #1. 客户端无需安装, 浏览器就行了
+           #2. 用户群广
+           #3. 升级服务器就行了
+       缺点:
+           #1. 跨浏览器的兼容问题
+           #2. 响应速度和安全问题               
+''' # C/S和B/S架构
 
 '''
 TCP/IP: 面向连接
@@ -154,31 +188,10 @@ socketserver:
             +----------------------+
             | StreamRequestHandler |
             +----------------------+
-
-        UDP:
-            1> s = socketserver.ThreadingUDPServer(IP_PORT, MyServer)
-               #1. BaseServer.__ini__(IP_PORT,MyServer)
-                   s.server_address = 服务器IP_PORT
-
-               #2. TCPServer
-                   s.socket = 创建socket对象        self.type = socket.SOCK_DGRAM
-                   s.server_bind() --> s.socket.bind()  = 绑定服务器IP_PORT
-                   s.server_active(): pass
-
-            2>. s.server_forever()
-               #1. BaseServer.server_forever() --> _handle_request_noblock()
-               #2. --> UDPServer.get_request() --> s.socket.recvfrom(self.max_packet_size=8192)
-                                                   return ((data, s.socket), client_addr)
-               #3. --> ThreadingMixIn.process_request()--> process_request_thread  为该连接创建一个线程
-               #4. --> BaseServer.finish_request() --> s.MyServer() 创建处理请求的对象
-               #5. --> BaseRequestHandler() --> self.request = (data, s.socket)
-                                                self.client_address = client_address
-                                                self.server = s为服务器对象
-                                                self.handle()
 ''' # 多线程Socket: socketserver继承结构
 
 '''
-TCP          
+TCP多线程          
 一、处理逻辑:
     1. 创建服务器 s = socketserver.ThreadingTCPServer(ip_port, MyServer)
        1) s.socket = socket(AF_INET,SOCK_STRAEM)
@@ -190,9 +203,9 @@ TCP
        2) req, client_addr = s.socket.accept()              # 接受请求
        3） t = threading.Thread(target = process_request_thread,args = (req, client_addr))  # 为当前请求分配一个线程, 并指定处理函数
            t.start()
-       *) 处理函数会创建handler = MyServer(req,client_addr,server_obj)对象, 其中handler方法会在创建时执行    
+       *) 处理函数会创建myhandler = MyServer(req,client_addr,server_obj)对象, 其中handler方法会在创建时执行    
 
-二、用法: 
+二、socketserver用法: 
      1. 继承socketserver.BaseRequestHandler, 重写定义自己的handler方法
         class MyServer(socketserver.BaseRequestHandler):           
             def hanle(self):
@@ -213,7 +226,7 @@ TCP
 ''' # 多线程Socket: TCP
 
 '''
-UDP
+UDP多线程
 一、处理逻辑:
     1. 创建服务器 s = socketserver.ThreadingUDPServer(ip_port, MyServer)
        1) s.socket = socket(AF_INET,SOCK_DGRAM)
@@ -225,9 +238,9 @@ UDP
                                                             # socketserver中返回的是 req = (data,socket)                                                    
        3） t = threading.Thread(target = process_request_thread,args = (req, client_addr))  # 为当前请求分配一个线程, 并指定处理函数
            t.start()
-       *) 处理函数会创建handler = MyServer(req,client_addr,server_obj)对象, 其中handler方法会在创建时执行 
+       *) 处理函数会创建myhandler = MyServer(req,client_addr,server_obj)对象, 其中handler方法会在创建时执行 
 
-二、用法: 
+二、socketserver用法: 
      1. 继承socketserver.BaseRequestHandler, 重写定义自己的handler方法
         class MyServer(socketserver.BaseRequestHandler):           
             def hanle(self):

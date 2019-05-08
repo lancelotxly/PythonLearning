@@ -40,7 +40,6 @@ class ClientHandler:
         # D:\PythonWorkspace\PythonLearning\Network\FTP_Client
         self.mainPath = os.path.dirname(os.path.abspath(__file__))
 
-
     def verify_args(self):
         server = self.options.server
         port =self.options.port
@@ -112,7 +111,7 @@ class ClientHandler:
         is_exist = self.sock.recv(1024).decode('utf-8')
 
         if is_exist == '800':
-            # 文件不完整
+            # 文件不完整:  服务端先发送已经传了多少字节, 本地seek到已经传输的位置, 继续传输
             choice = input('the file exist, but not enough, is continue?[Y/N]').strip()
             if choice.upper() == 'Y':
                 self.sock.sendall('Y'.encode('utf-8'))
