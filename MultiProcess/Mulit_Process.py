@@ -31,29 +31,29 @@ __author__ = 'xzq'
 '''
 继承调用
 '''
-# from multiprocessing import Process
-# import time,os
-# class MyProcess(Process):
-#     def __init__(self,*args,**kwargs):
-#         super(MyProcess,self).__init__()
-#         self.num = args[0]
-#         self.key = kwargs['key']
-#
-#     def run(self):
-#         print('running on number <%s> with key of <%s>' % (self.num, self.key))
-#         time.sleep(1)
-#
-# if __name__ == "__main__":
-#     p1 = MyProcess(1,key='A')
-#     p2 = MyProcess(2,key='B')
-#
-#     p1.start()
-#     p2.start()
-#
-#     p1.join()
-#     p2.join()
-#
-#     print('ending...')
+from multiprocessing import Process
+import time,os
+class MyProcess(Process):
+    def __init__(self,*args,**kwargs):
+        super(MyProcess,self).__init__()
+        self.num = args[0]
+        self.key = kwargs['key']
+
+    def run(self):
+        print('running on number <%s> with key of <%s>' % (self.num, self.key))
+        time.sleep(1)
+
+if __name__ == "__main__":
+    p1 = MyProcess(1,key='A')
+    p2 = MyProcess(2,key='B')
+
+    p1.start()
+    p2.start()
+
+    p1.join()
+    p2.join()
+
+    print('ending...')
 
 '''
 子进程与主进程的关系: 1. 并列运行，所有子进程结束后，主进程关闭
@@ -64,7 +64,7 @@ __author__ = 'xzq'
 
 
 '''
-线程方法:  1. 对象方法和属性
+进程方法:  1. 对象方法和属性
              p.start()  启动进程，自动运行run()方法
              p.join()   阻塞主进程
              p.daemon = True  脱离主进程
@@ -148,9 +148,11 @@ __author__ = 'xzq'
 #
 #   def run(self):
 #     print(os.getpid())
-#     self.conn.send('hello, i am %s <%s>' % (self.name, self.pid))
-#     response = self.conn.recv()
-#     print(response)
+#     # self.conn.send('hello, i am %s <%s>' % (self.name, self.pid))
+#     self.conn.send('')
+#     print('heeee')
+#     # response = self.conn.recv()
+#     # print(response)
 #
 # if __name__ == "__main__":
 #   parent_conn, child_conn = Pipe()
@@ -161,8 +163,8 @@ __author__ = 'xzq'
 #
 #   p1.join()
 #   p2.join()
-#   parent_conn.close()
-#   child_conn.close()
+#   # parent_conn.close()
+#   # child_conn.close()
 
 
 '''
@@ -203,22 +205,22 @@ Manager:  1. manager = Manager() 为所有进程创建一个manager对象,
        3. pool.close()            关闭进程池
           poo.join()              返回主进程
 '''
-# from multiprocessing import Pool
-# import os,time
-# def work(n):
-#     print('%s run' %os.getpid())
-#     time.sleep(3)
-#     return n**2
-#
-# if __name__ == '__main__':
-#     p=Pool(3) #进程池中从无到有创建三个进程,以后一直是这三个进程在执行任务
-#     res_l=[]
-#     for i in range(10):
-#         res=p.apply_async(work,args=(i,)) #异步运行, 非阻塞, 拿到的是对象;  同步运行, 阻塞， 直接拿到的是数据
-#         res_l.append(res)
-#
-#     #异步apply_async用法：如果使用异步提交的任务，主进程需要使用jion，等待进程池内任务都处理完，然后可以用get收集结果，否则，主进程结束，进程池可能还没来得及执行，也就跟着一起结束了
-#     p.close()
-#     p.join()
-#     for res in res_l:
-#         print(res.get()) #使用get来获取apply_aync的结果,如果是apply,则没有get方法,因为apply是同步执行,立刻获取结果,也根本无需get
+from multiprocessing import Pool
+import os,time
+def work(n):
+    print('%s run' %os.getpid())
+    time.sleep(3)
+    return n**2
+
+if __name__ == '__main__':
+    p=Pool(3) #进程池中从无到有创建三个进程,以后一直是这三个进程在执行任务
+    res_l=[]
+    for i in range(10):
+        res=p.apply_async(work,args=(i,)) #异步运行, 非阻塞, 拿到的是对象;  同步运行, 阻塞， 直接拿到的是数据
+        res_l.append(res)
+
+    #异步apply_async用法：如果使用异步提交的任务，主进程需要使用join，等待进程池内任务都处理完，然后可以用get收集结果，否则，主进程结束，进程池可能还没来得及执行，也就跟着一起结束了
+    p.close()
+    p.join()
+    for res in res_l:
+        print(res.get()) #使用get来获取apply_aync的结果,如果是apply,则没有get方法,因为apply是同步执行,立刻获取结果,也根本无需get

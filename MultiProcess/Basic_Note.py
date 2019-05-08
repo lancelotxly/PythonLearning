@@ -129,7 +129,7 @@ Python的GIL全局解释器锁
              threading.currentThread()     # 当前线程对象   
              threading.enumerate()         # 返回一个List包含当前所有活跃的线程对象
              thread.activeCount()          # 相等于len(threading.enumerate())                                                     
-''' # 多线程: 使用
+''' # 多线程: 使用, 见Mulit_Threading.py
 
 '''
 线程之间通信:
@@ -256,3 +256,76 @@ Python的GIL全局解释器锁
        #1. thread_local对象内部维护一个dict, 其key为不同线程的ID, value为这些线程存储值
        #2. thread_local.attr调用属性值时, 实际上是以当前线程的ID为key, 去找值
 ''' # 多线程通信: 线程局部变量(threading.local)
+
+'''
+多进程使用:
+     1. 导入模块 import threading
+     2. 开启进程的方法:
+        1) 直接开启:  
+                  1> 创建Process对象
+                     p = mulitprocessing.Process(target=func,args=(a,),kwargs={'k1':v1})
+                  2> 开启线程
+                     p.start
+        2) 继承开启:
+                  1> 继承Process类, 重写run()方法[即要执行的函数]
+                     class MyProcess(multiprocessing.Process):
+                          def __init__(self):
+                             super(MyThread,self).__init__()
+                             # 其他初始化代码,如要传给函数值
+                          def run(self): pass
+                  2. 创建实例,开启显线程
+                     p = MyProcess()
+                     p.start()           # 会调用其run()方法
+
+     3. 子进程和主进程的关系:
+        1> 主进程和子进程分别执行, 主线程会等待最后一个子进程执行完毕后, 关闭
+
+        2> 子进程p.join()到主进程, 会阻塞主线程, 执行完该子进程后主进程继续执行, 最后主进程等待最后一个子进程执行完毕后, 关闭
+
+        3> 在子进程开启之前, 申明该子进程为p.daemon = True守护进程, 最后主线程不会等待该子线程, 其他进程执行完就关闭主线程
+
+     4. 进程的属性和方法:
+        1) 对象属性和方法: p.attr p.func()    
+             p.func(): 
+                     p.start()          # 启动进程
+                     p.join()           # 阻塞当前进程
+                     p.run()            # 在当前进程下调用该进程的run方法
+
+                     p.isAlive()        # 判断进程是否被激活
+                     p.terminate()      # 结束进程      
+             p.attr:
+                     p.name                # 线程名
+                     p.daemon = True/False # 是否为守护线程
+                     p.num/p.pid           # 进程号
+
+        2) os方法:
+             os.getpid()                   # 获取当前进程号
+             os.getppid()                  # 获取当前进程父进程号                                                 
+'''  # 多进程: 使用, 见Mulit_Process.py
+
+'''
+多进程通信:
+    1. 锁机制: Lock/ RLock/ Event/ Semaphore 同多线程
+    2. 进程队列: multiprocessing.Queue       同多线程
+    进程间资源不能共享, 因此在主线程中创建的Lock, RLock, Event, Semaphore, Queue, 要作为参数传入到子线程中
+    
+    3. 管道(Pipe): 通过管道两端的conn双向通信
+           用法:  
+               #1. conn1, conn2 = multiprocessing.Pipe()    //在主进程中创建
+               #2. 将conn1, conn2作为参数传入进程中
+               #3. 每一个conn有conn.send(), conn.recv()方法
+               #4. conn.recv()为空阻塞, conn.send()为空不阻塞
+    
+    4. 共享数据(Manager): 所有进程都可访问的数据块
+          用法:
+              #1. manager = multiprocessing.Manager()   // 主进程中创建
+              #2. 通过manager对象可创建公共的
+                     list, dict                            // 也需要传入
+                     Lock, RLock, Event, Semaphore, Queue  // 也需要传入
+              #3. 各个进程可访问这些数据集, 注意进程不安全的(除了Queue)要加锁        
+    
+    5. 进程池(Pool):  与信号量类似，但没有加锁。
+               信号量是，可以开无限多的进程(线程)，但某一时刻只允许num个进程(线程)修改数据
+               进程池是，从始至终只开num个进程             
+'''  # 多进程通信:
+
