@@ -208,7 +208,7 @@ TCP多线程
 二、socketserver用法: 
      1. 继承socketserver.BaseRequestHandler, 重写定义自己的handler方法
         class MyServer(socketserver.BaseRequestHandler):           
-            def hanle(self):
+            def handle(self):
                 # 本连接内通信逻辑
                 # 本线程可访问的属性有:
                         self.request = request                     # 本线程内的连接conn

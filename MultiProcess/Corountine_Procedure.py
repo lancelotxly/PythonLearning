@@ -6,10 +6,10 @@ __author__ = 'xzq'
 simple test: 利用任务A IO阻塞的时间，去执行其他任务
              无法自动检测IO阻塞
 '''
-# import time
-#
+import time
+
 # def task_A():
-#     g = task_B()
+#     g = task_B()            # 创建生成器
 #     print('running task A')
 #     next(g)
 #     g.send(2)
@@ -84,7 +84,6 @@ greenlet:
 # if __name__ == "__main__":
 #     eat_g = greenlet(eat)
 #     watch_g = greenlet(watch_tv)
-#
 #     eat_g.switch('xzq')
 
 
@@ -101,25 +100,25 @@ Gevent:   yield/next/send, greenlet 没有解决IO阻塞自动切换
              from gevent import monkey;monkey.patch_all()   # 打补丁
              
 '''
-# from gevent import monkey;monkey.patch_all()   # 打补丁
-# import gevent,time,threading
-# def eat(name):
-#     print(threading.currentThread().getName())   # DummyThread-1 虚拟线程
-#     print('%s eat 1' %name)
-#     time.sleep(2)                 # 必须在导入time模块之前打补丁
-#     print('%s eat 2' %name)
-#
-# def play(name):
-#     print(threading.currentThread().getName())
-#     print('%s play 1' %name)
-#     gevent.sleep(1)               # gevent.sleep(1)模拟的是gevent可以识别的io阻塞
-#     print('%s play 2' %name)
-#
-#
-# g1=gevent.spawn(eat,'egon')           # 相当于创建了两个虚拟线程
-# g2=gevent.spawn(play,name='egon')
-#
-# g1.join()
-# g2.join()
-# # 或者gevent.joinall([g1,g2])
-# print('主')
+from gevent import monkey;monkey.patch_all()   # 打补丁
+import gevent,time,threading
+def eat(name):
+    print(threading.currentThread().getName())   # DummyThread-1 虚拟线程
+    print('%s eat 1' %name)
+    time.sleep(2)                 # 必须在导入time模块之前打补丁
+    print('%s eat 2' %name)
+
+def play(name):
+    print(threading.currentThread().getName())
+    print('%s play 1' %name)
+    gevent.sleep(1)               # gevent.sleep(1)模拟的是gevent可以识别的io阻塞
+    print('%s play 2' %name)
+
+
+g1=gevent.spawn(eat,'egon')           # 相当于创建了两个虚拟线程
+g2=gevent.spawn(play,name='egon')
+
+g1.join()
+g2.join()
+# 或者gevent.joinall([g1,g2])
+print('主')
