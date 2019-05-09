@@ -22,7 +22,7 @@ Num: 1. 数值操作: +, -, *, /, //(取商), %(取余), **(次方)
                  4）abs(num)
                  5) max(Iterable,[key=func]), min(Iterable,[key=func])
                  6) sum(Iterable)
-                 7) byte(num/str,encoding='utf8')    # 转为二进制字符串
+                 7) bytes(num/str,encoding='utf8')    # 转为二进制字符串
 '''  # Num
 
 '''
@@ -178,9 +178,9 @@ Set: 无重复元素, 无序, 不可遍历, 不可变(hashable)
             == & is: == 调用__eq__()方法, 比较两个对象内容是否相同
                      is 比较两个对象是否完全相同, 内存地址也相同
 
-            and, or: 1. num and bool              # 结果转bool
-                     2. a and b                   # and为连通型, a,b都要判断
-                     3. a or b                    # or为截断型, a为真则不需要判断b
+            and, or: 
+                     1. a and b                   # and为连通型, a,b都要判断
+                     2. a or b                    # or为截断型, a为真则不需要判断b
 
             三元表达式:  a if condition else b     # 条件成立为a, 不成立为b         
 '''  # List, Tuple, Dict, Set基本操作

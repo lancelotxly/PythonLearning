@@ -81,11 +81,6 @@ attr1 = obj['attr1']
                       def func(self):pass
                       obj.func          # 访问时不再需要调用
                                                     
-                      #1. property 本质是一个Data-Descriptor
-                      #2. @property  本质是在调用property.__get__()
-                      #3. @func.setter 本质是在调用property.__set__()
-                      #4. @func.deleter 本质是在调用property.__delete__()
-          
           2) 类方法: 不要实例对象, 通过ClassName可直接访问的方法
                     @classmethod
                     def func(cls):pass     # 类方法只能访问类属性, 没有self

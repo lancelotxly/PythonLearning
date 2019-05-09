@@ -153,4 +153,5 @@
 14. yield from Iterable_obj
     yield value
 
-15. 列举布尔值为False的常见值？ bool(''), bool(0)
+15. 列举布尔值为False的常见值？
+    0, None, [], {}, ()
