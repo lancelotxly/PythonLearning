@@ -361,13 +361,112 @@ Python的GIL全局解释器锁
     3. gevent: 可自动完成IO阻塞切换
        用法:
            1) g = gevent.spawn(func,*args,**kwargs)  # 相当于创建了一个虚拟线程对象, 可自动识别IO阻塞
+                                                     # 协程创建时就已经运行了
            
            2) 若要gevent识别其他类型阻塞, 必须在导入该模块前打补丁
               from gevent import monkey;monkey.patch_all()
            
-           3) g.join()                               # 协程启动加入主线程(真实线程)
-              g.joinall([])                          # 线程可能出现协程还没执行完, 线程就结束了, 所有协程必须join到主线程
+           3) g.join()                               # 协程加入主线程(真实线程)
+              gevent.joinall([])                     # 线程可能出现协程还没执行完, 线程就结束了, 所有协程必须join到主线程
            
            4) g.value                                # 获取协程返回值
+       
+       gevent实现单线程socket并发: Gevent_Server.py    
 ''' # 协程实现
 
+'''
+IO模型:
+1. 上层IO操作的过程: 内核态等待数据(wait_data) +  内核态将数据拷贝给用户态程序(copy_data)
+2. 同步阻塞: wait_data(block) + copy_data(block)
+      1) 定义: 
+               即用户态向内核态请求数据, 
+               若没有, 该线程(进程)直接就被挂起了(也就是当前程序阻塞了), 
+               直到数据来了该线程才被激活就绪
+      
+      2) 解决方法: 
+                #1. mulit-threading --> 费资源
+                #2. pool --> 池子大小设计 
+    
+      3) 常见的同步阻塞:
+                #1. socket + TCP: s.accept()/connect_ex(), conn.recv()/conn.send()
+                #2. socket + UDP: s.recvfrom()
+                #3. 文件: read()/write()                                                       
+''' # IO模型: 同步阻塞
+
+'''
+同步非阻塞: wait_data(unblock, 轮询) + copy_data(block)
+      1) 定义:  
+             即用户态向内核请求数据, 
+             若没有, 向该线程(进程)返回error; 该线程可在下次询问之前做其他的事
+             若有, 则向该线程用户态拷贝数据(block)
+      
+      2) 使用:
+             #1. server.setblocking(False)   # 声明为非阻塞型服务器
+             
+             #2. wait_data不到:
+                              server.accept()
+                              conn.recv()
+                              conn.send()
+                 则报错BlockingIOError, 期间可做其他事情
+             
+             #3. 定义几个数据集用以处理请求:
+                      req_list:   当有请求接入, 存入
+                      del_list:   将无数据传入的连接存入, 之后把所有废弃请求从req_list中删除
+                      w_dict:     将有数据传入的连接存入, 之后统一处理
+''' # IO模型: 同步非阻塞
+
+'''
+同步IO复用:  select[conn1,conn2,...](block) + [conn_i]copy_data(block)
+      1) 定义:
+            利用select同时检测多个non-blocking连接, 哪个wait_data(ok)就让其copy_data
+      
+      2) 特点:
+            #1. 相当于还是两次block(select + copy_data), 而且还有两次系统调用(select + recv)
+            #2. 适用于大规模连接的情况, 小规模还是mulit-threading + blocking IO
+      
+      3) select原理:
+            #1. select采用无差别轮询的方法
+            #2. 通过水平触发的方式(只有内核态有数据就会触发)
+            #3. 检测其用户态文件描述符(fd)的变化, 从而找到其对应内核态的数据
+            #4. 允许其copy_data到用户态
+            #5. 时间复杂度为O(n)
+
+      4) poll: 
+             相比select取消了文件描述符的数量限制, select是1024
+      
+      5) epoll: 
+            #1. 相比select采用边缘触发方式检测, 即当内核态数据发生变化(有/无)才会触发检测
+            #2. 采用问答式检测, 无需轮询                      
+      
+* select使用:
+ # 初始化
+ r_list = [server, ]
+ w_list = []
+ e_list = []
+ 
+ # select检测
+ r_able, w_able, e_able = select.select(r_list, w_list, e_list,[timeout])
+ r_able: 检测到的可读连接list
+ w_able: 检测到的可写连接list
+ e_able: 检测到的发生异常的连接list
+ timeout: select的检测间隔时间
+      
+      
+* selectors.DefaultSelector(): 监督者根据系统自动适配
+    用法:  1. 创建监督者
+             sel = selectors.DefaultSelector()
+          2. 将不同链接对象sock/conn， 以及其对应的处理函数注册到sel上
+             sel.register(sock,selectors.EVENT_READ,accept)
+          3. 开始监听，并根据返回对象的不同，多态的实现处理函数，完成各自的任务
+             events = sel.select()
+             for sel_obj, mask in events:
+                 callback = sel_obj.data
+                 callback(sel_obj.fileobj,mask) 
+
+市面上上见到的所谓的异步IO，比如nginx、Tornado、等，我们叫它异步IO，实际上是IO多路复用。                 
+''' # IO模型: 同步IO复用
+
+'''
+异步IO:  wait_data(unblock) + copy_data(自动完成返回信号)
+                             异步IO模型需要一个消息循环，在消息循环中，主线程不断地重复 读取消息-处理消息
+''' # IO模型: 异步IO
