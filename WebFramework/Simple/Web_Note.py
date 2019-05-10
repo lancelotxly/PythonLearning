@@ -35,7 +35,7 @@ __author__ = 'xzq'
                       3xx   重定向:          302 永久重定向, 301 暂时重定向, 304 请求内容没变化，不重发
                       4xx   客户端错误        404 找不到, 401 未认证, 403 访问被禁
                       5xx   服务端错误        500 服务器出错
-'''   # HTTP
+'''  # HTTP
 
 '''
 Web 流程:
@@ -47,25 +47,29 @@ Web app 组成:  MVC, MTV
             视图函数 ViewFunction:    处理逻辑         ___
             模板    Template:        动态生成html     ___|
             
-'''
+'''  # Web服务器, Web框架
+
 from wsgiref.simple_server import make_server
 import time
+# 视图函数
 def web():
-    with open('Simple/index1.html','rb') as f:
+    with open('index1.html','rb') as f:
         data = f.read()
     return [data]
+
 def xzq():
-    with open('Simple/index2.html','rb') as f:
+    with open('index2.html','rb') as f:
         data = f.read()
     return [data]
 
 def current_time():
-    with open('Simple/index3.html','rb') as f:
+    with open('index3.html','rb') as f:
         data = f.read()
     now = time.ctime(time.time())
     data = str(data,'utf8').replace("{{time}}",str(now))
     return [data.encode('utf8')]
 
+# 路由分发
 def router():
     url_pattern = (
         ('/web',web),
@@ -74,12 +78,15 @@ def router():
     )
     return url_pattern
 
+# app
 def application(environ,start_response):
-    path = environ['PATH_INFO']
+    path = environ['PATH_INFO']       # 相对路由
+    print(path)
     start_response('200 OK', [('Content-Type', 'text/html')])
 
     url_pattern = router()
     func = None
+    # 路由分发: 反射
     for item in url_pattern:
         if item[0] == path:
             func = item[1]
@@ -87,10 +94,9 @@ def application(environ,start_response):
     if func:
         return func()
     else:
-        return [b'<h1>4o4 Not Found!</>']
+        return [b'<h1>4o4 Not Found!</h1>']
 
-httpd = make_server('',8000,application)
-
-print('Serving HTTP on port 8000..')   # 阻塞直到有连接
-
-httpd.serve_forever()
+if __name__ == '__main__':
+    httpd = make_server('127.0.0.1',8000,application)
+    print('Serving HTTP on port 8000..')   # 阻塞直到有连接
+    httpd.serve_forever()

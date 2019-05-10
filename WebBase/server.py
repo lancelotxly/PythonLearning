@@ -15,7 +15,7 @@ def handle_request(conn):
 def main():
     sock = socket(AF_INET,SOCK_STREAM)
     sock.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
-    sock.bind(('localhost',8080))
+    sock.bind(('127.0.0.1',8080))
     sock.listen(5)
 
     while True:

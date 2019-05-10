@@ -11,7 +11,7 @@ JS的运行规范:
 
 变量:
     1. 声明方法  (var name; // 局部变量     name;    // 全局变量)
-    2. 命名规则  var sName;
+    2. 命名规则  var sName;   //字符串
 
 输出:  console.log() // 输出到监视器
       alert()       // 输出到提醒框
@@ -31,13 +31,13 @@ JS的运行规范:
      3. Boolean: true/ false
      4. Object:  var obj = new Person()
 
-     数据类型转换:
+     数据类型转换: String > Boolean > Number
                * 弱转换:   Number + String --> String;
                           Number + Boolean --> Number;
                           String + Boolean --> String
                * 强转换:   to Number:   Number()       //包含字母则为Nan; null和空为0; true为1, false为0
                                        parseInt()     //以字母开头为Nan; 中途遇字母截断; 小数点后截断
-                                       parseFloat()   //第一个小数点有效
+                                       parseFloat()   //以字母开头为Nan; 第一个小数点有效, 不取0
                           to Sting:    toString()
                           字符串强转表达式: eval("")
 运算符:

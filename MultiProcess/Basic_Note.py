@@ -407,7 +407,8 @@ IO模型:
                               server.accept()
                               conn.recv()
                               conn.send()
-                 则报错BlockingIOError, 期间可做其他事情
+                 raise BlockingIOError:
+                      期间可做其他事情
              
              #3. 定义几个数据集用以处理请求:
                       req_list:   当有请求接入, 存入
