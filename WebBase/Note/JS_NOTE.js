@@ -242,9 +242,12 @@ DOM 对象: HMTL /XML 文本对象
                3>. 改:         father.replaceChild(new_ele,old_ele);
           2). 属性修改:
                ele.attr = new_value;
-               ele.classlist;  // 返回class属性值，数组
-                   ele.classlist.add;
-                   ele.classlist.remove;
+               ele.getAttribute('attr')
+               ele.setAttribute('attr','value')
+               ele.removeAttribute('attr')
+               ele.attributes                // 返回属性集合
+          3). 操作CSS
+              ele.style.color
  */
 
 

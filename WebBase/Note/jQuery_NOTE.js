@@ -62,7 +62,7 @@ jQuery 对象: <script src="jquery-3.1.1.js"></script>   // 导入jQuery模块
 
        5. 操作标签:    $("<p>") // 创建标签
                      内部插入:
-                         $("").append(content|fn)      ----->$("p").append("<b>Hello</b>");
+                         $("").append(content|fn)      ----->$("p").append("<b>Hello</b>");   // 在p中尾插b
                          $("").appendTo(content)       ----->$("p").appendTo("div");
                          $("").prepend(content|fn)     ----->$("p").prepend("<b>Hello</b>");
                          $("").prependTo(content)      ----->$("p").prependTo("#foo");
