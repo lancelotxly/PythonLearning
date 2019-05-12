@@ -211,10 +211,10 @@ TCP多线程
             def handle(self):
                 # 本连接内通信逻辑
                 # 本线程可访问的属性有:
-                        self.request = request                     # 本线程内的连接conn
-                        self.client_address = client_address       # 客户端ip_port
+                        self.request = req                         # 本线程内的连接conn
+                        self.client_address = client_addr          # 客户端ip_port
                         self.server = server                       # 服务器对象
-                        self.setup()                               # 钩子函数, 需要重写setup()方法
+                        self.setup()                               # 钩子函数, 需要重写setup()方法, 在handler之前执行
      
      2. 创建多线程的服务器
         s = socketserver.ThreadingTCPServer(ip_port, MyServer)     # 创建服务器对象
@@ -246,7 +246,7 @@ UDP多线程
             def hanle(self):
                 # 本连接内通信逻辑
                 # 本线程可访问的属性有:
-                        self.request = request                     # 本线程内的req = (data,socket)
+                        self.request = req                         # 本线程内的req = (data,socket)
                         self.client_address = client_address       # 客户端ip_port
                         self.server = server                       # 服务器对象
                         self.setup()                               # 钩子函数, 需要重写setup()方法

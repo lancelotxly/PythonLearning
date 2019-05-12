@@ -25,9 +25,9 @@ DDL: CREATE, SHOW, ALTER, DROP, USE
                  USE database_name;                                              // 使用数据库
                  SELECT database();                                              // 查看当前使用的数据库
 
-    2. 表操作:
+    2. 表操作: CREATE, ALTER+(ADD,MODIFY,CHANGE,DROP), DESC
             数据类型:
-                    1>>.数值: TINYINT //1 BYTE, INT //4 BYTES, FLOAT //4 BYTES, DOUBLE //8 BYTES
+                    1>>.数值: TINYINT //1 BYTE, INT //4 BYTES, FLOAT //4 BYTES, DOUBLE //8 BYTES, DECIMAL(4,2) //总共四位, 一位小数
                              tips:  FLOAT(4,2)  // 34.56
                     2>>.时间: DATE //YYYY-MM-DD, TIME //HH:MM:SS, YEAR //YYYY, DATETIME //YYYY-MM-DD HH:MM:SS
                     3>>.字符串: CHAR(L), VARCHAR(L), TEXT, BLOB // 二进制
@@ -50,16 +50,16 @@ DDL: CREATE, SHOW, ALTER, DROP, USE
                          2>>. 修改列(字段)类型，约束条件:
                                    ALTER TABLE table_name MODIFY col_name type constraints;
                          3>>. 修改列(字段)名:
-                                   ALTER TABLE table_name CHANGE col_name new_name;
+                                   ALTER TABLE table_name CHANGE col_name new_name type;
                          4>>. 删除一列(字段):
                                    ALTER TABLE table_name DROP col_name;
           5.>删除表:      DROP TABLE table_name;
 
 
-          6>. 外键约束: FOREIGN KEY (charger_id) REFERENCE ClassCharger(id)
+          6>. 外键约束: 创建完charger_id后另起一行加FOREIGN KEY (charger_id) REFERENCES ClassCharger(id) ON 删除方式
                )ENGINE=INNODB;
               外键约束对子表的含义:   如果在父表中找不到候选键,则不允许在子表上进行insert/update
-              外键约束对父表的含义:   父表进行UPDATE/DELETE时，取决与子表定义外键时指定的ON操作
+              外键约束对父表的含义:   父表进行DELETE时，取决与子表定义外键时指定的ON操作
                                   ON DELETE CASCADE;   // 父表删除，子表对应记录删除
                                   ON DELETE SET NULL;  // 父表删除，子表对应记录为NULL
 
@@ -92,7 +92,7 @@ DML: INSERT, UPDATE, DELETE, SELECT
                          GROUP BY field
                          HAVING 筛选
                          ORDER BY field [DESC/ASC][LIMIT start,row_count]
-                 **SQL语句处理顺序: from -> where -> select -> group by -> having -> order by -> limit
+                 **SQL语句处理顺序: from -> where -> select -> group by -> having -> order by -> limit row1,row2. (row1,row2)
                                   select JS as JS成绩 from ExamResult where JS成绩 >70; ---- 不成功
                                   select JS as JS成绩 from ExamResult having JS成绩 >90; --- 成功
 
@@ -107,7 +107,7 @@ DML: INSERT, UPDATE, DELETE, SELECT
                                2. between 80 and 100;   // [80,100];
                                3. in (80,90,100);
                                4. like="yuan%", "yuan_"   // %多字符匹配,  _单字符匹配
-                               5. DATABASE IS NULL;       // 数据为空
+                               5. field IS NULL;          // 数据为空
                                6. REGEXP 'dec'            // 正则匹配
 
                 // 将找到的表记录排列

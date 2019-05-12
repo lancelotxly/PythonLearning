@@ -148,8 +148,8 @@ Function 对象: js的函数加载执行与python不同，它是整体加载完�
         6. 创建对象(class):
                function Person(name,age,job){
                   this.name = name;                    // this.attr 为该实例独有
-                  this.age = age;
-                  this.job = job;
+                  this.age = age;                     //  new Person()创建对象时this == obj
+                  this.job = job;                     //  Person()作为函数调用时this == window
                }
                Person.prototype={                     // prototype为所有实例共享
                     constructor: Person,

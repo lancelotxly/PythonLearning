@@ -55,7 +55,7 @@ Str:
                  3) s.rjust(width,'a')        # 字符串's'居右
 
      7. join: 字符连接
-                a.join('s')               # 用'a'连接字符串's'的每一个字符 
+                a.join('Seq-str')               # 用'a'连接字符串's'的每一个字符 
 
      8. encode/decode: 字符编码
                         1) 字符串 <--> encode/decode <--> 机器码
@@ -148,7 +148,7 @@ Dict: 1. 定义:
              rewrite: d[k] = new_v
       3. 方法:
              dict():  1> 拷贝: dict(Dict)
-                      2> 创建: dict(**kwargs), dict([(a,b),])
+                      2> 创建: dict(**kwargs), dict([(a,b)])
 
              dict.fromkeys(seq,value): 创建dict, 以seq的每一项为key, value为所有keys的初始值         
       4. 遍历:
@@ -174,6 +174,7 @@ Set: 无重复元素, 无序, 不可遍历, 不可变(hashable)
 '''
 其他共有操作: 
             in, not in, len()
+            max(), min(), sum()
 
             == & is: == 调用__eq__()方法, 比较两个对象内容是否相同
                      is 比较两个对象是否完全相同, 内存地址也相同

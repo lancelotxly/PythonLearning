@@ -45,7 +45,7 @@ attr1 = obj['attr1']
        2. 实例化
           obj = ClassName(a,b)
           实例化过程:  执行元类__call__()方法, 详细见MetaClass.py
-                     1.  调用Object.__new__(self)方法创建一个实例t
+                     1.  调用tObject.__new__(self)方法创建一个实例t
                      2.  调用ClassName.__init__(t)方法初始化实例
                      3.  返回初始化好的t, 赋值给obj                        
                     

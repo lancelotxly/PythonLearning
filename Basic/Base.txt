@@ -17,6 +17,7 @@
 
 2. 解释型语言，编译型语言
    编译型语言: 运行时用编译器对代码进行一次性翻译，将其翻译成机器语言执行，快
+             预编译 --> 编译 --> 链接
    解释型语言: 运行时先将其转化成字节码，然后在虚拟机中用解释器，一边执行一边将其翻译成机器语言, 开发速度快
 
 3. Python常用的解释器
@@ -51,6 +52,7 @@
 
 
 8. IP地址转化: 见IP_Translate.py
+   ip_re = re.compile(r'((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?$)')
 
 9. Python最大递归层数: 1000
 
@@ -72,10 +74,10 @@
 13. 三元运算符:   a if condition else b     # 条件成立为a, 不成立为b
 
 14. Python2和Python3的区别:
-    1) Python3对Unicode字符的原生支持, Python2中使用 ASCII 码作为默认编码方式导致string有两种类型str和unicode
-    2) Python3采用的是绝对路径的方式进行import, Python2中相对路径的import会导致标准库导入变得困难
-    3) Python2中存在老式类和新式类的区别，Python3统一采用新式类。新式类声明要求继承object
-    4) Python3使用更加严格的缩进。Python2的缩进机制中，1个tab和8个space是等价的.Python3中1个tab只能找另外一个tab替代
+    1) 编码方式, Python3对Unicode字符的原生支持, Python2中使用 ASCII 码作为默认编码方式导致string有两种类型str和unicode
+    2) 导入方式, Python3采用的是绝对路径的方式进行import, Python2中相对路径的import会导致标准库导入变得困难
+    3) 继承方式, Python2中存在老式类和新式类的区别，Python3统一采用新式类。新式类声明要求继承object
+    4) 缩进方式, Python3使用更加严格的缩进。Python2的缩进机制中，1个tab和8个space是等价的.Python3中1个tab只能找另外一个tab替代
 
 15. 一行代码交换a=1,b=2:
         a, b = 2,1
@@ -86,7 +88,7 @@
 17. 字符串、列表、元组、字典每个常用的5个方法
     str: split(), strip(), partition(), find(), count(), replace(), center(),ljust(), encode(),decode()
     list: append(), insert(), extend(), remove(), pop(), clear(), index(), count(), sort()
-    tuple: index(), count(), len(), max(), min()
+    tuple: index(), count(), len(), max(), min(),sum()
     dict: dict(), get(), pop(), keys(), items(), values()
 
 18. lambda表达式格式以及应用场景
@@ -150,8 +152,71 @@
 
 29. 一行代码实现9*9乘法表
     print ("\n".join("\t".join(["%s*%s=%s" %(x,y,x*y) for y in range(1, x+1)]) for x in range(1, 10)))
-14. yield from Iterable_obj
+
+30. yield from Iterable_obj
     yield value
 
-15. 列举布尔值为False的常见值？
+31. 列举布尔值为False的常见值？
     0, None, [], {}, ()
+
+32. 安装第三方模块
+    pip install 模块名
+    使用过哪些第三方模块: greenlet, geven
+    常用内置模块: time, os, sys, random, re, logging, hashlib, hmac
+                json, pickle, xml, configparse, io
+
+33. re的match和search区别
+    match: 返回分组对象, 从头开始匹配, 匹配到一个结束
+    search: 返回分组对象, 在字符串中搜索匹配, 匹配到一个结束
+
+34. 正则贪婪匹配和惰性匹配
+    贪婪: 按多的来
+        d+ [1,inf]
+        d? [0,1]
+        d* [0,inf]
+        d{n,m}
+    惰性匹配: 按少的来
+        d*?   匹配0个字符
+        d+?   匹配1个字符
+
+35.  [ i % 2 for i in range(10)]   //    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+     ( i % 2 for i in range(10))   //    生成器
+
+36.  1 or 2     // 1
+     1 and 2    // 2
+     1 < (2==2) // False
+     1 < 2 == 2 // True
+
+37. def func(a,b=[]) 这种写法有什么坑？
+    函数的第二个参数是一个list, 只在第一次执行时实例化地址, 后面都一直用这个地址
+    使得函数后面的调用与前面的调用结果有关, 破坏了函数式编程的特点, 即
+    函数式编程: 1. 无状态
+              2. 无副作用性     // 任意一个函数，只要输入是确定的，输出就是确定的
+              3. 函数的高阶特性  // 函数可作为值传入, 作为值返回
+
+38. 如何实现 “1,2,3” 变成 [‘1’,’2’,’3’] ?
+    '1,2,3'.split(',')
+
+39. 如何实现[‘1’,’2’,’3’]变成[1,2,3] ?
+    [int(x) for x in ['1','2','3']]
+
+40. 比较： a = [1,2,3] 和 b = [(1),(2),(3) ] 以及 b = [(1,),(2,),(3,) ] 的区别？
+    a = b = [1,2,3]
+    b = [(1,),(2,),(3,)]
+
+41. 如何用一行代码生成[1,4,9,16,25,36,49,64,81,100]
+    list(map(lambda x: x**2,range(1,11)))
+
+42. 一行代码实现删除列表中重复的值 ?
+    set(list)
+
+43. 如何在函数中设置一个全局变量 ?
+    global var
+
+44. logging模块的作用？以及应用场景？
+    配置日志文件, 记录开发和维护日志
+       logging/logger.debug('debug message')
+       logging/logger.info('info message')
+       logging/logger.warning('warning message')
+       logging/logger.error('error message')
+       logging/logger.critical('critical message')

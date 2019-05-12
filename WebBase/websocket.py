@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 __author__ = 'xzq'
 
+# -*- coding: utf-8 -*-
+__author__ = 'xzq'
+
+'''
+WebSocket:
+         1. 允许服务端主动向客户端推送数据
+         2. 浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输
+'''
+
 from socket import *
 
 def handle_request(conn):
