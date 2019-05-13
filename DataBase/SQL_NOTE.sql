@@ -1,10 +1,14 @@
 /*
 1. 基本概念:
-          数据库: 存储数据的仓库
-          数据库管理软件(Database Management Software, DMS): 内部包含多个数据库，数据库中又有多个表(class)，表的各项(实例对象)存储了数据
-                                                          oracle, db2, mysql
-          mysql: -u username -p password   // 本地登录
-                 -h server_ip -P port -u username -p password  // 远程登录
+          表: 存放数据
+
+          数据库: 存储表的仓库
+
+          数据库管理软件(Database Management Software, DMS): 管理数据库的软件,如
+                关系型数据库(基于关系表): sqlite, db2, oracle, sql server, mysql
+                非关系型数据库(key-value存储数据, 没有表结构): redis, memcache, mongodb
+
+          数据库服务器-：运行数据库管理软件
 
 2. sql语法:  DDL (Data Definition Language) 针对数据库，表以及字段的操作
             DML  (Data Manipulation Language) 只是对表内部数据的操作，而不涉及到表的定义、结构的修改，更不会涉及到其他对象
@@ -47,14 +51,18 @@ DDL: CREATE, SHOW, ALTER, DROP, USE
                                            ADD col_name type FIRST                 // 头插
                                            ADD col_name type AFTER col_1          // col_1之后插
                                            ADD col_name type;                     // 尾插
+                                           ADD CONSTRAINT ..                      // 添加约束
                          2>>. 修改列(字段)类型，约束条件:
                                    ALTER TABLE table_name MODIFY col_name type constraints;
                          3>>. 修改列(字段)名:
                                    ALTER TABLE table_name CHANGE col_name new_name type;
                          4>>. 删除一列(字段):
                                    ALTER TABLE table_name DROP col_name;
+
           5.>删除表:      DROP TABLE table_name;
 
+          *> 复制表结构和数据:  CREATE TABLE new_table select * from table_name
+             复制表结构:       CREATE TABLE new_table select * from table where wrong_condition
 
           6>. 外键约束: 创建完charger_id后另起一行加FOREIGN KEY (charger_id) REFERENCES ClassCharger(id) ON 删除方式
                )ENGINE=INNODB;
@@ -143,5 +151,245 @@ DML: INSERT, UPDATE, DELETE, SELECT
                                                                     EXISTS  内表为真时，外表开始查询，否则不查询
 
  */
+
+/*
+数据的三大范式和五大约束:
+   1. 三大范式
+      1) 保证每一列的原子性
+      2) 表中的所有列都依赖于主键,即一张表只描述一件事
+      3) 表中的每一列都和主键直接相关,不是间接相关, 即一张表只能有另一张表的主键,不能有其他信息(其他信息一律用该主键在另一只表中查询)
+
+   2. 五大约束
+      1） primary key
+      2) unique
+      3) default
+      4) not null
+      5) foreign key
+*/
+
+/*
+Mysql:
+    1. Mysql登录:
+      -u username -p password                       // 本地登录
+      -h server_ip -P port -u username -p password  // 远程登录
+
+    2. Mysql服务器架构:
+              API(C,JDBC,Python)
+        --------------------------------
+                    连接池
+        --------------------------------
+        SQL接口, SQL解析器, SQL优化器,缓存池
+        --------------------------------
+                可插入式存储引擎
+                   各种数据库
+        --------------------------------
+
+    3. Mysql存储引擎: 如何增删查改数据, 建立表
+       InnoDB: 支持事务
+       MyISAM: 不支持事务
+       Memory: 存储的数据都放在内存中
+
+ */
+
+/*
+视图:
+    1. 特性:
+       1) 是一张虚拟的表, 其本质是sql语句获得的动态数据集
+       2) 可以直接当成表来用, 视图也是存储在数据库中的
+       3) 过分依赖视图会造成程序强耦合
+
+    2. 操作
+       1) create view 视图名称 as sql查询语句   // 创建视图
+       2) alter view 视图名称 as sql查询语句    // 修改视图
+       3) 使用视图同使用表(修改视图会导致原表修改)
+       4) drop view 视图名称                  // 删除视图
+ */
+
+/*
+触发器:
+     1. 作用:
+        可以定制用户对表增、删、改操作前后的行为
+     2. 用法:
+        1) 创建触发器
+        delimiter//
+        CREATE TRIGGER 触发器名称 BEFORE/AFTER INSERT/DELETE/UPDATE ON 表名称 FOR EACH ROW
+        BEGIN
+              NEW  # 表示即将新增的行, 可通过NEW.field访问属性
+              OLD  # 表示即将删除的行
+              # 函数 + sql语句
+        END//
+        delimiter;
+
+        2) 删除触发器
+        DROP TRIGGER 触发器名称
+*/
+
+/*
+事务:
+    1. 事务的特性
+        1> 原子性, 不可分割，要么提交(发生)，要么不提交(不发生)
+        2> 一致性,  事务前后数据的完整性必须保持一致。  所有记录都能保证满足当前数据库中的所有约束，则可以说当前的数据库是符合数据完整性约束
+        3> 隔离性, 多并发事务之间数据相互隔离
+        4> 持久性, 事务对数据的改变是永久的
+
+    2. mysql中的事务操作
+        start transaction  // 开启一个事务
+        rollback           // 事务回滚，回滚到上次提交之后
+        commit             // 提交事务结束
+        savepoint          // 设置回滚点
+           insert into test2 (name)values('wu');
+           savepoint insert_wu;
+           ###...
+
+           rollback to insert_wu;                // 返回到 insert into test2 (name)values('wu'); 执行之后
+
+    3. pymysql中的事务操作
+       try:
+           cursor.execute('sql')               // 可能出错的sql语句
+           raise Exception
+       except Exception:
+           conn.rollback()                    // 数据库中回滚到上一次commit之后
+           conn.commit()                      // 回滚也要提交
+ */
+
+/*
+存储过程:
+   1. 程序与数据库结合使用的方式:
+      1) mysql: 存储过程 + 程序: 调用存储过程
+         优点:
+              #1 传输数据量小
+              #2 实现程序逻辑与sql语句的解耦
+         缺点: 扩展不方便
+
+      2) mysql: 存储数据 + 程序: sql语句
+
+   2. 无参存储过程
+      1) 创建
+         delimiter//
+         CREATE PROCEDURE func()
+         BEGIN
+              # sql语句
+         END//
+         delimiter;
+      2) 调用
+         CALL func();                   # mysql中调用
+         cursor.callproc('func')        # pymysql中调用
+
+   3. 有参存储过程
+      1) 仅用于传入参数: in
+          delimiter //
+          create procedure p2(
+              in n1 int,
+              in n2 int
+          )
+          BEGIN
+              select * from blog where id > n1;
+          END //
+          delimiter ;
+
+          #在mysql中调用
+          call p2(3,2)
+
+          #在python中基于pymysql调用
+          cursor.callproc('p2',(3,2))
+          print(cursor.fetchall())
+
+     2) 仅用于返回参数: out
+        delimiter //
+        create procedure p3(
+            in n1 int,
+            out res int
+        )
+        BEGIN
+            select * from blog where id > n1;
+            set res = 1;
+        END //
+        delimiter ;
+
+        #在mysql中调用
+        set @res=0;                   # 设置初始值
+        call p3(3,@res);
+        select @res;                  # 获取返回参数
+
+        #在python中基于pymysql调用
+        cursor.callproc('p3',(3,0))     #0相当于set @res=0
+        print(cursor.fetchall())
+
+        cursor.execute('select @_p3_0,@_p3_1;') # 获取返回参数
+        print(cursor.fetchall())
+
+     3) 用于传入传出的参数: inout
+        delimiter //
+        create procedure p4(
+            inout n1 int
+        )
+        BEGIN
+            select * from blog where id > n1;
+            set n1 = 1;
+        END //
+        delimiter ;
+
+        #在mysql中调用
+        set @x=3;
+        call p4(@x);
+        select @x;
+
+        #在python中基于pymysql调用
+        cursor.callproc('p4',(3,))
+        print(cursor.fetchall())
+
+        cursor.execute('select @_p4_0;')    # 获取返回值
+        print(cursor.fetchall())
+
+  3. 删除存储过程
+     DROP PROCEDURE proc_name;
+ */
+
+/*
+函数:
+    1. 常见内置函数
+       聚合函数:  AVG, COUNT, MIN, MAX, SUM
+       日期格式转化函数: DATE_FORMAT(datetime, '%Y %m %d %H %M %S %X %a')
+       控制流函数:
+                CASE WHEN test THEN t ELSE f END  # 如果test为真,执行t,否则执行f
+                IF (test,t,f)                     # 如果test为真,返回t,否则返回f
+                IFNULL(arg1,arg2)                 # 如果arg1不为NULL返回arg1, 否则返回arg2
+                NULLIF(arg1,arg2)                 # 如果arg1==arg2返回NULL, 否则返回arg1
+    2. 定义函数
+       delimiter //
+       create function f1(
+           i1 int,              // 函数初始化
+           i2 int2
+       )
+       returns int             //  返回类型
+       BEGIN                   // BEGIN..END不要写sql语言, 否则为存储过程
+           declare num int;    // 声明变量 变量名 类型
+           set num = i1 + i2;  // 赋值
+           return (num)        // 返回
+      END//
+      delimiter;
+
+    3. 调用函数
+       select f1(11,nid) ,name from tb2;
+
+    4. 删除函数
+       DROP FUNCTION func_name;
+
+    5. 流程控制
+       1) IF... THEN
+          ELSEIF.. THEN
+          ELSE..
+          END IF
+
+       2) WHILE..DO
+          END WHILE
+
+       3) REPEAT
+             ...
+             UNTIL ..
+          END REPEAT
+ */
+
+
 
 

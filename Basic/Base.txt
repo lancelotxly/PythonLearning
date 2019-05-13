@@ -161,7 +161,7 @@
 
 32. 安装第三方模块
     pip install 模块名
-    使用过哪些第三方模块: greenlet, geven
+    使用过哪些第三方模块: greenlet, geven, pymysql
     常用内置模块: time, os, sys, random, re, logging, hashlib, hmac
                 json, pickle, xml, configparse, io
 
