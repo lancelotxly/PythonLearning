@@ -220,3 +220,13 @@
        logging/logger.warning('warning message')
        logging/logger.error('error message')
        logging/logger.critical('critical message')
+
+45. 常用的字符串格式化方式:
+    1) %:  传递基本数据类型
+                     %d int,  %f float,  %s str
+                     e.g.  'hi, %s, you have %.2f dollars' % ('Chandler', 18000.509)
+
+    2) format: 不光可以传递基本数据类型, 还可以传递对象
+         e.g. 'hi, {0}, you have {1:.2f} dollars'.format('xzq', 18000.509)
+         e.g.  s = Student('xzq',24)
+              'I am {0.name}, {0.age} years old'.format(s)

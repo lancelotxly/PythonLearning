@@ -221,7 +221,7 @@ def limit_type(**kwargs):
      @functools.wrapper(f)
      def wrapper(*args):
         for attr_name, exc_type in kwargs.items():
-           setattr(cls,attr_name, Typed(attr_name,exc_type))    # 通过反射添加描述符属性
+           setattr(cls.attr_name, Typed(attr_name,exc_type))    # 通过反射添加描述符属性
         obj = cls(*args)
      return wrapper
    return decorate

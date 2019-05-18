@@ -32,8 +32,8 @@ SQLAlchemy架构和操作流程:
        from sqlalchemy import Column
        数据格式有: Integer, Float, DECIMAL, String, Boolean, Date, DateTime
        表名: __tablename__ = ''
-       约束有: ForeignKey(), ForeignKeyConstraint(), PrimaryKeyConstraint, UniqueConstraint(), Index()
-       额外约束: __table_args__ = ()  
+       约束有: ForeignKey(ondelete='CASCADE'), ForeignKeyConstraint(), PrimaryKeyConstraint, UniqueConstraint(), Index()
+       额外约束: __table_args__ = ()  除了ForeignKey()之外
     
     3. 创建连接engine
        from sqlalchemy import create_engine

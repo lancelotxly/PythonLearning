@@ -272,8 +272,6 @@
      c= ClassName()                       # 3. 此时执行的是wrapper, 但内部能通过cls找到ClassName, 进而执行__init__(self)实例化                     
 ''' # 类的装饰器: 同函数装饰器
 
-
-
 # @decorate
 # class People:
 #     def __init__(self,name,age,salary):

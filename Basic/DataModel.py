@@ -20,7 +20,7 @@ Num: 1. 数值操作: +, -, *, /, //(取商), %(取余), **(次方)
                  2) float('str')              # 将数组str转为float, 有其他字符则报错
                  3) divmod(a,b)               # a/b返回一个tuple, 包括(商,余)
                  4）abs(num)
-                 5) max(Iterable,[key=func]), min(Iterable,[key=func])
+                 5) max(Iterable,key=func), min(Iterable,key=func)
                  6) sum(Iterable)
                  7) bytes(num/str,encoding='utf8')    # 转为二进制字符串
 '''  # Num

@@ -41,6 +41,13 @@ __author__ = 'xzq'
 Web 流程:
         Client  <--->  Web服务器: HTTP解析软件 <-> [WSGI] <-> Web app (服务器逻辑, 即Web框架)
         
+        WSGI:   是web服务网关接口，是一套协议。
+                是通过以下模块实现了wsgi协议：
+                - wsgiref
+                - werkzurg
+                - uwsgi   关于部署
+                以上模块本质：编写socket服务端，用于监听请求，当有请求到来，则将请求数据进行封装，然后交给web框架处理。
+                
 Web app 组成:  MVC, MTV  
             控制器 Controller:        路由分发
             数据库 Model:             操作数据库

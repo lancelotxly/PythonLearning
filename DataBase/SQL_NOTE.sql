@@ -12,7 +12,7 @@
 
 2. sql语法:  DDL (Data Definition Language) 针对数据库，表以及字段的操作
             DML  (Data Manipulation Language) 只是对表内部数据的操作，而不涉及到表的定义、结构的修改，更不会涉及到其他对象
- */
+*/
 
 /*
 DDL: CREATE, SHOW, ALTER, DROP, USE
@@ -442,7 +442,7 @@ Mysql:
            水平分表：将某些列拆分到另外一张表，例如：博客+博客详情
            垂直分表：讲些历史信息分到另外一张表中，例如：支付宝账单
     8. 加缓存: 利用redis、memcache （常用数据放到缓存里，提高取数据速度）
- */
+*/
 
 
 
